@@ -1,0 +1,38 @@
+{
+  "name": "ui5-nwabap-deployer-core",
+  "version": "1.0.0",
+  "description": "UI5 Deployer to SAP NetWeaver - Core",
+  "author": {
+    "name": "Florian Pfeffer",
+    "email": "florian.pfeffer@outlook.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pfefferf/ui5-nwabap-deployer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pfefferf/ui5-nwabap-deployer/issues"
+  },
+  "license": "Apache-2.0",
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "https://github.com/pfefferf/ui5-nwabap-deployer/blob/master/LICENSE"
+    }
+  ],
+  "main": "lib/ui5-nwabap-deployer-core.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {},
+  "dependencies": {
+    "async": "^2.6.0",
+    "backoff": "^2.5.0",
+    "isbinaryfile": "^3.0.0",
+    "xmldoc": "^1.1.0",
+    "request": "^2.88.0"
+  }
+}

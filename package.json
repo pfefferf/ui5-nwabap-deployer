@@ -1,0 +1,32 @@
+{
+  "name": "ui5-nwabap-deployer",
+  "description": "UI5 Deployer to SAP NetWeaver ABAP",
+  "version": "1.0.0",
+  "author": {
+    "name": "Florian Pfeffer",
+    "email": "florian.pfeffer@outlook.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pfefferf/ui5-nwabap-deployer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pfefferf/ui5-nwabap-deployer/issues"
+  },   
+  "license": "Apache-2.0",
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "https://github.com/pfefferf/ui5-nwabap-deployer/blob/master/LICENSE"
+    }
+  ],   
+  "keywords": [
+    "SAP NetWeaver ABAP",
+    "UI5 Repository",
+    "SAPUI5",
+    "OpenUI5"
+  ],
+  "devDependencies": {
+    "lerna": "^3.18.3"
+  }
+}
