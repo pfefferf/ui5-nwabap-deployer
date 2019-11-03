@@ -37,7 +37,7 @@
     "OpenUI5"
   ], 
   "devDependencies": {
-    "grunt": "^1.0.4"
+    "grunt": "^1.0.1"
   },  
   "dependencies": {
     "ui5-nwabap-deployer-core": "^1.0.0"
