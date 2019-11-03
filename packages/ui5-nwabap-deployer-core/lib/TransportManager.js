@@ -19,12 +19,12 @@ var XMLDocument = require('xmldoc').XmlDocument;
  * @param {Logger}  oLogger
  * @constructor
  */
-function Transports(oOptions, oLogger) {
+function TransportManager(oOptions, oLogger) {
     this._client = new AdtClient(oOptions.conn, oOptions.auth, undefined, oLogger);
     this._oLogger = oLogger;
 }
 
-Transports.prototype.createTransport = function (sPackageName, sRequestText, fnCallback) {
+TransportManager.prototype.createTransport = function (sPackageName, sRequestText, fnCallback) {
     var sPayload = this.getCreateTransportPayload(sPackageName, sRequestText);
 
     var sUrl = this._client.buildUrl(CTS_BASE_URL);
@@ -60,7 +60,7 @@ Transports.prototype.createTransport = function (sPackageName, sRequestText, fnC
  * otherwise the cb returns null.
  * @param {Function} fnCallback
  */
-Transports.prototype.determineExistingTransport = function (fnCallback) {
+TransportManager.prototype.determineExistingTransport = function (fnCallback) {
     var sUrl = this._client.buildUrl(CTS_BASE_URL + '?_action=FIND&trfunction=K');
 
     var oRequestOptions = {
@@ -89,7 +89,7 @@ Transports.prototype.determineExistingTransport = function (fnCallback) {
     });
 };
 
-Transports.prototype.getCreateTransportPayload = function (sPackageName, sRequestText) {
+TransportManager.prototype.getCreateTransportPayload = function (sPackageName, sRequestText) {
     var sTemplate = '<?xml version="1.0" encoding="UTF-8"?>' +
         '<asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">' +
         '<asx:values>' +
@@ -104,4 +104,4 @@ Transports.prototype.getCreateTransportPayload = function (sPackageName, sReques
     return util.format(sTemplate, sPackageName, sRequestText);
 };
 
-module.exports = Transports;
+module.exports = TransportManager;
