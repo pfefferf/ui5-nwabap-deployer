@@ -1,7 +1,7 @@
 {
-  "name": "grunt-nwabap-ui5uploader",
-  "version": "0.3.5",
-  "description": "UI5 source upload to SAP NetWeaver ABAP",
+  "name": "ui5-task-nwabap-deployer",
+  "version": "1.0.0",
+  "description": "UI5 Tooling Task for deploying UI5 sources to a SAP NetWeaver ABAP system",
   "author": {
     "name": "Florian Pfeffer",
     "email": "florian.pfeffer@outlook.com"
@@ -12,38 +12,28 @@
   },
   "bugs": {
     "url": "https://github.com/pfefferf/ui5-nwabap-deployer/issues"
-  },  
+  },
   "license": "Apache-2.0",
   "licenses": [
     {
       "type": "Apache-2.0",
       "url": "https://github.com/pfefferf/ui5-nwabap-deployer/blob/master/LICENSE"
     }
-  ],     
+  ],
   "engines": {
     "node": ">= 8.5",
     "npm": ">= 5"
   },
-  "main": "lib/grunt-nwabap-ui5uploader.js",
+  "main": "lib/ui5-task-nwabap-deployer.js",
   "directories": {
     "lib": "lib"
   },
   "files": [
     "lib"
-  ],  
-  "scripts": {
-  },
-  "keywords": [
-    "gruntplugin",
-    "SAP NetWeaver ABAP",
-    "UI5 Repository",
-    "SAPUI5",
-    "OpenUI5"
-  ], 
-  "devDependencies": {
-    "grunt": "^1.0.1"
-  },  
+  ],
+  "scripts": {},
   "dependencies": {
+    "@ui5/logger": "^1.0.2",
     "ui5-nwabap-deployer-core": "^1.0.0"
-  }   
+  }
 }

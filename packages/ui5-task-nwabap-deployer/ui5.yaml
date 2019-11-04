@@ -1,0 +1,7 @@
+specVersion: "1.0"
+kind: extension
+type: task
+metadata:
+  name: ui5-task-nwabap-deployer
+task:
+  path: lib/ui5-task-nwabap-deployer.js
