@@ -77,7 +77,7 @@ function syncFiles(oFileStoreOptions, oLogger, sFileSourcePath, aFiles) {
  */
 async function uploadWithTransportUserMatch(oTransportManager, oOptions, oLogger) {
     return new Promise((resolve, reject) => {
-        oTransportManager.determineExistingTransport(function (oError, sTransportNo) {
+        oTransportManager.determineExistingTransport(async function (oError, sTransportNo) {
             if (oError) {
                 oLogger.error(oError);
                 reject(oError);
@@ -93,7 +93,7 @@ async function uploadWithTransportUserMatch(oTransportManager, oOptions, oLogger
                     return;
                 }
             } else if (oOptions.ui5.create_transport === true) {
-                oTransportManager.createTransport(oOptions.ui5.package, oOptions.ui5.transport_text, function (oError, sTransportNo) {
+                oTransportManager.createTransport(oOptions.ui5.package, oOptions.ui5.transport_text, async function (oError, sTransportNo) {
                     if (oError) {
                         oLogger.error(oError);
                         reject(oError);
@@ -126,7 +126,7 @@ async function uploadWithTransportUserMatch(oTransportManager, oOptions, oLogger
  * @param {Object} oLogger Logger
  */
 exports.deployUI5toNWABAP = async function (oOptions, aFiles, oLogger) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async function (resolve, reject) {
         var oAdaptedOptions = {};
 
         oAdaptedOptions = Object.assign(oAdaptedOptions, oOptions);
@@ -160,7 +160,7 @@ exports.deployUI5toNWABAP = async function (oOptions, aFiles, oLogger) {
             },
             auth: {
                 user: oAdaptedOptions.auth.user,
-                pwd: oOptioAdaptedOptionsons.auth.pwd
+                pwd: oAdaptedOptions.auth.pwd
             },
             ui5: {
                 language: oAdaptedOptions.ui5.language.toUpperCase(),
@@ -186,7 +186,7 @@ exports.deployUI5toNWABAP = async function (oOptions, aFiles, oLogger) {
                     return;
                 }
             } else if (oAdaptedOptions.ui5.create_transport === true) {
-                oTransportManager.createTransport(oAdaptedOptions.ui5.package, oAdaptedOptions.ui5.transport_text, function (oError, sTransportNo) {
+                oTransportManager.createTransport(oAdaptedOptions.ui5.package, oAdaptedOptions.ui5.transport_text, async function (oError, sTransportNo) {
                     if (oError) {
                         oLogger.error(oError);
                         reject(oError);
@@ -196,7 +196,7 @@ exports.deployUI5toNWABAP = async function (oOptions, aFiles, oLogger) {
                     oFileStoreOptions.ui5.transportno = sTransportNo;
 
                     try {
-                        await syncFiles(oFileStoreOptions, oLogger, oAdaptedOptions.resources.sFileSourcePath, aFiles);
+                        await syncFiles(oFileStoreOptions, oLogger, oAdaptedOptions.resources.fileSourcePath, aFiles);
                         resolve();
                         return;
                     } catch (oError) {
@@ -212,7 +212,7 @@ exports.deployUI5toNWABAP = async function (oOptions, aFiles, oLogger) {
             }
         } else {
             try {
-                await syncFiles(oFileStoreOptions, oLogger, oAdaptedOptions.resources.sFileSourcePath, aFiles);
+                await syncFiles(oFileStoreOptions, oLogger, oAdaptedOptions.resources.fileSourcePath, aFiles);
                 resolve();
                 return;
             } catch (oError) {

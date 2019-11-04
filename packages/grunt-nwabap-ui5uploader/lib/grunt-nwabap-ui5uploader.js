@@ -47,11 +47,13 @@ module.exports = function(grunt) {
                 pwd: oOptions.auth.pwd
             },
             ui5: {
-                language: oOptions.ui5.language.toUpperCase(),
+                language: oOptions.ui5.language,
                 transportno: oOptions.ui5.transportno,
                 package: oOptions.ui5.package,
                 bspcontainer: oOptions.ui5.bspcontainer,
                 bspcontainer_text: oOptions.ui5.bspcontainer_text,
+                create_transport: !!oOptions.ui5.create_transport,
+                transport_text: oOptions.ui5.transport_text,
                 transport_use_user_match: !!oOptions.ui5.transport_use_user_match,
                 transport_use_locked: !!oOptions.ui5.transport_use_locked,
                 calc_appindex: !!oOptions.ui5.calc_appindex
