@@ -1,7 +1,7 @@
 {
-  "name": "ui5-nwabap-deployer-core",
+  "name": "ui5-app",
   "version": "1.0.0",
-  "description": "UI5 Deployer to SAP NetWeaver - Core",
+  "description": "Test",
   "author": {
     "name": "Florian Pfeffer",
     "email": "florian.pfeffer@outlook.com"
@@ -24,19 +24,15 @@
     "node": ">= 8.5",
     "npm": ">= 5"
   },  
-  "main": "lib/ui5-nwabap-deployer-core.js",
-  "directories": {
-    "lib": "lib"
+  "devDependencies": {
+    "@ui5/cli": "^1.12.0",
+    "grunt": "^1.0.1",
+    "grunt-nwabap-ui5uploader": "^1.0.0",
+    "ui5-task-nwabap-deployer": "^1.0.0"
   },
-  "files": [
-    "lib"
-  ],
-  "scripts": {},
-  "dependencies": {
-    "async": "^2.6.0",
-    "backoff": "^2.5.0",
-    "isbinaryfile": "^3.0.0",
-    "xmldoc": "^1.1.0",
-    "request": "^2.88.0"
+  "ui5": {
+    "dependencies": [
+      "ui5-task-nwabap-deployer"
+    ]
   }
 }

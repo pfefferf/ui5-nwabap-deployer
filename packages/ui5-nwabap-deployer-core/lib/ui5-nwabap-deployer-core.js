@@ -18,12 +18,12 @@ function checkOptions(oOptions, oLogger) {
     }
 
     if (!oOptions.auth || !oOptions.auth.user || !oOptions.auth.pwd) {
-        oLogger.error('"auth" option not (fully) specified (check user name and password).');
+        oLogger.error('Authentication configuration not (fully) specified (check user name and password).');
         bCheckSuccessful = false;
     }
 
     if (!oOptions.ui5 || !oOptions.ui5.package || !oOptions.ui5.bspcontainer || !oOptions.ui5.bspcontainer_text) {
-        oLogger.error('"ui5" option not (fully) specified (check package, BSP container, BSP container text information).');
+        oLogger.error('UI5 configuration not (fully) specified (check package, BSP container, BSP container text information).');
         bCheckSuccessful = false;
     }
 
@@ -34,13 +34,13 @@ function checkOptions(oOptions, oLogger) {
     }
 
     if (oOptions.ui5.create_transport === true && typeof oOptions.ui5.transport_text !== 'string') {
-        oLogger.error('Please specifiy a description to be used for the created transport in option "ui5.transport_text".');
+        oLogger.error('Please specify a description to be used for the created transport.');
         bCheckSuccessful = false;
     }
 
     var bspcontainerExclNamespace = oOptions.ui5.bspcontainer.substring(oOptions.ui5.bspcontainer.lastIndexOf('/') + 1);
     if (bspcontainerExclNamespace.length > 15) {
-        oLogger.error('"ui5.bspcontainer" option must not be longer than 15 characters (exclusive customer specific namespace e.g. /YYY/.');
+        oLogger.error('BSP Container option must not be longer than 15 characters (exclusive customer specific namespace e.g. /YYY/.');
         bCheckSuccessful = false;
     }
 

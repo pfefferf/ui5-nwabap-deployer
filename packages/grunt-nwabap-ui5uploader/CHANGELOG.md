@@ -1,24 +1,29 @@
-# 0.3.4 (2019-05-16)
+## 1.0.0 (2019-11-11)
+
+### General
+- Usage of ui5-nwabap-deployer-core package.
+
+## 0.3.4 (2019-05-16)
 
 ### Features
 - In case the creation of a transport request is required via option `options.ui5.create_transport`, the number of the created transport request is logged in form "Creation of transport request required. Number of created transport request: \<created transport request number\>".
 
-# 0.3.3 (2019-01-14)
+## 0.3.3 (2019-01-14)
 
 ### Fixes
 - Fixed issue regarding response status code check (thanks to [BurnerPat](https://github.com/BurnerPat)).
 
-# 0.3.2 (2019-01-03)
+## 0.3.2 (2019-01-03)
 
 ### General
 - More detailed information in case an ADT API call fails (expected HTTP Status Code, actual HTTP Status Code, response body).
 
-# 0.3.1 (2018-11-26)
+## 0.3.1 (2018-11-26)
 
 ### Fixes
 - Fixed issue in check if a transport for the user exists.
 
-# 0.3.0 (2018-11-19)
+## 0.3.0 (2018-11-19)
 
 ### General
 - Replaced `unirest` library by `request` library, because of a better maintenance support.

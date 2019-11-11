@@ -143,7 +143,7 @@ AdtClient.prototype.sendRequest = function (oRequestOptions, fnRequestCallback) 
 
     call.retryIf(function (oError, oResponse) {
         if (oError !== undefined) {
-            me._oLogger.log('NW ABAP UI5 Uploader: Connection error has occurred, retrying (' + call.getNumRetries() + '): ' + JSON.stringify(oError));
+            me._oLogger.log('Connection error has occurred, retrying (' + call.getNumRetries() + '): ' + JSON.stringify(oError));
             return true;
         }
         return false;

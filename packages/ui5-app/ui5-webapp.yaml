@@ -1,0 +1,18 @@
+specVersion: "1.0"
+type: application
+metadata:
+  name: ui5-app-webapp
+builder:
+  customTasks:
+  - name: ui5-task-nwabap-deployer
+    afterTask: generateVersionInfo
+    configuration: 
+      resources:
+        path: "dist"
+        pattern: "**/*.*"
+      ui5:
+        language: EN
+        package: $TMP
+        bspContainer: ZZ_GUI5UP_TMP02
+        bspContainerText: Test UI5 Upload
+        calculateApplicationIndex: true  

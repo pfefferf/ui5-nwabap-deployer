@@ -516,7 +516,7 @@ FileStore.prototype.syncFolder = function (sFolder, sModif, fnCallback) {
             return;
         }
 
-        me._oLogger.log('NW ABAP UI5 Uploader: folder ' + sFolder + ' ' + sModif + 'd.');
+        me._oLogger.log('folder ' + sFolder + ' ' + sModif + 'd.');
         fnCallback(null, oResponse);
     });
 
@@ -646,7 +646,7 @@ FileStore.prototype.syncFile = function (sFile, sModif, sCwd, fnCallback) {
                 if (oResponse.body) {
                     var aMatched = oResponse.body.match(/.{3}K\d{6}/g);
                     if (aMatched && aMatched.length > 0) {
-                        me._oLogger.log('NW ABAP UI5 Uploader: Warning: the current BSP Application was already locked in ' + aMatched[0] + '. Transport ' + aMatched[0] + ' is used instead of ' + me._oOptions.ui5.transportno + '.');
+                        me._oLogger.log('Warning: the current BSP Application was already locked in ' + aMatched[0] + '. Transport ' + aMatched[0] + ' is used instead of ' + me._oOptions.ui5.transportno + '.');
                         me._oOptions.ui5.transportno = aMatched[0];
                         me.syncFile(sFile, sModif, sCwd, function (a, b) {
                             fnCallback(a, b);
@@ -657,7 +657,7 @@ FileStore.prototype.syncFile = function (sFile, sModif, sCwd, fnCallback) {
             }
             fnCallback(util.createResponseError(oResponse.body), oResponse);
         } else {
-            me._oLogger.log('NW ABAP UI5 Uploader: file ' + sFile + ' ' + sModif + 'd.');
+            me._oLogger.log('file ' + sFile + ' ' + sModif + 'd.');
             fnCallback(null, oResponse);
         }
     });

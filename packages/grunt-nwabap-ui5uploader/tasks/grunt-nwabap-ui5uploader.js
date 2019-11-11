@@ -1,6 +1,6 @@
 'use strict';
 
-const Logger = require('./Logger');
+const Logger = require('./lib/Logger');
 const ui5Deployercore = require('ui5-nwabap-deployer-core');
 
 module.exports = function(grunt) {
@@ -17,7 +17,7 @@ module.exports = function(grunt) {
 
         // get file names
         if (!oOptions.resources || !oOptions.resources.cwd || !oOptions.resources.src) {
-            grunt.fail.warn('"resources" option not (fully) specified.');
+            grunt.fail.warn('Resources configuration not (fully) specified.');
             done();
             return;
         }

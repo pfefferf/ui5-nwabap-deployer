@@ -1,16 +1,16 @@
-const log = require("@ui5/logger").getLogger("builder:customtask:nwabap-deployer");
+const oLogger = require("@ui5/logger").getLogger("builder:customtask:nwabap-deployer");
 
 class Logger {
-    log(... messages) {
-        log.info(messages);
+    log(message) {
+        oLogger.info(message);
     }
 
-    error(... messages) {
-        log.error(messages);
+    error(message) {
+        oLogger.error(message);
     }
 
-    logVerbose(... messages) {
-        log.verbose(messages);
+    logVerbose(message) {
+        oLogger.verbose(message);
     }
 }
 
