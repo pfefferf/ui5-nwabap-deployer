@@ -15,28 +15,28 @@ const ui5Deployercore = require("ui5-nwabap-deployer-core");
  * @param {string} [parameters.options.configuration] Task configuration if given in ui5.yaml
  * @returns {Promise<undefined>} Promise resolving with <code>undefined</code> once data has been written
  */
-module.exports = async function({workspace, dependencies, options}) {
+module.exports = async function ({ workspace, dependencies, options }) {
     const oLogger = new Logger();
 
-    if(options.configuration && !options.configuration.resources) {
+    if (options.configuration && !options.configuration.resources) {
         oLogger.error("Please provide a resources configuration.");
         return;
     }
 
-    if((options.configuration && !options.configuration.connection) && !process.env.UI5_TASK_NWABAP_DEPLOYER__SERVER) {
+    if ((options.configuration && !options.configuration.connection) && !process.env.UI5_TASK_NWABAP_DEPLOYER__SERVER) {
         oLogger.error("Please provide a connection configuration.");
         return;
     }
 
     let sServer = process.env.UI5_TASK_NWABAP_DEPLOYER__SERVER;
-    
-    if(options.configuration && options.configuration.connection && options.configuration.connection.server) {
+
+    if (options.configuration && options.configuration.connection && options.configuration.connection.server) {
         sServer = options.configuration.connection.server
     } else {
         options.configuration.connection = Object.assign({}, options.configuration.connection);
-    }    
+    }
 
-    if((options.configuration && !options.configuration.authentication) && (!process.env.UI5_TASK_NWABAP_DEPLOYER__USER && !process.env.UI5_TASK_NWABAP_DEPLOYER__PASSWORD)) {
+    if ((options.configuration && !options.configuration.authentication) && (!process.env.UI5_TASK_NWABAP_DEPLOYER__USER && !process.env.UI5_TASK_NWABAP_DEPLOYER__PASSWORD)) {
         oLogger.error("Please provide an authentication configuration or set authentication environment variables.");
         return;
     }
@@ -44,25 +44,25 @@ module.exports = async function({workspace, dependencies, options}) {
     let sUser = process.env.UI5_TASK_NWABAP_DEPLOYER__USER;
     let sPassword = process.env.UI5_TASK_NWABAP_DEPLOYER__PASSWORD;
 
-    if(options.configuration && options.configuration.authentication && options.configuration.authentication.user) {
+    if (options.configuration && options.configuration.authentication && options.configuration.authentication.user) {
         sUser = options.configuration.authentication.user
     }
 
-    if(options.configuration && options.configuration.authentication && options.configuration.authentication.password) {
+    if (options.configuration && options.configuration.authentication && options.configuration.authentication.password) {
         sPassword = options.configuration.authentication.password
     }
 
-    if(options.configuration && !options.configuration.ui5) {
+    if (options.configuration && !options.configuration.ui5) {
         oLogger.error("Please provide a UI5 configuration.");
         return;
-    }    
+    }
 
     let sPattern = "**/*.*";
-    if(options.configuration && options.configuration.resources && options.configuration.resources.pattern) {
+    if (options.configuration && options.configuration.resources && options.configuration.resources.pattern) {
         sPattern = options.configuration.resources.pattern;
     }
 
-    let aFiles = glob.sync(sPattern, { dot: true, cwd: options.configuration.resources.path});
+    let aFiles = glob.sync(sPattern, { dot: true, cwd: options.configuration.resources.path });
 
     const oDeployOptions = {
         resources: {
@@ -92,5 +92,9 @@ module.exports = async function({workspace, dependencies, options}) {
         }
     };
 
-    await ui5Deployercore.deployUI5toNWABAP(oDeployOptions, aFiles, oLogger); 
+    try {
+        await ui5Deployercore.deployUI5toNWABAP(oDeployOptions, aFiles, oLogger);
+    } catch (oError) {
+        // ignore, due to logging in core
+    }
 };
