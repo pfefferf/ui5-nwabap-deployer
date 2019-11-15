@@ -79,7 +79,6 @@ async function uploadWithTransportUserMatch(oTransportManager, oOptions, oLogger
     return new Promise((resolve, reject) => {
         oTransportManager.determineExistingTransport(async function (oError, sTransportNo) {
             if (oError) {
-                oLogger.error(oError);
                 reject(oError);
                 return;
             } else if (sTransportNo) {
@@ -95,7 +94,6 @@ async function uploadWithTransportUserMatch(oTransportManager, oOptions, oLogger
             } else if (oOptions.ui5.create_transport === true) {
                 oTransportManager.createTransport(oOptions.ui5.package, oOptions.ui5.transport_text, async function (oError, sTransportNo) {
                     if (oError) {
-                        oLogger.error(oError);
                         reject(oError);
                         return;
                     }
@@ -111,7 +109,6 @@ async function uploadWithTransportUserMatch(oTransportManager, oOptions, oLogger
                 });
             } else {
                 const oError = new Error('No transport found and create transport was disabled!');
-                oLogger.error(oError);
                 reject(oError);
                 return;
             }
@@ -188,7 +185,6 @@ exports.deployUI5toNWABAP = async function (oOptions, aFiles, oLogger) {
             } else if (oAdaptedOptions.ui5.create_transport === true) {
                 oTransportManager.createTransport(oAdaptedOptions.ui5.package, oAdaptedOptions.ui5.transport_text, async function (oError, sTransportNo) {
                     if (oError) {
-                        oLogger.error(oError);
                         reject(oError);
                         return;
                     }
@@ -206,7 +202,6 @@ exports.deployUI5toNWABAP = async function (oOptions, aFiles, oLogger) {
                 });
             } else {
                 const oError = new Error('No transport configured but create transport and user match was disabled!');
-                oLogger.error(oError);
                 reject(oError);
                 return;
             }

@@ -95,6 +95,6 @@ module.exports = async function ({ workspace, dependencies, options }) {
     try {
         await ui5Deployercore.deployUI5toNWABAP(oDeployOptions, aFiles, oLogger);
     } catch (oError) {
-        // ignore, due to logging in core
+        oLogger.error(oError);
     }
 };

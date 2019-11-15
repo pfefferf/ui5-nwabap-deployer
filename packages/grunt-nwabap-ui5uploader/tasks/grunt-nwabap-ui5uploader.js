@@ -60,15 +60,13 @@ module.exports = function(grunt) {
             }
         };
         
-        // deploy
         try {
             await ui5Deployercore.deployUI5toNWABAP(oDeployOptions, aFiles, oLogger);
-        } catch (oError) {
-            // ignore, due to logging in core
+        } catch(oError) {
+            oLogger.error(oError);
         }
 
         done();
-
     });
 
 };

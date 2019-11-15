@@ -1,11 +1,11 @@
 specVersion: "1.0"
 type: application
 metadata:
-  name: ui5-app-webapp
+  name: ui5-app-webapp-empty
 resources:
   configuration:
     paths:
-      "/": "webapp_empty"  
+      webapp: webapp_empty
 builder:
   customTasks:
   - name: ui5-task-nwabap-deployer
