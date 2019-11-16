@@ -1,4 +1,4 @@
-## 1.0.0 (2019-11-11)
+## 1.0.0 (2019-11-16)
 
 ### General
 - Usage of ui5-nwabap-deployer-core package.
