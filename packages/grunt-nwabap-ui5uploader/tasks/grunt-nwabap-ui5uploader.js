@@ -1,34 +1,34 @@
-'use strict';
+"use strict";
 
-const Logger = require('./lib/Logger');
-const ui5Deployercore = require('ui5-nwabap-deployer-core');
+const Logger = require("./lib/Logger");
+const ui5Deployercore = require("ui5-nwabap-deployer-core");
 
 module.exports = function(grunt) {
-
-    grunt.registerMultiTask('nwabap_ui5uploader', 'UI5 source upload to SAP NetWeaver ABAP', async function () {
-
+    grunt.registerMultiTask("nwabap_ui5uploader", "UI5 source upload to SAP NetWeaver ABAP", async function() {
         const oLogger = new Logger(grunt);
+        // eslint-disable-next-line no-invalid-this
         const done = this.async();
 
         // options
-        var oOptions = this.options({
+        // eslint-disable-next-line no-invalid-this
+        const oOptions = this.options({
             resources: {}
         });
 
         // get file names
         if (!oOptions.resources || !oOptions.resources.cwd || !oOptions.resources.src) {
-            grunt.fail.warn('Resources configuration not (fully) specified.');
+            grunt.fail.warn("Resources configuration not (fully) specified.");
             done();
             return;
         }
 
-        var aFiles = [];
+        const aFiles = [];
 
         grunt.file.expand({
             cwd: oOptions.resources.cwd,
-            filter: 'isFile',
+            filter: "isFile",
             dot: true
-        }, oOptions.resources.src).forEach(function (sFile) {
+        }, oOptions.resources.src).forEach(function(sFile) {
             aFiles.push(sFile);
         });
 
@@ -59,14 +59,13 @@ module.exports = function(grunt) {
                 calc_appindex: !!oOptions.ui5.calc_appindex
             }
         };
-        
+
         try {
             await ui5Deployercore.deployUI5toNWABAP(oDeployOptions, aFiles, oLogger);
-        } catch(oError) {
+        } catch (oError) {
             oLogger.error(oError);
         }
 
         done();
     });
-
 };

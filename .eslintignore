@@ -1,0 +1,5 @@
+# default
+node_modules/
+
+# test
+packages/ui5-app/

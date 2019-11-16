@@ -1,19 +1,19 @@
-'use strict';
+"use strict";
 
 /**
  * Object type
  * @type {{file: string, folder: string}}
  */
-var OBJECT_TYPE = {
-    file: 'file',
-    folder: 'folder'
+const OBJECT_TYPE = {
+    file: "file",
+    folder: "folder"
 };
 
 /**
  * HTTP status
  * @type {{ok: number, created: number, not_authorized: number, not_found: number, not_allowed: number}}
  */
-var HTTPSTAT = {
+const HTTPSTAT = {
     ok: 200,
     created: 201,
     not_authorized: 403,
@@ -26,10 +26,10 @@ var HTTPSTAT = {
  * Modification Identifier
  * @type {{create: string, update: string, delete: string}}
  */
-var MODIDF = {
-    create: 'create',
-    update: 'update',
-    delete: 'delete'
+const MODIDF = {
+    create: "create",
+    update: "update",
+    delete: "delete"
 };
 
 /**
@@ -39,24 +39,24 @@ var MODIDF = {
  * @return {Array} array with resolved folders and files
  */
 function structureResolve(resolve, sPathStartWith) {
-    var aToResolve = [];
-    var aResolved = [];
+    let aToResolve = [];
+    let aResolved = [];
 
-    if (typeof resolve === 'object' && resolve instanceof Array) {
+    if (typeof resolve === "object" && resolve instanceof Array) {
         aToResolve = resolve;
-    } else if (typeof resolve === 'string') {
+    } else if (typeof resolve === "string") {
         aToResolve.push(resolve);
     } else {
         return null;
     }
 
     // resolve
-    aToResolve.forEach(function (item) {
-        var aSplit = item.split('/');
+    aToResolve.forEach(function(item) {
+        const aSplit = item.split("/");
 
-        for (var i = 0; i < aSplit.length; i++) {
-            var aConc = aSplit.slice(0, i + 1);
-            var sConc = (aConc.length > 1) ? aConc.join('/') : aConc[0];
+        for (let i = 0; i < aSplit.length; i++) {
+            const aConc = aSplit.slice(0, i + 1);
+            const sConc = (aConc.length > 1) ? aConc.join("/") : aConc[0];
 
             if (sConc.length > 0) {
                 aResolved.push({
@@ -68,9 +68,9 @@ function structureResolve(resolve, sPathStartWith) {
     });
 
     // remove dups
-    aResolved = aResolved.sort(function (sVal1, sVal2) {
-        var sA = JSON.stringify(sVal1);
-        var sB = JSON.stringify(sVal2);
+    aResolved = aResolved.sort(function(sVal1, sVal2) {
+        const sA = JSON.stringify(sVal1);
+        const sB = JSON.stringify(sVal2);
 
         if (sA === sB) {
             return 0;
@@ -80,7 +80,7 @@ function structureResolve(resolve, sPathStartWith) {
             return 1;
         }
     })
-        .filter(function (oItem, iPos) {
+        .filter(function(oItem, iPos) {
             if (iPos > 0) {
                 return JSON.stringify(aResolved[iPos - 1]) !== JSON.stringify(oItem);
             } else {
@@ -97,11 +97,11 @@ function structureResolve(resolve, sPathStartWith) {
  * @return {{path: string, obj: string}} Path object
  */
 function splitIntoPathAndObject(sValue) {
-    var aValues = sValue.split('/');
-    var sObject = aValues.pop();
-    var sPath = aValues.join('/');
-    if (sPath.length > 0 && sPath.charAt(0) !== '/') {
-        sPath = '/' + sPath;
+    const aValues = sValue.split("/");
+    const sObject = aValues.pop();
+    let sPath = aValues.join("/");
+    if (sPath.length > 0 && sPath.charAt(0) !== "/") {
+        sPath = "/" + sPath;
     }
     return {
         path: sPath,
@@ -116,7 +116,7 @@ function splitIntoPathAndObject(sValue) {
  */
 function createResponseError(oError) {
     if (oError) {
-        return '' + oError;
+        return String(oError);
     }
 
     return null;

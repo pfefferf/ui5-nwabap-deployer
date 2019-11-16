@@ -27,6 +27,11 @@
     "OpenUI5"
   ],
   "devDependencies": {
+    "eslint": "^6.6.0",
+    "eslint-config-google": "^0.14.0",
     "lerna": "^3.18.3"
+  },
+  "scripts": {
+    "lint": "eslint ./"
   }
 }

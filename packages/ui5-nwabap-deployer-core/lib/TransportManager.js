@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-var util = require('util');
-var fsutil = require('./FileStoreUtil');
-var CTS_BASE_URL = '/sap/bc/adt/cts/transports';
-var AdtClient = require('./AdtClient');
-var XMLDocument = require('xmldoc').XmlDocument;
+const util = require("util");
+const fsutil = require("./FileStoreUtil");
+const CTS_BASE_URL = "/sap/bc/adt/cts/transports";
+const AdtClient = require("./AdtClient");
+const XMLDocument = require("xmldoc").XmlDocument;
 
 /**
  * creates and releases transport requests
@@ -24,21 +24,21 @@ function TransportManager(oOptions, oLogger) {
     this._oLogger = oLogger;
 }
 
-TransportManager.prototype.createTransport = function (sPackageName, sRequestText, fnCallback) {
-    var sPayload = this.getCreateTransportPayload(sPackageName, sRequestText);
+TransportManager.prototype.createTransport = function(sPackageName, sRequestText, fnCallback) {
+    const sPayload = this.getCreateTransportPayload(sPackageName, sRequestText);
 
-    var sUrl = this._client.buildUrl(CTS_BASE_URL);
-    this._client.determineCSRFToken(function () {
-        var oRequestOptions = {
-            method: 'POST',
+    const sUrl = this._client.buildUrl(CTS_BASE_URL);
+    this._client.determineCSRFToken(function() {
+        const oRequestOptions = {
+            method: "POST",
             url: sUrl,
             headers: {
-                'accept': '*/*'
+                "accept": "*/*"
             },
             body: sPayload
         };
 
-        this._client.sendRequest(oRequestOptions, function (oError, oResponse) {
+        this._client.sendRequest(oRequestOptions, function(oError, oResponse) {
             if (oError) {
                 fnCallback(new Error(fsutil.createResponseError(oError)));
                 return;
@@ -46,8 +46,8 @@ TransportManager.prototype.createTransport = function (sPackageName, sRequestTex
                 fnCallback(new Error(`Operation Create Transport: Expected status code ${fsutil.HTTPSTAT.ok}, actual status code ${oResponse.statusCode}`));
                 return;
             } else {
-                var sTransportNo = oResponse.body.split('/').pop();
-                this._oLogger.log('Creation of transport request required. Number of created transport request: ' + sTransportNo);
+                const sTransportNo = oResponse.body.split("/").pop();
+                this._oLogger.log("Creation of transport request required. Number of created transport request: " + sTransportNo);
                 fnCallback(null, sTransportNo);
                 return;
             }
@@ -60,17 +60,17 @@ TransportManager.prototype.createTransport = function (sPackageName, sRequestTex
  * otherwise the cb returns null.
  * @param {Function} fnCallback
  */
-TransportManager.prototype.determineExistingTransport = function (fnCallback) {
-    var sUrl = this._client.buildUrl(CTS_BASE_URL + '?_action=FIND&trfunction=K');
+TransportManager.prototype.determineExistingTransport = function(fnCallback) {
+    const sUrl = this._client.buildUrl(CTS_BASE_URL + "?_action=FIND&trfunction=K");
 
-    var oRequestOptions = {
+    const oRequestOptions = {
         url: sUrl,
         headers: {
-            'accept': '*/*'
+            "accept": "*/*"
         }
     };
 
-    this._client.sendRequest(oRequestOptions, function (oError, oResponse) {
+    this._client.sendRequest(oRequestOptions, function(oError, oResponse) {
         if (oError) {
             fnCallback(new Error(fsutil.createResponseError(oError)));
             return;
@@ -81,25 +81,25 @@ TransportManager.prototype.determineExistingTransport = function (fnCallback) {
             if (!oResponse.body) {
                 return fnCallback(null, null);
             }
-            var oParsed = new XMLDocument(oResponse.body);
-            var transportNo = oParsed.valueWithPath('asx:values.DATA.CTS_REQ_HEADER.TRKORR');
+            const oParsed = new XMLDocument(oResponse.body);
+            const transportNo = oParsed.valueWithPath("asx:values.DATA.CTS_REQ_HEADER.TRKORR");
             fnCallback(null, transportNo);
             return;
         }
     });
 };
 
-TransportManager.prototype.getCreateTransportPayload = function (sPackageName, sRequestText) {
-    var sTemplate = '<?xml version="1.0" encoding="UTF-8"?>' +
-        '<asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">' +
-        '<asx:values>' +
-        '<DATA>' +
-        '<OPERATION>I</OPERATION>' +
-        '<DEVCLASS>%s</DEVCLASS>' +
-        '<REQUEST_TEXT>%s</REQUEST_TEXT>' +
-        '</DATA>' +
-        '</asx:values>' +
-        '</asx:abap>';
+TransportManager.prototype.getCreateTransportPayload = function(sPackageName, sRequestText) {
+    const sTemplate = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+        "<asx:abap xmlns:asx=\"http://www.sap.com/abapxml\" version=\"1.0\">" +
+        "<asx:values>" +
+        "<DATA>" +
+        "<OPERATION>I</OPERATION>" +
+        "<DEVCLASS>%s</DEVCLASS>" +
+        "<REQUEST_TEXT>%s</REQUEST_TEXT>" +
+        "</DATA>" +
+        "</asx:values>" +
+        "</asx:abap>";
 
     return util.format(sTemplate, sPackageName, sRequestText);
 };

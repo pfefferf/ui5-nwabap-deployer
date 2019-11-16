@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-var request = require('request');
-var util = require('./FileStoreUtil');
-var backoff = require('backoff');
-var ADT_BASE_URL = '/sap/bc/adt/';
+const request = require("request");
+const util = require("./FileStoreUtil");
+const backoff = require("backoff");
+const ADT_BASE_URL = "/sap/bc/adt/";
 
 
 /**
@@ -29,7 +29,7 @@ function AdtClient(oConnection, oAuth, sLanguage, oLogger) {
 
     // remove suffix slashes from server URL
     if (this._oOptions.conn && this._oOptions.conn.server) {
-        this._oOptions.conn.server = this._oOptions.conn.server.replace(/\/*$/, '');
+        this._oOptions.conn.server = this._oOptions.conn.server.replace(/\/*$/, "");
     }
 
     this._oLogger = oLogger;
@@ -40,7 +40,7 @@ function AdtClient(oConnection, oAuth, sLanguage, oLogger) {
  * @private
  * @return {string} base URL
  */
-AdtClient.prototype._constructBaseUrl = function () {
+AdtClient.prototype._constructBaseUrl = function() {
     return this._oOptions.conn.server + ADT_BASE_URL;
 };
 
@@ -50,23 +50,23 @@ AdtClient.prototype._constructBaseUrl = function () {
  * @param {function} fnCallback callback function
  * @return {void}
  */
-AdtClient.prototype.determineCSRFToken = function (fnCallback) {
+AdtClient.prototype.determineCSRFToken = function(fnCallback) {
     if (this._sCSRFToken !== undefined) {
         fnCallback();
         return;
     }
 
-    var sUrl = this.buildUrl(ADT_BASE_URL + 'discovery');
+    const sUrl = this.buildUrl(ADT_BASE_URL + "discovery");
 
-    var oRequestOptions = {
+    const oRequestOptions = {
         url: sUrl,
         headers: {
-            'X-CSRF-Token': 'Fetch',
-            'accept': '*/*'
+            "X-CSRF-Token": "Fetch",
+            "accept": "*/*"
         }
     };
 
-    this.sendRequest(oRequestOptions, function (oError, oResponse) {
+    this.sendRequest(oRequestOptions, function(oError, oResponse) {
         if (oError) {
             fnCallback(oError);
             return;
@@ -74,15 +74,15 @@ AdtClient.prototype.determineCSRFToken = function (fnCallback) {
             fnCallback(new Error(`Operation CSRF Token Determination: Expected status code ${util.HTTPSTAT.ok}, actual status code ${oResponse.statusCode}, response body '${oResponse.body}'`));
             return;
         } else {
-            this._sCSRFToken = oResponse.headers['x-csrf-token'];
-            this._sSAPCookie = oResponse.headers['set-cookie'];
+            this._sCSRFToken = oResponse.headers["x-csrf-token"];
+            this._sSAPCookie = oResponse.headers["set-cookie"];
             fnCallback(null);
             return;
         }
     }.bind(this));
 };
 
-AdtClient.prototype.buildUrl = function (sUrl) {
+AdtClient.prototype.buildUrl = function(sUrl) {
     return this._oOptions.conn.server + sUrl;
 };
 
@@ -91,9 +91,9 @@ AdtClient.prototype.buildUrl = function (sUrl) {
  * @param {object} oRequestOptions request options object
  * @param {function} fnRequestCallback Callback for request
  */
-AdtClient.prototype.sendRequest = function (oRequestOptions, fnRequestCallback) {
-    var me = this;
-    var oMutableRequestOptions = oRequestOptions;
+AdtClient.prototype.sendRequest = function(oRequestOptions, fnRequestCallback) {
+    const me = this;
+    const oMutableRequestOptions = oRequestOptions;
 
     if (me._oOptions.auth) {
         oMutableRequestOptions.auth = {
@@ -110,40 +110,40 @@ AdtClient.prototype.sendRequest = function (oRequestOptions, fnRequestCallback) 
     }
 
     if (me._oOptions.conn.client) {
-        if (!oMutableRequestOptions.hasOwnProperty('qs')) {
+        if (!oMutableRequestOptions.hasOwnProperty("qs")) {
             oMutableRequestOptions.qs = {};
         }
-        oMutableRequestOptions.qs['sap-client'] = encodeURIComponent(me._oOptions.conn.client);
+        oMutableRequestOptions.qs["sap-client"] = encodeURIComponent(me._oOptions.conn.client);
     }
 
     if (me._oOptions.lang) {
-        if (!oMutableRequestOptions.hasOwnProperty('qs')) {
+        if (!oMutableRequestOptions.hasOwnProperty("qs")) {
             oMutableRequestOptions.qs = {};
         }
-        oMutableRequestOptions.qs['sap-language'] = encodeURIComponent(me._oOptions.lang);
+        oMutableRequestOptions.qs["sap-language"] = encodeURIComponent(me._oOptions.lang);
     }
 
     if (this._sCSRFToken) {
-        if (!oMutableRequestOptions.hasOwnProperty('headers')) {
+        if (!oMutableRequestOptions.hasOwnProperty("headers")) {
             oMutableRequestOptions.headers = {};
         }
-        oMutableRequestOptions.headers['x-csrf-token'] = this._sCSRFToken;
+        oMutableRequestOptions.headers["x-csrf-token"] = this._sCSRFToken;
     }
 
     if (this._sSAPCookie) {
-        if (!oMutableRequestOptions.hasOwnProperty('headers')) {
+        if (!oMutableRequestOptions.hasOwnProperty("headers")) {
             oMutableRequestOptions.headers = {};
         }
-        oMutableRequestOptions.headers['cookie'] = this._sSAPCookie;
+        oMutableRequestOptions.headers["cookie"] = this._sSAPCookie;
     }
 
-    var call = backoff.call(request, oRequestOptions, function (oError, oResponse) {
+    const call = backoff.call(request, oRequestOptions, function(oError, oResponse) {
         fnRequestCallback(oError, oResponse);
     });
 
-    call.retryIf(function (oError, oResponse) {
+    call.retryIf(function(oError, oResponse) {
         if (oError !== undefined) {
-            me._oLogger.log('Connection error has occurred, retrying (' + call.getNumRetries() + '): ' + JSON.stringify(oError));
+            me._oLogger.log("Connection error has occurred, retrying (" + call.getNumRetries() + "): " + JSON.stringify(oError));
             return true;
         }
         return false;
@@ -157,7 +157,6 @@ AdtClient.prototype.sendRequest = function (oRequestOptions, fnRequestCallback) 
     call.failAfter(10);
 
     call.start();
-
 };
 
 module.exports = AdtClient;
