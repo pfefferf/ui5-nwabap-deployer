@@ -1,11 +1,7 @@
 specVersion: "1.0"
 type: application
 metadata:
-  name: ui5-app-webapp-empty
-resources:
-  configuration:
-    paths:
-      webapp: webapp_empty
+  name: ui5-app-webapp
 builder:
   customTasks:
   - name: ui5-task-nwabap-deployer
@@ -16,7 +12,9 @@ builder:
         pattern: "**/*.*"
       ui5:
         language: EN
-        package: $TMP
-        bspContainer: ZZ_GUI5UP_TMP02
+        transportUseLocked: true
+        transportText: Test UIW-NWABAP-DEPLOYER Create Transport
+        package: ZZ_FP_UI5_REPOSITORY
+        bspContainer: ZZ_GUI5UP_CTP
         bspContainerText: Test UI5 Upload
         calculateApplicationIndex: true  

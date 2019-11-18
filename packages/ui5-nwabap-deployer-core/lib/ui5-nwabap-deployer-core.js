@@ -173,9 +173,9 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
             }
         };
 
-        if (oFileStoreOptions.ui5.package !== "$TMP" && oFileStoreOptions.ui5.transportno === undefined) {
+        if (oAdaptedOptions.ui5.package !== "$TMP" && oAdaptedOptions.ui5.transportno === undefined) {
             const oTransportManager = new TransportManager(oFileStoreOptions, oLogger);
-            if (oFileStoreOptions.ui5.transport_use_user_match) {
+            if (oAdaptedOptions.ui5.transport_use_user_match) {
                 try {
                     await uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions, oLogger, oAdaptedOptions.resources.fileSourcePath, aFiles);
                     resolve();
@@ -184,8 +184,8 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
                     reject(oError);
                     return;
                 }
-            } else if (oFileStoreOptions.ui5.create_transport === true) {
-                oTransportManager.createTransport(oFileStoreOptions.ui5.package, oFileStoreOptions.ui5.transport_text, async function(oError, sTransportNo) {
+            } else if (oAdaptedOptions.ui5.create_transport === true) {
+                oTransportManager.createTransport(oFileStoreOptions.ui5.package, oAdaptedOptions.ui5.transport_text, async function(oError, sTransportNo) {
                     if (oError) {
                         reject(oError);
                         return;
@@ -203,7 +203,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
                     }
                 });
             } else {
-                const oError = new Error("No transport configured, but create transport and user match was disabled!");
+                const oError = new Error("No transport configured, but create transport and user match option is disabled");
                 reject(oError);
                 return;
             }
