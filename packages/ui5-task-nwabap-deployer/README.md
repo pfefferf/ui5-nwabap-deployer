@@ -80,7 +80,7 @@ builder:
 
 ## Release History
 
-[CHANGELOG.md](CHANGELOG.md)
+[CHANGELOG.md](https://github.com/pfefferf/ui5-nwabap-deployer/blob/master/packages/ui5-task-nwabap-deployer/CHANGELOG.md)
 
 ## License
 

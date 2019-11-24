@@ -353,7 +353,7 @@ grunt.initConfig({
 
 ## Release History
 
-[CHANGELOG.md](CHANGELOG.md)
+[CHANGELOG.md](https://github.com/pfefferf/ui5-nwabap-deployer/blob/master/packages/grunt-nwabap-ui5uploader/CHANGELOG.md)
 
 ## License
 
