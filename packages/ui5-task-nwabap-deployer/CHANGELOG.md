@@ -1,3 +1,8 @@
+## 1.0.2 (2019-11-28)
+
+### Fixes
+- Ensure that files are available in resources path when deployment is started.
+
 ## 1.0.1 (2019-11-26)
 
 ### Fixes

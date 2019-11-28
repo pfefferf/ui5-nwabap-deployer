@@ -2,6 +2,8 @@
 
 const Logger = require("./Logger");
 const glob = require("glob");
+const fse = require("fs-extra");
+const resourceFactory = require("@ui5/fs").resourceFactory;
 const ui5Deployercore = require("ui5-nwabap-deployer-core");
 
 /**
@@ -63,39 +65,58 @@ module.exports = async function({ workspace, dependencies, options }) {
         sPattern = options.configuration.resources.pattern;
     }
 
-    const aFiles = glob.sync(sPattern, { dot: true, cwd: options.configuration.resources.path });
+    return workspace.byGlob("/**/*.*").then((resources) => {
+		const fsTarget = resourceFactory.createAdapter({
+			fsBasePath: options.configuration.resources.path,
+			virBasePath: "/"
+		});
 
-    const oDeployOptions = {
-        resources: {
-            fileSourcePath: options.configuration.resources.path
-        },
-        conn: {
-            server: sServer,
-            client: options.configuration.connection.client,
-            useStrictSSL: options.configuration.connection.useStrictSSL,
-            proxy: options.configuration.connection.proxy
-        },
-        auth: {
-            user: sUser,
-            pwd: sPassword
-        },
-        ui5: {
-            language: options.configuration.ui5.language,
-            transportno: options.configuration.ui5.transportNo,
-            package: options.configuration.ui5.package,
-            bspcontainer: options.configuration.ui5.bspContainer,
-            bspcontainer_text: options.configuration.ui5.bspContainerText,
-            create_transport: !!options.configuration.ui5.createTransport,
-            transport_text: options.configuration.ui5.transportText,
-            transport_use_user_match: !!options.configuration.ui5.transportUseUserMatch,
-            transport_use_locked: !!options.configuration.ui5.transportUseLocked,
-            calc_appindex: !!options.configuration.ui5.calculateApplicationIndex
+        fse.removeSync(options.configuration.resources.path);
+
+        return Promise.all(resources.map((resource) => {
+            if (options.projectNamespace) {
+                resource.setPath(resource.getPath().replace(
+                    new RegExp(`^/resources/${options.projectNamespace}`), ""));
+            }
+            return fsTarget.write(resource);
+        }));
+    }).then(async () => {
+        const aFiles = glob.sync(sPattern, { dot: true, cwd: options.configuration.resources.path });
+
+        const oDeployOptions = {
+            resources: {
+                fileSourcePath: options.configuration.resources.path
+            },
+            conn: {
+                server: sServer,
+                client: options.configuration.connection.client,
+                useStrictSSL: options.configuration.connection.useStrictSSL,
+                proxy: options.configuration.connection.proxy
+            },
+            auth: {
+                user: sUser,
+                pwd: sPassword
+            },
+            ui5: {
+                language: options.configuration.ui5.language,
+                transportno: options.configuration.ui5.transportNo,
+                package: options.configuration.ui5.package,
+                bspcontainer: options.configuration.ui5.bspContainer,
+                bspcontainer_text: options.configuration.ui5.bspContainerText,
+                create_transport: !!options.configuration.ui5.createTransport,
+                transport_text: options.configuration.ui5.transportText,
+                transport_use_user_match: !!options.configuration.ui5.transportUseUserMatch,
+                transport_use_locked: !!options.configuration.ui5.transportUseLocked,
+                calc_appindex: !!options.configuration.ui5.calculateApplicationIndex
+            }
+        };
+
+        try {
+            await ui5Deployercore.deployUI5toNWABAP(oDeployOptions, aFiles, oLogger);
+        } catch (oError) {
+            oLogger.error(oError);
         }
-    };
-
-    try {
-        await ui5Deployercore.deployUI5toNWABAP(oDeployOptions, aFiles, oLogger);
-    } catch (oError) {
-        oLogger.error(oError);
-    }
+    }).then(() => {
+        return Promise.resolve();
+    });
 };
