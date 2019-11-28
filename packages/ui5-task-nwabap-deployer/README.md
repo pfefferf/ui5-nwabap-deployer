@@ -12,7 +12,7 @@ npm install ui5-task-nwabap-deployer --save-dev
 ## Configuration Options (in `$yourapp/ui5.yaml`)
 
 - resources
-    - path: `string` relative path to folder to be deployed (e.g. `dist`)
+    - path: optional `string` relative path to folder to be deployed (e.g. `dist`); if not set `dist` is used
     - pattern: optional `string` a glob pattern to match files for deployment (e.g. `**/*.*` to match all files); if not set `**/*.*` is used
 - connection
     - server: `string` SAP NetWeaver ABAP application server information in form `protocol://host:port` (alternative: set environment variable `UI5_TASK_NWABAP_DEPLOYER__SERVER`)
@@ -26,8 +26,8 @@ npm install ui5-task-nwabap-deployer --save-dev
     - language: optional `string` Language for deployment (e.g. EN); default value `EN`
     - package: `string` Defines the development package in which the BSP container for the UI5 sources is available or should be created.
     - bspContainer: `string` Defines the name of the BSP container used for the storage of the UI5 sources. Length is restricted to 15 characters (exclusive customer specific namespaces, e.g. /YYY/).
-    - bspContainerText: `string` Defines the description of the BSP container
-    - transportNo: optional (in case package is set to `$TMP`) `string` Defines the transport number which logs the changes. 
+    - bspContainerText: `string` Defines the description of the BSP container.
+    - transportNo: optional (in case package is set to `$TMP`) `string` Defines the transport number which logs the changes (alternative: set environment variable `UI5_TASK_NWABAP_DEPLOYER__TRANSPORTNO`).
     - createTransport: optional `true|false` Set this option to true in case a new transport should be created each time the application is deployed.
     - transportText: optional `string` Text for transport to be created.
     - transportUseUserMatch: optional `true|false` It will be tried to find a transport request of the given user. If no transport is found and createTransport is enabled a new one will be created and used for further file deployments.

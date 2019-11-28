@@ -20,11 +20,6 @@ const ui5Deployercore = require("ui5-nwabap-deployer-core");
 module.exports = async function({ workspace, dependencies, options }) {
     const oLogger = new Logger();
 
-    if (options.configuration && !options.configuration.resources) {
-        oLogger.error("Please provide a resources configuration.");
-        return;
-    }
-
     if ((options.configuration && !options.configuration.connection) && !process.env.UI5_TASK_NWABAP_DEPLOYER__SERVER) {
         oLogger.error("Please provide a connection configuration.");
         return;
@@ -60,18 +55,28 @@ module.exports = async function({ workspace, dependencies, options }) {
         return;
     }
 
-    let sPattern = "**/*.*";
+    let sTransportNo = process.env.UI5_TASK_NWABAP_DEPLOYER__TRANSPORTNO;
+    if (options.configuration && options.configuration.ui5 && options.configuration.ui5.transportNo) {
+        sTransportNo = options.configuration.ui5.transportNo;
+    }
+
+    let sResourcePath = "dist";
+    if (options.configuration && options.configuration.resources && options.configuration.resources.path) {
+        sResourcePath = options.configuration.resources.path;
+    }
+
+    let sResourcePattern = "**/*.*";
     if (options.configuration && options.configuration.resources && options.configuration.resources.pattern) {
-        sPattern = options.configuration.resources.pattern;
+        sResourcePattern = options.configuration.resources.pattern;
     }
 
     return workspace.byGlob("/**/*.*").then((resources) => {
 		const fsTarget = resourceFactory.createAdapter({
-			fsBasePath: options.configuration.resources.path,
+			fsBasePath: sResourcePath,
 			virBasePath: "/"
 		});
 
-        fse.removeSync(options.configuration.resources.path);
+        fse.removeSync(sResourcePath);
 
         return Promise.all(resources.map((resource) => {
             if (options.projectNamespace) {
@@ -81,11 +86,11 @@ module.exports = async function({ workspace, dependencies, options }) {
             return fsTarget.write(resource);
         }));
     }).then(async () => {
-        const aFiles = glob.sync(sPattern, { dot: true, cwd: options.configuration.resources.path });
+        const aFiles = glob.sync(sResourcePattern, { dot: true, cwd: sResourcePath });
 
         const oDeployOptions = {
             resources: {
-                fileSourcePath: options.configuration.resources.path
+                fileSourcePath: sResourcePath
             },
             conn: {
                 server: sServer,
@@ -99,7 +104,7 @@ module.exports = async function({ workspace, dependencies, options }) {
             },
             ui5: {
                 language: options.configuration.ui5.language,
-                transportno: options.configuration.ui5.transportNo,
+                transportno: sTransportNo,
                 package: options.configuration.ui5.package,
                 bspcontainer: options.configuration.ui5.bspContainer,
                 bspcontainer_text: options.configuration.ui5.bspContainerText,

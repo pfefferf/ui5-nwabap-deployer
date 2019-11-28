@@ -1,3 +1,9 @@
+## 1.0.3 (2019-11-28)
+
+### Features
+- `configuration.resources.path` is optional; if not set `dist` is used by default.
+- New supported environment variable `UI5_TASK_NWABAP_DEPLOYER__TRANSPORTNO` to be able to set transport number in a dynamic way in the pipeline. Avoids hard coded transport numbers in ui5.yaml configuration files which need to updated again and again.
+
 ## 1.0.2 (2019-11-28)
 
 ### Fixes
