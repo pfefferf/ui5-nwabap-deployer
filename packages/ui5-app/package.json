@@ -28,11 +28,15 @@
     "@ui5/cli": "^1.12.0",
     "grunt": "^1.0.1",
     "grunt-nwabap-ui5uploader": "^1.0.0",
-    "ui5-task-nwabap-deployer": "^1.0.0"
+    "ui5-task-nwabap-deployer": "^1.0.4"
   },
   "ui5": {
     "dependencies": [
       "ui5-task-nwabap-deployer"
     ]
+  },
+  "scripts": {
+    "deploy": "ui5 build --config ui5-webapp.yaml",
+    "deploy:only": "ui5 build --config ui5-webapp.yaml --exclude-task * --include-task ui5-task-nwabap-deployer"
   }
 }

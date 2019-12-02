@@ -2,7 +2,6 @@
 
 const Logger = require("./Logger");
 const glob = require("glob");
-const fse = require("fs-extra");
 const resourceFactory = require("@ui5/fs").resourceFactory;
 const ui5Deployercore = require("ui5-nwabap-deployer-core");
 
@@ -75,8 +74,6 @@ module.exports = async function({ workspace, dependencies, options }) {
 			fsBasePath: sResourcePath,
 			virBasePath: "/"
 		});
-
-        fse.removeSync(sResourcePath);
 
         return Promise.all(resources.map((resource) => {
             if (options.projectNamespace) {

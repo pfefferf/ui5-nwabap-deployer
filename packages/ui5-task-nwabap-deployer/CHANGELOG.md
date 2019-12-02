@@ -1,3 +1,8 @@
+## 1.0.4 (2019-12-02)
+
+### Fixes
+- In case that all UI5 Tooling tasks were excluded (via the --exclude-task option) and just the deployer task was executed, an error occurred, because of the missing resources.
+
 ## 1.0.3 (2019-11-28)
 
 ### Features
