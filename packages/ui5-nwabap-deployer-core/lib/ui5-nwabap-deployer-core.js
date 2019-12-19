@@ -2,6 +2,7 @@
 
 const FileStore = require("./FileStore");
 const TransportManager = require("./TransportManager");
+const isBinaryFile = require("isbinaryfile").isBinaryFileSync;
 
 /**
  * Checks on Options
@@ -11,11 +12,6 @@ const TransportManager = require("./TransportManager");
  */
 function checkOptions(oOptions, oLogger) {
     let bCheckSuccessful = true;
-
-    if (!oOptions.resources || !oOptions.resources.fileSourcePath) {
-        oLogger.error("\"File source path is not specified.");
-        bCheckSuccessful = false;
-    }
 
     if (!oOptions.auth || !oOptions.auth.user || !oOptions.auth.pwd) {
         oLogger.error("Authentication configuration not (fully) specified (check user name and password).");
@@ -51,14 +47,13 @@ function checkOptions(oOptions, oLogger) {
  * Synchronize Files
  * @param {object} oFileStoreOptions
  * @param {object} oLogger
- * @param {string} sFileSourcePath
  * @param {array} aFiles
  */
-function syncFiles(oFileStoreOptions, oLogger, sFileSourcePath, aFiles) {
+function syncFiles(oFileStoreOptions, oLogger, aFiles) {
     return new Promise((resolve, reject) => {
         const oFileStore = new FileStore(oFileStoreOptions, oLogger);
 
-        oFileStore.syncFiles(aFiles, sFileSourcePath, function(oError) {
+        oFileStore.syncFiles(aFiles, function(oError) {
             if (oError) {
                 oLogger.error(oError);
                 reject(oError);
@@ -74,10 +69,9 @@ function syncFiles(oFileStoreOptions, oLogger, sFileSourcePath, aFiles) {
  * @param {Object} oTransportManager Transport manager
  * @param {Object} oFileStoreOptions File Store Options
  * @param {Object} oLogger Logger
- * @param {String} sFileSourcePath File Source Path
  * @Param {Array} aFiles Files
  */
-async function uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions, oLogger, sFileSourcePath, aFiles) {
+async function uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions, oLogger, aFiles) {
     return new Promise((resolve, reject) => {
         oTransportManager.determineExistingTransport(async function(oError, sTransportNo) {
             if (oError) {
@@ -86,7 +80,7 @@ async function uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions
             } else if (sTransportNo) {
                 oFileStoreOptions.ui5.transportno = sTransportNo;
                 try {
-                    await syncFiles(oFileStoreOptions, oLogger, sFileSourcePath, aFiles);
+                    await syncFiles(oFileStoreOptions, oLogger, aFiles);
                     resolve();
                     return;
                 } catch (oError) {
@@ -101,7 +95,7 @@ async function uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions
                     }
                     oFileStoreOptions.ui5.transportno = sTransportNo;
                     try {
-                        await syncFiles(oFileStoreOptions, oLogger, sFileSourcePath, aFiles);
+                        await syncFiles(oFileStoreOptions, oLogger, aFiles);
                         resolve();
                         return;
                     } catch (oError) {
@@ -110,8 +104,7 @@ async function uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions
                     }
                 });
             } else {
-                const oError = new Error("No transport found and create transport was disabled!");
-                reject(oError);
+                reject(new Error("No transport found and create transport was disabled!"));
                 return;
             }
         });
@@ -147,8 +140,14 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
         // verbose log options
         oLogger.logVerbose("Options: " + JSON.stringify(oAdaptedOptions));
 
+        // binary determination
+        const aFilesAdapted = aFiles.map((oFile) => {
+            oFile.isBinary = isBinaryFile(oFile.content);
+            return oFile;
+        });
+
         // verbose log files
-        oLogger.logVerbose("Files: " + aFiles);
+        oLogger.logVerbose("Files: " + aFilesAdapted);
 
         const oFileStoreOptions = {
             conn: {
@@ -177,7 +176,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
             const oTransportManager = new TransportManager(oFileStoreOptions, oLogger);
             if (oAdaptedOptions.ui5.transport_use_user_match) {
                 try {
-                    await uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions, oLogger, oAdaptedOptions.resources.fileSourcePath, aFiles);
+                    await uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions, oLogger, aFilesAdapted);
                     resolve();
                     return;
                 } catch (oError) {
@@ -194,7 +193,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
                     oFileStoreOptions.ui5.transportno = sTransportNo;
 
                     try {
-                        await syncFiles(oFileStoreOptions, oLogger, oAdaptedOptions.resources.fileSourcePath, aFiles);
+                        await syncFiles(oFileStoreOptions, oLogger, aFilesAdapted);
                         resolve();
                         return;
                     } catch (oError) {
@@ -209,7 +208,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
             }
         } else {
             try {
-                await syncFiles(oFileStoreOptions, oLogger, oAdaptedOptions.resources.fileSourcePath, aFiles);
+                await syncFiles(oFileStoreOptions, oLogger, aFilesAdapted);
                 resolve();
                 return;
             } catch (oError) {

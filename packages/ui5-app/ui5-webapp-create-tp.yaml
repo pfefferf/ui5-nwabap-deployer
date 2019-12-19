@@ -8,10 +8,10 @@ builder:
     afterTask: generateVersionInfo
     configuration: 
       resources:
-        path: dist
         pattern: "**/*.*"
       ui5:
         language: EN
+        createTransport: true
         transportUseLocked: true
         transportText: Test UIW-NWABAP-DEPLOYER Create Transport
         package: ZZ_FP_UI5_REPOSITORY

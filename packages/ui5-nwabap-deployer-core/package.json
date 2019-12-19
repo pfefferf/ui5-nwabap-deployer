@@ -1,6 +1,6 @@
 {
   "name": "ui5-nwabap-deployer-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "UI5 Deployer to SAP NetWeaver - Core",
   "author": {
     "name": "Florian Pfeffer",
@@ -23,7 +23,7 @@
   "engines": {
     "node": ">= 8.5",
     "npm": ">= 5"
-  },  
+  },
   "main": "lib/ui5-nwabap-deployer-core.js",
   "directories": {
     "lib": "lib"
@@ -35,8 +35,8 @@
   "dependencies": {
     "async": "^2.6.0",
     "backoff": "^2.5.0",
-    "isbinaryfile": "^3.0.0",
     "xmldoc": "^1.1.0",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "isbinaryfile": "^4.0.2"
   }
 }

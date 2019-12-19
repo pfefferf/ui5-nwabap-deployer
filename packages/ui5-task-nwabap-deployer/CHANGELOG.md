@@ -1,3 +1,8 @@
+## 1.0.5 (2019-12-20)
+
+### General
+- Optimization to use files provided by UI5 Tooling workspace. Before that change, files were read again from file system. Due to that change option `resources.path` is not used anymore.
+
 ## 1.0.4 (2019-12-02)
 
 ### Fixes

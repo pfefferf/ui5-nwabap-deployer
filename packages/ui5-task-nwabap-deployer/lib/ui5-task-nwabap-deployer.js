@@ -1,8 +1,6 @@
 "use strict";
 
 const Logger = require("./Logger");
-const glob = require("glob");
-const resourceFactory = require("@ui5/fs").resourceFactory;
 const ui5Deployercore = require("ui5-nwabap-deployer-core");
 
 /**
@@ -59,36 +57,24 @@ module.exports = async function({ workspace, dependencies, options }) {
         sTransportNo = options.configuration.ui5.transportNo;
     }
 
-    let sResourcePath = "dist";
-    if (options.configuration && options.configuration.resources && options.configuration.resources.path) {
-        sResourcePath = options.configuration.resources.path;
-    }
-
     let sResourcePattern = "**/*.*";
     if (options.configuration && options.configuration.resources && options.configuration.resources.pattern) {
         sResourcePattern = options.configuration.resources.pattern;
     }
 
-    return workspace.byGlob("/**/*.*").then((resources) => {
-		const fsTarget = resourceFactory.createAdapter({
-			fsBasePath: sResourcePath,
-			virBasePath: "/"
-		});
-
-        return Promise.all(resources.map((resource) => {
+    return workspace.byGlob(sResourcePattern).then((resources) => {
+        return Promise.all(resources.map(async (resource) => {
             if (options.projectNamespace) {
                 resource.setPath(resource.getPath().replace(
                     new RegExp(`^/resources/${options.projectNamespace}`), ""));
             }
-            return fsTarget.write(resource);
+            return {
+              path: resource.getPath(),
+              content: await resource.getBuffer()
+            };
         }));
-    }).then(async () => {
-        const aFiles = glob.sync(sResourcePattern, { dot: true, cwd: sResourcePath });
-
+    }).then(async (aFiles) => {
         const oDeployOptions = {
-            resources: {
-                fileSourcePath: sResourcePath
-            },
             conn: {
                 server: sServer,
                 client: options.configuration.connection.client,

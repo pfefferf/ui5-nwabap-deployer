@@ -12,7 +12,6 @@ builder:
     afterTask: generateVersionInfo
     configuration: 
       resources:
-        path: dist
         pattern: "**/*.*"
       ui5:
         language: EN
