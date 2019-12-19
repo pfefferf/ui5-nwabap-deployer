@@ -1,6 +1,6 @@
 {
   "name": "ui5-task-nwabap-deployer",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "UI5 Tooling Task for deploying UI5 sources to a SAP NetWeaver ABAP system",
   "author": {
     "name": "Florian Pfeffer",
@@ -33,6 +33,7 @@
     "@ui5/fs": "^1.1.2",
     "@ui5/logger": "^1.0.2",
     "glob": "^7.1.6",
-    "ui5-nwabap-deployer-core": "^1.0.0"
+    "ui5-nwabap-deployer-core": "^1.0.0",
+    "dotenv": "^8.2.0"
   }
 }

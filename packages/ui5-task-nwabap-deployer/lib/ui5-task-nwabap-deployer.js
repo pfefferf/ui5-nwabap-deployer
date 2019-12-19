@@ -4,6 +4,10 @@ const Logger = require("./Logger");
 const glob = require("glob");
 const resourceFactory = require("@ui5/fs").resourceFactory;
 const ui5Deployercore = require("ui5-nwabap-deployer-core");
+const dotenv = require("dotenv");
+
+// Call dotenv, so that contents in the file are stored in the environment variables
+dotenv.config();
 
 /**
  * UI5 Tooling Task for deploying UI5 Sources to a SAP NetWeaver ABAP system
