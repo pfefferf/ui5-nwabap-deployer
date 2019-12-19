@@ -77,6 +77,11 @@ builder:
         calculateApplicationIndex: true      
 ```
 
+## Further Information
+
+### Environment Variables
+For development purposes environment variables can be stored in a `.env` file. They are automatically applied by the [dotenv](https://www.npmjs.com/package/dotenv) module.
+
 ## Release History
 
 [CHANGELOG.md](https://github.com/pfefferf/ui5-nwabap-deployer/blob/master/packages/ui5-task-nwabap-deployer/CHANGELOG.md)

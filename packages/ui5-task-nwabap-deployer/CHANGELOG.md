@@ -3,6 +3,9 @@
 ### General
 - Optimization to use files provided by UI5 Tooling workspace. Before that change, files were read again from file system. Due to that change option `resources.path` is not used anymore.
 
+### Features
+- Support of `.env` file to define environment variables for local development purposes; applied by the [dotenv](https://www.npmjs.com/package/dotenv) module. 
+
 ## 1.0.4 (2019-12-02)
 
 ### Fixes

@@ -1,7 +1,8 @@
 "use strict";
 
 const Logger = require("./Logger");
-const ui5Deployercore = require("ui5-nwabap-deployer-core");
+const ui5DeployerCore = require("ui5-nwabap-deployer-core");
+require("dotenv").config();
 
 /**
  * UI5 Tooling Task for deploying UI5 Sources to a SAP NetWeaver ABAP system
@@ -100,7 +101,7 @@ module.exports = async function({ workspace, dependencies, options }) {
         };
 
         try {
-            await ui5Deployercore.deployUI5toNWABAP(oDeployOptions, aFiles, oLogger);
+            await ui5DeployerCore.deployUI5toNWABAP(oDeployOptions, aFiles, oLogger);
         } catch (oError) {
             oLogger.error(oError);
         }
