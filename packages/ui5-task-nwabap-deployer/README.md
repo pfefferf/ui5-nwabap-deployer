@@ -61,7 +61,6 @@ builder:
     afterTask: generateVersionInfo
     configuration: 
       resources:
-        path: dist
         pattern: "**/*.*"
       connection:
         server: http://myserver:8000  
