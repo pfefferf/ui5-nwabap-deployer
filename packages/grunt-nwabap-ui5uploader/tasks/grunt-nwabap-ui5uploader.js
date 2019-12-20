@@ -1,6 +1,7 @@
 "use strict";
 
 const Logger = require("./lib/Logger");
+const path = require("path");
 const ui5Deployercore = require("ui5-nwabap-deployer-core");
 
 module.exports = function(grunt) {
@@ -28,14 +29,15 @@ module.exports = function(grunt) {
             cwd: oOptions.resources.cwd,
             filter: "isFile",
             dot: true
-        }, oOptions.resources.src).forEach(function(sFile) {
-            aFiles.push(sFile);
+        }, oOptions.resources.src).forEach(function(sFilePath) {
+            const sCompleteFilePath = path.join(oOptions.resources.cwd, sFilePath);
+            aFiles.push({
+                path: sFilePath,
+                content: grunt.file.read(sCompleteFilePath, { encoding: null})
+            });
         });
 
         const oDeployOptions = {
-            resources: {
-                fileSourcePath: oOptions.resources.cwd
-            },
             conn: {
                 server: oOptions.conn.server,
                 client: oOptions.conn.client,
