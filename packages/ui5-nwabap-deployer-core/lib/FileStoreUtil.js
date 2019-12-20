@@ -34,43 +34,49 @@ const MODIDF = {
 
 /**
  * Resolves file structure into single folders and files
- * @param {(string|string)} resolve file or file array
+ * @param {(Array)} resolve file object array
  * @param {string} sPathStartWith path has to start with that value
  * @return {Array} array with resolved folders and files
  */
-function structureResolve(resolve, sPathStartWith) {
+function structureResolve(aResolve, sPathStartWith) {
     let aToResolve = [];
     let aResolved = [];
 
-    if (typeof resolve === "object" && resolve instanceof Array) {
-        aToResolve = resolve;
-    } else if (typeof resolve === "string") {
-        aToResolve.push(resolve);
-    } else {
-        return null;
+    if (aResolve.length === 0) {
+        return [];
     }
 
+    aToResolve = aResolve;
+
     // resolve
-    aToResolve.forEach(function(item) {
-        const aSplit = item.split("/");
+    aToResolve.forEach(function(oItem) {
+        const aSplit = oItem.path.split("/");
 
         for (let i = 0; i < aSplit.length; i++) {
             const aConc = aSplit.slice(0, i + 1);
             const sConc = (aConc.length > 1) ? aConc.join("/") : aConc[0];
 
             if (sConc.length > 0) {
-                aResolved.push({
-                    type: (i < (aSplit.length - 1)) ? OBJECT_TYPE.folder : OBJECT_TYPE.file,
-                    id: (sConc.charAt(0) !== sPathStartWith) ? sPathStartWith + sConc : sConc
-                });
+                const oResolved = {
+                    id: (sConc.charAt(0) !== sPathStartWith) ? sPathStartWith + sConc : sConc,
+                    type: (i < (aSplit.length - 1)) ? OBJECT_TYPE.folder : OBJECT_TYPE.file
+                };
+
+                if (oResolved.type === OBJECT_TYPE.file) {
+                    oResolved.path = oItem.path;
+                    oResolved.content = oItem.content;
+                    oResolved.isBinary = oItem.isBinary;
+                }
+
+                aResolved.push(oResolved);
             }
         }
     });
 
     // remove dups
-    aResolved = aResolved.sort(function(sVal1, sVal2) {
-        const sA = JSON.stringify(sVal1);
-        const sB = JSON.stringify(sVal2);
+    aResolved = aResolved.sort(function(oVal1, oVal2) {
+        const sA = JSON.stringify(oVal1.id);
+        const sB = JSON.stringify(oVal2.id);
 
         if (sA === sB) {
             return 0;
@@ -82,7 +88,7 @@ function structureResolve(resolve, sPathStartWith) {
     })
         .filter(function(oItem, iPos) {
             if (iPos > 0) {
-                return JSON.stringify(aResolved[iPos - 1]) !== JSON.stringify(oItem);
+                return JSON.stringify(aResolved[iPos - 1].id) !== JSON.stringify(oItem.id);
             } else {
                 return true;
             }

@@ -27,8 +27,8 @@
   "devDependencies": {
     "@ui5/cli": "^1.12.0",
     "grunt": "^1.0.1",
-    "grunt-nwabap-ui5uploader": "^1.0.0",
-    "ui5-task-nwabap-deployer": "^1.0.4"
+    "grunt-nwabap-ui5uploader": "1.0.1",
+    "ui5-task-nwabap-deployer": "1.0.5"
   },
   "ui5": {
     "dependencies": [
