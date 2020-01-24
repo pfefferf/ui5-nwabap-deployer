@@ -1,3 +1,8 @@
+## 1.0.2 (2020-01-24)
+
+### Fixes
+- Update depedency to ui5-nwabap-deployer-core to fix an issue regarding upload of files with special characters in their name.
+
 ## 1.0.1 (2019-12-20)
 
 ### General

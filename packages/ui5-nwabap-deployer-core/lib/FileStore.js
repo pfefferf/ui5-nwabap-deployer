@@ -650,9 +650,14 @@ FileStore.prototype.syncFile = function(oFile, fnCallback) {
                 }
             }
             fnCallback(util.createResponseError(oResponse.body), oResponse);
+            return;
+        } else if (oResponse.statusCode >= 400 && oResponse.statusCode < 500 ) {
+            fnCallback(util.createResponseError(oResponse.body));
+            return;
         } else {
             me._oLogger.log("file " + oFile.id + " " + oFile.modif + "d.");
             fnCallback(null, oResponse);
+            return;
         }
     });
 };
