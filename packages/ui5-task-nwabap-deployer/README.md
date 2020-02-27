@@ -12,7 +12,7 @@ npm install ui5-task-nwabap-deployer --save-dev
 ## Configuration Options (in `$yourapp/ui5.yaml`)
 
 - resources
-    - pattern: optional `string` a glob pattern to match files for deployment (e.g. `**/*.*` to match all files); if not set `**/*.*` is used
+    - pattern: optional `string` | `array` glob pattern to match files for deployment (e.g. `**/*.*` to match all files); if not set `**/*.*` is used
 - connection
     - server: `string` SAP NetWeaver ABAP application server information in form `protocol://host:port` (alternative: set environment variable `UI5_TASK_NWABAP_DEPLOYER__SERVER`)
     - client: optional `string` Client of SAP NetWeaver ABAP application server; if not set default client of server is used
