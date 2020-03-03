@@ -195,87 +195,88 @@ FileStore.prototype.syncFiles = function(aFiles, fnCallback) {
                     aFolders.push(me._oOptions.ui5.bspcontainer);
 
                     async.whilst(
-                        function() { 
-                            const cb = arguments[arguments.length - 1]; 
-                            const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1); 
+                        function() {
+                            const cb = arguments[arguments.length - 1];
+                            const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
                             const f = function() {
-                        return aFolders.length > 0;
-                    }; 
-                            try { 
-                                cb(null, f.apply(this, args)); 
+                                return aFolders.length > 0;
+                            };
+                            try {
+                                cb(null, f.apply(this, args));
                             } catch (e) {
                                 cb(e, null);
                             }
-                        }, 
+                        },
                         function(fnCallbackAsyncL3) {
-                        const sFolder = aFolders.shift();
+                            const sFolder = aFolders.shift();
 
-                        const sUrl = me._constructBaseUrl() + "/" + encodeURIComponent(sFolder) + "/content";
+                            const sUrl = me._constructBaseUrl() + "/" + encodeURIComponent(sFolder) + "/content";
 
-                        const oRequestOptions = {
-                            url: sUrl
-                        };
+                            const oRequestOptions = {
+                                url: sUrl
+                            };
 
-                        me._client.sendRequest(oRequestOptions, function(oError, oResponse) {
-                            if (oError) {
-                                fnCallback(new Error(util.createResponseError(oError)));
-                                return;
-                            } else if (oResponse.statusCode !== util.HTTPSTAT.ok && oResponse.statusCode !== util.HTTPSTAT.not_found ) {
-                                fnCallback(new Error(`Operation Server File Determination: Expected status code ${util.HTTPSTAT.ok} or ${util.HTTPSTAT.not_found}, actual status code ${oResponse.statusCode}, response body '${oResponse.body}'`));
-                                return;
-                            }
-
-                            if (oResponse.statusCode === util.HTTPSTAT.not_found) { // BSP container does not exist
-                                fnCallbackAsyncL3(null, oResponse);
-                                return;
-                            }
-
-                            if (oResponse.statusCode !== util.HTTPSTAT.ok) {
-                                fnCallbackAsyncL3(util.createResponseError(oResponse), oResponse);
-                                return;
-                            }
-
-                            const oXML = new XMLDocument(oResponse.body);
-                            const oAtomEntry = oXML.childrenNamed("atom:entry");
-
-                            oAtomEntry.forEach(function(oChild) {
-                                const sCurrId = oChild.valueWithPath("atom:id");
-                                const sCurrType = oChild.valueWithPath("atom:category@term");
-
-                                aArtifactsServer.push({ type: sCurrType, id: sCurrId });
-
-                                if (sCurrType === util.OBJECT_TYPE.folder) {
-                                    aFolders.push(sCurrId);
+                            me._client.sendRequest(oRequestOptions, function(oError, oResponse) {
+                                if (oError) {
+                                    fnCallback(new Error(util.createResponseError(oError)));
+                                    return;
+                                } else if (oResponse.statusCode !== util.HTTPSTAT.ok && oResponse.statusCode !== util.HTTPSTAT.not_found ) {
+                                    fnCallback(new Error(`Operation Server File Determination: Expected status code ${util.HTTPSTAT.ok} or ${util.HTTPSTAT.not_found}, actual status code ${oResponse.statusCode}, response body '${oResponse.body}'`));
+                                    return;
                                 }
+
+                                if (oResponse.statusCode === util.HTTPSTAT.not_found) { // BSP container does not exist
+                                    fnCallbackAsyncL3(null, oResponse);
+                                    return;
+                                }
+
+                                if (oResponse.statusCode !== util.HTTPSTAT.ok) {
+                                    fnCallbackAsyncL3(util.createResponseError(oResponse), oResponse);
+                                    return;
+                                }
+
+                                const oXML = new XMLDocument(oResponse.body);
+                                const oAtomEntry = oXML.childrenNamed("atom:entry");
+
+                                oAtomEntry.forEach(function(oChild) {
+                                    const sCurrId = oChild.valueWithPath("atom:id");
+                                    const sCurrType = oChild.valueWithPath("atom:category@term");
+
+                                    aArtifactsServer.push({ type: sCurrType, id: sCurrId });
+
+                                    if (sCurrType === util.OBJECT_TYPE.folder) {
+                                        aFolders.push(sCurrId);
+                                    }
+                                });
+
+                                fnCallbackAsyncL3(null, oResponse);
+                            });
+                        },
+                        function(oError, oResult) {
+                            aArtifactsServer = aArtifactsServer.map(function(oItem) {
+                                let sId = oItem.id;
+
+                                // remove bsp container at the beginning
+                                if (encodeURIComponent(me._oOptions.ui5.bspcontainer).indexOf("%2F") !== -1) {
+                                    sId = sId.replace("%2f", "%2F");
+                                    sId = sId.replace("%2f", "%2F");
+                                }
+                                sId = sId.replace(encodeURIComponent(me._oOptions.ui5.bspcontainer), "");
+
+                                const aValues = sId.split(SLASH_ESCAPED);
+                                // remove empty values at the beginning (possible in case of a namespace with slashes)
+
+                                if (aValues[0] === "") {
+                                    aValues.shift();
+                                }
+
+                                oItem.id = "/" + aValues.join("/");
+                                return oItem;
                             });
 
-                            fnCallbackAsyncL3(null, oResponse);
-                        });
-                    }, 
-                        function(oError, oResult) {
-                        aArtifactsServer = aArtifactsServer.map(function(oItem) {
-                            let sId = oItem.id;
-
-                            // remove bsp container at the beginning
-                            if (encodeURIComponent(me._oOptions.ui5.bspcontainer).indexOf("%2F") !== -1) {
-                                sId = sId.replace("%2f", "%2F");
-                                sId = sId.replace("%2f", "%2F");
-                            }
-                            sId = sId.replace(encodeURIComponent(me._oOptions.ui5.bspcontainer), "");
-
-                            const aValues = sId.split(SLASH_ESCAPED);
-                            // remove empty values at the beginning (possible in case of a namespace with slashes)
-
-                            if (aValues[0] === "") {
-                                aValues.shift();
-                            }
-
-                            oItem.id = "/" + aValues.join("/");
-                            return oItem;
-                        });
-
-                        fnCallbackAsyncL2(oError, oResult);
-                    });
+                            fnCallbackAsyncL2(oError, oResult);
+                        }
+                    );
                 },
 
                 // L2, step 2: compare against resolved artifacts
@@ -413,34 +414,35 @@ FileStore.prototype.syncFiles = function(aFiles, fnCallback) {
         // L1, step 4: do synchronization of folders and files
         function(fnCallbackAsyncL1) {
             async.whilst(
-                function() { 
-                    const cb = arguments[arguments.length - 1]; 
-                    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1); 
+                function() {
+                    const cb = arguments[arguments.length - 1];
+                    const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
                     const f = function() {
-                return aArtifactsSyncWork.length > 0;
-            }; 
-                    try { 
-                        cb(null, f.apply(this, args)); 
+                        return aArtifactsSyncWork.length > 0;
+                    };
+                    try {
+                        cb(null, f.apply(this, args));
                     } catch (e) {
                         cb(e, null);
                     }
-                }, 
+                },
                 function(fnCallbackAsyncL2) {
-                const oItem = aArtifactsSyncWork.shift();
+                    const oItem = aArtifactsSyncWork.shift();
 
-                switch (oItem.type) {
-                    case util.OBJECT_TYPE.folder:
-                        me.syncFolder(oItem.id, oItem.modif, fnCallbackAsyncL2);
-                        break;
+                    switch (oItem.type) {
+                        case util.OBJECT_TYPE.folder:
+                            me.syncFolder(oItem.id, oItem.modif, fnCallbackAsyncL2);
+                            break;
 
-                    case util.OBJECT_TYPE.file:
-                        me.syncFile(oItem, fnCallbackAsyncL2);
-                        break;
-                }
-            }, 
+                        case util.OBJECT_TYPE.file:
+                            me.syncFile(oItem, fnCallbackAsyncL2);
+                            break;
+                    }
+                },
                 function(oError, oResult) {
-                fnCallbackAsyncL1(oError, oResult);
-            });
+                    fnCallbackAsyncL1(oError, oResult);
+                }
+            );
         },
 
         // L1, step 5: ensure UI5 Application Index is updated
