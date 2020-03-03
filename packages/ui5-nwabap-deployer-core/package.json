@@ -33,7 +33,7 @@
   ],
   "scripts": {},
   "dependencies": {
-    "async": "^2.6.0",
+    "async": "^3.0.0",
     "backoff": "^2.5.0",
     "xmldoc": "^1.1.0",
     "request": "^2.88.0",
