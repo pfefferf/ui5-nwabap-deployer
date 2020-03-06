@@ -1,3 +1,8 @@
+## 1.0.7 (2020-03-06)
+
+### Fixes
+- In case of errors, UI5 tooling build infrastructure logic was not correctly informed. Thanks to [@vobu](https://twitter.com/vobu) for the fix.
+
 ## 1.0.6 (2020-01-24)
 
 ### Fixes
