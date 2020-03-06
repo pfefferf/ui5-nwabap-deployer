@@ -104,8 +104,12 @@ module.exports = async function({ workspace, dependencies, options }) {
             await ui5DeployerCore.deployUI5toNWABAP(oDeployOptions, aFiles, oLogger);
         } catch (oError) {
             oLogger.error(oError);
+            // properly throw so `ui5 build ...` receives the appropriate != 0 err code
+            throw new Error(oError);
         }
     }).then(() => {
         return Promise.resolve();
-    });
+    }).catch(error => { // safeguard all potential errors
+        return Promise.reject(error)
+    })
 };
