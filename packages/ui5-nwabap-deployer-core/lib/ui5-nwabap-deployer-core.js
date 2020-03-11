@@ -168,6 +168,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
                 bspcontainer_text: oAdaptedOptions.ui5.bspcontainer_text,
                 transport_use_user_match: !!oAdaptedOptions.ui5.transport_use_user_match,
                 transport_use_locked: !!oAdaptedOptions.ui5.transport_use_locked,
+                create_transport: !!oAdaptedOptions.ui5.create_transport,
                 calc_appindex: !!oAdaptedOptions.ui5.calc_appindex
             }
         };
