@@ -1,3 +1,8 @@
+## 1.0.8 (2020-03-20)
+
+### General
+- Update dependency for ui5-nwabap-deployer-core package to v1.0.3.
+
 ## 1.0.7 (2020-03-06)
 
 ### Fixes
@@ -5,8 +10,8 @@
 
 ## 1.0.6 (2020-01-24)
 
-### Fixes
-- Update depedency to ui5-nwabap-deployer-core to fix an issue regarding upload of files with special characters in their name.
+### General
+- Update dependency for ui5-nwabap-deployer-core package to v1.0.2.
 
 ## 1.0.5 (2019-12-20)
 

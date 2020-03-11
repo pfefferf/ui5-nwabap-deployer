@@ -119,26 +119,26 @@ async function uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions
  */
 exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
     return new Promise(async function(resolve, reject) {
-        let oAdaptedOptions = {};
+        let oFileStoreOptions = {};
 
-        oAdaptedOptions = Object.assign(oAdaptedOptions, oOptions);
+        oFileStoreOptions = Object.assign(oFileStoreOptions, oOptions);
 
-        if (!oAdaptedOptions.ui5.language) {
-            oAdaptedOptions.ui5.language = "EN";
+        if (!oFileStoreOptions.ui5.language) {
+            oFileStoreOptions.ui5.language = "EN";
         }
 
-        if (!oAdaptedOptions.conn.hasOwnProperty("useStrictSSL")) {
-            oAdaptedOptions.conn.useStrictSSL = true;
+        if (!oFileStoreOptions.conn.hasOwnProperty("useStrictSSL")) {
+            oFileStoreOptions.conn.useStrictSSL = true;
         }
 
         // checks on options
-        if (!checkOptions(oAdaptedOptions, oLogger)) {
+        if (!checkOptions(oFileStoreOptions, oLogger)) {
             reject(new Error("Configuration erroneous."));
             return;
         }
 
         // verbose log options
-        oLogger.logVerbose("Options: " + JSON.stringify(oAdaptedOptions));
+        oLogger.logVerbose("Options: " + JSON.stringify(oFileStoreOptions));
 
         // binary determination
         const aFilesAdapted = aFiles.map((oFile) => {
@@ -149,32 +149,9 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
         // verbose log files
         oLogger.logVerbose("Files: " + aFilesAdapted);
 
-        const oFileStoreOptions = {
-            conn: {
-                server: oAdaptedOptions.conn.server,
-                client: oAdaptedOptions.conn.client,
-                useStrictSSL: oAdaptedOptions.conn.useStrictSSL,
-                proxy: oAdaptedOptions.conn.proxy
-            },
-            auth: {
-                user: oAdaptedOptions.auth.user,
-                pwd: oAdaptedOptions.auth.pwd
-            },
-            ui5: {
-                language: oAdaptedOptions.ui5.language.toUpperCase(),
-                transportno: oAdaptedOptions.ui5.transportno,
-                package: oAdaptedOptions.ui5.package,
-                bspcontainer: oAdaptedOptions.ui5.bspcontainer,
-                bspcontainer_text: oAdaptedOptions.ui5.bspcontainer_text,
-                transport_use_user_match: !!oAdaptedOptions.ui5.transport_use_user_match,
-                transport_use_locked: !!oAdaptedOptions.ui5.transport_use_locked,
-                calc_appindex: !!oAdaptedOptions.ui5.calc_appindex
-            }
-        };
-
-        if (oAdaptedOptions.ui5.package !== "$TMP" && oAdaptedOptions.ui5.transportno === undefined) {
+        if (oFileStoreOptions.ui5.package !== "$TMP" && oFileStoreOptions.ui5.transportno === undefined) {
             const oTransportManager = new TransportManager(oFileStoreOptions, oLogger);
-            if (oAdaptedOptions.ui5.transport_use_user_match) {
+            if (oFileStoreOptions.ui5.transport_use_user_match) {
                 try {
                     await uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions, oLogger, aFilesAdapted);
                     resolve();
@@ -183,8 +160,8 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
                     reject(oError);
                     return;
                 }
-            } else if (oAdaptedOptions.ui5.create_transport === true) {
-                oTransportManager.createTransport(oFileStoreOptions.ui5.package, oAdaptedOptions.ui5.transport_text, async function(oError, sTransportNo) {
+            } else if (oFileStoreOptions.ui5.create_transport === true) {
+                oTransportManager.createTransport(oFileStoreOptions.ui5.package, oFileStoreOptions.ui5.transport_text, async function(oError, sTransportNo) {
                     if (oError) {
                         reject(oError);
                         return;

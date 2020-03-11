@@ -1,3 +1,8 @@
+## 1.0.3 (2020-03-20)
+
+### Fixes
+- In case the `ui5.transport_use_user_match` option was used, but no transport exists, the option `ui5.create_transport` was ignored.
+
 ## 1.0.2 (2020-01-24)
 
 ### Fixes
