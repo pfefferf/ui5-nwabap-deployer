@@ -2,6 +2,7 @@
 
 ### General
 - Replaced deprecated `request` module.
+- Updated to `async` version 3.
 
 ## 1.0.3 (2020-03-11)
 

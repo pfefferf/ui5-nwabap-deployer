@@ -195,8 +195,8 @@ FileStore.prototype.syncFiles = function(aFiles, fnCallback) {
                     aFolders.push(me._oOptions.ui5.bspcontainer);
 
                     async.whilst(
-                        function() {
-                            return aFolders.length > 0;
+                        function(cb) {
+                            cb(null, aFolders.length > 0);
                         },
                         function(fnCallbackAsyncL3) {
                             const sFolder = aFolders.shift();
@@ -405,8 +405,8 @@ FileStore.prototype.syncFiles = function(aFiles, fnCallback) {
         // L1, step 4: do synchronization of folders and files
         function(fnCallbackAsyncL1) {
             async.whilst(
-                function() {
-                    return aArtifactsSyncWork.length > 0;
+                function(cb) {
+                    cb(null, aArtifactsSyncWork.length > 0);
                 },
                 function(fnCallbackAsyncL2) {
                     const oItem = aArtifactsSyncWork.shift();
