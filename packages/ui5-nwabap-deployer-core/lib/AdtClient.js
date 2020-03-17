@@ -164,7 +164,7 @@ AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallb
 
     rax.attach();
     oAxiosReqOptions.raxConfig = {
-       retry: 1,
+       retry: 5,
        retryDelay: 500,
        onRetryAttempt: (oRaxError) => {
             const oCfg = rax.getConfig(oRaxError);
