@@ -13,9 +13,9 @@ builder:
         language: EN
         createTransport: true
         transportUseLocked: true
-        transportUseUserMatch: true
+        transportUseUserMatch: false
         transportText: Test UIW-NWABAP-DEPLOYER Create Transport
         package: ZZ_FP_UI5_REPOSITORY
-        bspContainer: ZZ_GUI5UP_CTP
+        bspContainer: ZZ_GUI5UP_CTP2clear
         bspContainerText: Test UI5 Upload
         calculateApplicationIndex: true  

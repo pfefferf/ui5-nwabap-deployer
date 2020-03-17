@@ -1,23 +1,23 @@
 "use strict";
 
-const request = require("request");
+const axios = require("axios");
+const rax = require("retry-axios");
+const https = require("https");
 const util = require("./FileStoreUtil");
-const backoff = require("backoff");
 const ADT_BASE_URL = "/sap/bc/adt/";
-
 
 /**
  *
  * @param {object} oConnection
- * @param {string} oConnection.server
- * @param {string} oConnection.client
- * @param {boolean} oConnection.useStrictSSL
- * @param {string} oConnection.proxy
+ * @param {string} oConnection.server NW server
+ * @param {string} oConnection.client NW Client
+ * @param {boolean} oConnection.useStrictSSL use strict SSL connection
+ * @param {string} oConnection.proxy proxy
  * @param {object} oAuth
- * @param {string} oAuth.user
- * @param {string} oAuth.pwd
- * @param {string} [sLanguage]
- * @param {Logger} [oLogger]
+ * @param {string} oAuth.user user
+ * @param {string} oAuth.pwd password
+ * @param {string} sLanguage language
+ * @param {Logger} oLogger logger
  * @constructor
  */
 function AdtClient(oConnection, oAuth, sLanguage, oLogger) {
@@ -75,7 +75,11 @@ AdtClient.prototype.determineCSRFToken = function(fnCallback) {
             return;
         } else {
             this._sCSRFToken = oResponse.headers["x-csrf-token"];
-            this._sSAPCookie = oResponse.headers["set-cookie"];
+            this._sSAPCookie = "";
+            for (let i = 0; i < oResponse.headers["set-cookie"].length; i++) {
+                this._sSAPCookie += oResponse.headers["set-cookie"][i] + ";";
+            }
+
             fnCallback(null);
             return;
         }
@@ -91,72 +95,95 @@ AdtClient.prototype.buildUrl = function(sUrl) {
  * @param {object} oRequestOptions request options object
  * @param {function} fnRequestCallback Callback for request
  */
-AdtClient.prototype.sendRequest = function(oRequestOptions, fnRequestCallback) {
-    const me = this;
-    const oMutableRequestOptions = oRequestOptions;
+AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallback) {
+    const that = this;
 
-    if (me._oOptions.auth) {
-        oMutableRequestOptions.auth = {
-            user: me._oOptions.auth.user,
-            pass: me._oOptions.auth.pwd,
-            sendImmediately: true
+    const oAxiosReqOptions = {};
+    oAxiosReqOptions.url = oRequestOptions.url || "";
+    oAxiosReqOptions.method = oRequestOptions.method || "GET";
+    oAxiosReqOptions.headers = oRequestOptions.headers || {};
+    oAxiosReqOptions.data = oRequestOptions.body;
+
+    oAxiosReqOptions.httpsAgent = new https.Agent({
+        rejectUnauthorized: that._oOptions.useStrictSSL
+    });
+
+    if (that._oOptions.auth) {
+        oAxiosReqOptions.auth = {
+            username: that._oOptions.auth.user,
+            password: that._oOptions.auth.pwd
         };
     }
 
-    oMutableRequestOptions.strictSSL = me._oOptions.conn.useStrictSSL;
+    if (that._oOptions.proxy) {
+        try {
+            const oProxyUrl = new URL(that._oOptions.proxy);
 
-    if (me._oOptions.conn.proxy) {
-        oMutableRequestOptions.proxy = me._oOptions.conn.proxy;
+            oAxiosReqOptions.proxy = {
+                host: oProxyUrl.hostname,
+                port: oProxyUrl.port
+            };
+
+            if (oProxyUrl.username && oProxyUrl.password) {
+                oAxiosReqOptions.proxy.auth = {
+                    username: oProxyUrl.username,
+                    password: oProxyUrl.password
+                };
+            }
+        } catch (oError) {
+            fnRequestCallback(oError, null);
+        }
     }
 
-    if (me._oOptions.conn.client) {
-        if (!oMutableRequestOptions.hasOwnProperty("qs")) {
-            oMutableRequestOptions.qs = {};
+    const fnAddQueryParam = (oOptions, sParamName, sParamValue) => {
+        if (!sParamValue) {
+            return;
         }
-        oMutableRequestOptions.qs["sap-client"] = encodeURIComponent(me._oOptions.conn.client);
+
+        if (!oOptions.hasOwnProperty("params")) {
+            oOptions.params = {};
+        }
+        oOptions.params[sParamName] = sParamValue;
+    };
+
+    fnAddQueryParam(oAxiosReqOptions, "sap-language", that._oOptions.lang);
+
+    const fnAddHeader = (oOptions, sHeaderKey, sHeaderValue) => {
+        if (!sHeaderValue) {
+            return;
+        }
+
+        if (!oOptions.hasOwnProperty("headers")) {
+            oOptions.headers = {};
+        }
+        oOptions.headers[sHeaderKey] = sHeaderValue;
+    };
+
+    fnAddHeader(oAxiosReqOptions, "x-csrf-token", this._sCSRFToken);
+    fnAddHeader(oAxiosReqOptions, "cookie", this._sSAPCookie);
+
+    rax.attach();
+    oAxiosReqOptions.raxConfig = {
+       retry: 1,
+       retryDelay: 500,
+       onRetryAttempt: (oRaxError) => {
+            const oCfg = rax.getConfig(oRaxError);
+            that._oLogger.log("Connection error has occurred, retrying (" + oCfg.currentRetryAttempt + "): " + JSON.stringify(oRaxError));
+       }
+    };
+
+    oAxiosReqOptions.validateStatus = (status) => {
+        return status < 999; // request must always return a response
+    };
+
+    try {
+        const oResponse = await axios(oAxiosReqOptions);
+        oResponse.statusCode = oResponse.status;
+        oResponse.body = oResponse.data;
+        fnRequestCallback(null, oResponse);
+    } catch (oRequestError) {
+        fnRequestCallback(oRequestError.message + "\n\rError message body: " + oRequestError.response.data, null);
     }
-
-    if (me._oOptions.lang) {
-        if (!oMutableRequestOptions.hasOwnProperty("qs")) {
-            oMutableRequestOptions.qs = {};
-        }
-        oMutableRequestOptions.qs["sap-language"] = encodeURIComponent(me._oOptions.lang);
-    }
-
-    if (this._sCSRFToken) {
-        if (!oMutableRequestOptions.hasOwnProperty("headers")) {
-            oMutableRequestOptions.headers = {};
-        }
-        oMutableRequestOptions.headers["x-csrf-token"] = this._sCSRFToken;
-    }
-
-    if (this._sSAPCookie) {
-        if (!oMutableRequestOptions.hasOwnProperty("headers")) {
-            oMutableRequestOptions.headers = {};
-        }
-        oMutableRequestOptions.headers["cookie"] = this._sSAPCookie;
-    }
-
-    const call = backoff.call(request, oRequestOptions, function(oError, oResponse) {
-        fnRequestCallback(oError, oResponse);
-    });
-
-    call.retryIf(function(oError, oResponse) {
-        if (oError !== undefined) {
-            me._oLogger.log("Connection error has occurred, retrying (" + call.getNumRetries() + "): " + JSON.stringify(oError));
-            return true;
-        }
-        return false;
-    });
-
-    call.setStrategy(new backoff.ExponentialStrategy({
-        initialDelay: 500,
-        maxDelay: 5000
-    }));
-
-    call.failAfter(10);
-
-    call.start();
 };
 
 module.exports = AdtClient;

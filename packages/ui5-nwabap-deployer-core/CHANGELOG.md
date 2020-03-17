@@ -1,4 +1,9 @@
-## 1.0.3 (2020-03-20)
+## 1.0.4 (2020-03-17)
+
+### General
+- Replaced deprecated `request` module.
+
+## 1.0.3 (2020-03-11)
 
 ### Fixes
 - In case the `ui5.transport_use_user_match` option was used, but no transport exists, the option `ui5.create_transport` was ignored.
