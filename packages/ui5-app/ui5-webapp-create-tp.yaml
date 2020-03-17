@@ -16,6 +16,6 @@ builder:
         transportUseUserMatch: false
         transportText: Test UIW-NWABAP-DEPLOYER Create Transport
         package: ZZ_FP_UI5_REPOSITORY
-        bspContainer: ZZ_GUI5UP_CTP2clear
+        bspContainer: ZZ_GUI5UP_CTP2
         bspContainerText: Test UI5 Upload
         calculateApplicationIndex: true  
