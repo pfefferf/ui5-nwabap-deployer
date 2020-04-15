@@ -1,4 +1,4 @@
-specVersion: "1.0"
+specVersion: "2.0"
 type: application
 metadata:
   name: ui5-app-webapp

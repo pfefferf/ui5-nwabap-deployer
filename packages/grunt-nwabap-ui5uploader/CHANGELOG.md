@@ -1,3 +1,8 @@
+## 1.0.5 (2020-04-15)
+
+### General
+- Update dependency for ui5-nwabap-deployer-core package to v1.0.5.
+
 ## 1.0.4 (2020-03-17)
 
 ### General

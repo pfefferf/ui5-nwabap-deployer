@@ -23,9 +23,9 @@ function checkOptions(oOptions, oLogger) {
         bCheckSuccessful = false;
     }
 
-    if (oOptions.ui5.package !== "$TMP" && !oOptions.ui5.transportno &&
+    if (!oOptions.ui5.package.startsWith("$") && !oOptions.ui5.transportno &&
         oOptions.ui5.create_transport !== true && oOptions.ui5.transport_use_user_match !== true) {
-        oLogger.error("For packages <> \"$TMP\" a transport number is necessary.");
+        oLogger.error("For non-local packages (package name does not start with a \"$\") a transport number is necessary.");
         bCheckSuccessful = false;
     }
 
@@ -149,7 +149,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
         // verbose log files
         oLogger.logVerbose("Files: " + aFilesAdapted);
 
-        if (oFileStoreOptions.ui5.package !== "$TMP" && oFileStoreOptions.ui5.transportno === undefined) {
+        if (!oFileStoreOptions.ui5.package.startsWith("$") && oFileStoreOptions.ui5.transportno === undefined) {
             const oTransportManager = new TransportManager(oFileStoreOptions, oLogger);
             if (oFileStoreOptions.ui5.transport_use_user_match) {
                 try {

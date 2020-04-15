@@ -1,3 +1,8 @@
+## 1.0.5 (2020-04-15)
+
+### Fixes
+- Local package detection considers all packages starting with a `$` sign, instead of just the `$TMP` package.
+
 ## 1.0.4 (2020-03-17)
 
 ### General

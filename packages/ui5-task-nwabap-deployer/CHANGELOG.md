@@ -1,3 +1,9 @@
+## 1.0.10 (2020-04-15)
+
+### General
+- Update dependency for ui5-nwabap-deployer-core package to v1.0.5.
+- Update dependency to new UI5 Tooling 2.0 release.
+
 ## 1.0.9 (2020-03-17)
 
 ### General
