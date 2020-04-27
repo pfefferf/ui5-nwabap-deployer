@@ -115,9 +115,9 @@ AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallb
         };
     }
 
-    if (that._oOptions.proxy) {
+    if (that._oOptions.conn.proxy) {
         try {
-            const oProxyUrl = new URL(that._oOptions.proxy);
+            const oProxyUrl = new URL(that._oOptions.conn.proxy);
 
             oAxiosReqOptions.proxy = {
                 host: oProxyUrl.hostname,

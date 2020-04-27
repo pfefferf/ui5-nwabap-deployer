@@ -1,6 +1,6 @@
 {
   "name": "ui5-nwabap-deployer-core",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "UI5 Deployer to SAP NetWeaver - Core",
   "author": {
     "name": "Florian Pfeffer",

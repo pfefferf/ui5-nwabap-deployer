@@ -1,3 +1,8 @@
+## 1.0.6 (2020-04-27)
+
+### Fixes
+- Proxy option was not considered correctly.
+
 ## 1.0.5 (2020-04-15)
 
 ### Fixes
