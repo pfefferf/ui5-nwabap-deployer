@@ -19,8 +19,7 @@ module.exports = async function({ workspace, dependencies, options }) {
     const oLogger = new Logger();
 
     if ((options.configuration && !options.configuration.connection) && !process.env.UI5_TASK_NWABAP_DEPLOYER__SERVER) {
-        oLogger.error("Please provide a connection configuration.");
-        return;
+        return Promise.reject(new Error("Please provide a connection configuration."));
     }
 
     let sServer = process.env.UI5_TASK_NWABAP_DEPLOYER__SERVER;
@@ -32,9 +31,8 @@ module.exports = async function({ workspace, dependencies, options }) {
     }
 
     if ((options.configuration && !options.configuration.authentication) &&
-        (!process.env.UI5_TASK_NWABAP_DEPLOYER__USER && !process.env.UI5_TASK_NWABAP_DEPLOYER__PASSWORD)) {
-        oLogger.error("Please provide an authentication configuration or set authentication environment variables.");
-        return;
+        (!process.env.UI5_TASK_NWABAP_DEPLOYER__USER || !process.env.UI5_TASK_NWABAP_DEPLOYER__PASSWORD)) {
+        return Promise.reject(new Error("Please provide an authentication configuration or set authentication environment variables (user name and password)."));
     }
 
     let sUser = process.env.UI5_TASK_NWABAP_DEPLOYER__USER;
@@ -49,8 +47,7 @@ module.exports = async function({ workspace, dependencies, options }) {
     }
 
     if (options.configuration && !options.configuration.ui5) {
-        oLogger.error("Please provide a UI5 configuration.");
-        return;
+        return Promise.reject(new Error("Please provide a UI5 configuration."));
     }
 
     let sTransportNo = process.env.UI5_TASK_NWABAP_DEPLOYER__TRANSPORTNO;

@@ -1,6 +1,6 @@
 {
   "name": "ui5-task-nwabap-deployer",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "UI5 Tooling Task for deploying UI5 sources to a SAP NetWeaver ABAP system",
   "author": {
     "name": "Florian Pfeffer",

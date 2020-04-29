@@ -1,3 +1,8 @@
+## 1.0.12 (2020-04-29)
+
+### Fixes
+- Throw error in case connection configuration details are missing (instead of just writing a log entry).
+
 ## 1.0.11 (2020-04-27)
 
 ### General
