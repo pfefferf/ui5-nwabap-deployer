@@ -1,3 +1,8 @@
+## 1.0.7 (2020-05-15)
+
+### Fixes
+- Client option was not considered.
+
 ## 1.0.6 (2020-04-27)
 
 ### Fixes

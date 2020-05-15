@@ -147,6 +147,7 @@ AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallb
     };
 
     fnAddQueryParam(oAxiosReqOptions, "sap-language", that._oOptions.lang);
+    fnAddQueryParam(oAxiosReqOptions, "sap-client", that._oOptions.conn.client);
 
     const fnAddHeader = (oOptions, sHeaderKey, sHeaderValue) => {
         if (!sHeaderValue) {
