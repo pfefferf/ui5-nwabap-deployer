@@ -33,7 +33,7 @@ module.exports = async function({ workspace, dependencies, options }) {
     let sClient = process.env.UI5_TASK_NWABAP_DEPLOYER__CLIENT;
     
     if (options.configuration && options.configuration.connection && options.configuration.connection.client) {
-        client = options.configuration.connection.client;
+        sClient = options.configuration.connection.client;
     } else {
         options.configuration.connection = Object.assign({}, options.configuration.connection);
     }
