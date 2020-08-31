@@ -1,3 +1,8 @@
+## 1.0.13 (2020-08-31)
+
+### Features
+- New environment variable `UI5_TASK_NWABAP_DEPLOYER__CLIENT` to support setting of SAP client via environment.
+
 ## 1.0.12 (2020-04-29)
 
 ### Fixes

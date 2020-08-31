@@ -26,16 +26,12 @@ module.exports = async function({ workspace, dependencies, options }) {
 
     if (options.configuration && options.configuration.connection && options.configuration.connection.server) {
         sServer = options.configuration.connection.server;
-    } else {
-        options.configuration.connection = Object.assign({}, options.configuration.connection);
     }
-    
+
     let sClient = process.env.UI5_TASK_NWABAP_DEPLOYER__CLIENT;
-    
+
     if (options.configuration && options.configuration.connection && options.configuration.connection.client) {
         sClient = options.configuration.connection.client;
-    } else {
-        options.configuration.connection = Object.assign({}, options.configuration.connection);
     }
 
     if ((options.configuration && !options.configuration.authentication) &&
