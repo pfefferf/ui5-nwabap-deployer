@@ -22,6 +22,10 @@ module.exports = async function({ workspace, dependencies, options }) {
         return Promise.reject(new Error("Please provide a connection configuration."));
     }
 
+    if (options.configuration && !options.configuration.connection) {
+        options.configuration.connection = {};
+    }
+
     let sServer = process.env.UI5_TASK_NWABAP_DEPLOYER__SERVER;
 
     if (options.configuration && options.configuration.connection && options.configuration.connection.server) {

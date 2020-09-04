@@ -183,7 +183,11 @@ AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallb
         oResponse.body = oResponse.data;
         fnRequestCallback(null, oResponse);
     } catch (oRequestError) {
-        fnRequestCallback(oRequestError.message + "\n\rError message body: " + oRequestError.response.data, null);
+        if (oRequestError.response) {
+            fnRequestCallback(oRequestError.message + "\n\rError message body: " + oRequestError.response.data, null);
+        } else {
+            fnRequestCallback(oRequestError.message, null);
+        }
     }
 };
 

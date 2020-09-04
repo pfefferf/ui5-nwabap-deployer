@@ -1,3 +1,8 @@
+## 1.0.14 (2020-09-04)
+
+### Fixes
+- Fixed issue of undefined properties in case no complete connection configuration is provided.
+
 ## 1.0.13 (2020-08-31)
 
 ### Features

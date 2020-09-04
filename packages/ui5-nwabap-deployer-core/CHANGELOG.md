@@ -1,3 +1,8 @@
+## 1.0.8 (2020-09-04)
+
+### Fixes
+- Fixed access to undefined response object in case no connection to backend can be established.
+
 ## 1.0.7 (2020-05-15)
 
 ### Fixes
