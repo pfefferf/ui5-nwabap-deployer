@@ -1,3 +1,8 @@
+## 1.0.9 (2020-09-17)
+
+### Fixes
+- Set ADT Client request body length to maximum; avoids errors that request body is longer than defined max. value.
+
 ## 1.0.8 (2020-09-04)
 
 ### Fixes

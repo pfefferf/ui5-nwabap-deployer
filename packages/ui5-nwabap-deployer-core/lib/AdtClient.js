@@ -177,6 +177,9 @@ AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallb
         return status < 999; // request must always return a response
     };
 
+    oAxiosReqOptions.maxBodyLength = Infinity;
+    oAxiosReqOptions.maxContentLength = Infinity;
+
     try {
         const oResponse = await axios(oAxiosReqOptions);
         oResponse.statusCode = oResponse.status;
