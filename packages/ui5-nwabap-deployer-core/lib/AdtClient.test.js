@@ -12,7 +12,9 @@ test("remove suffix slash(es) from server url", () => {
         console
     );
 
+    // make sure existing API prior to GET parameter support doesn't break
     expect(Client._oOptions.conn.server).toMatch("https://example.org");
+    expect(Client.buildUrl(CTS_BASE_URL)).toMatch(`${_server}${CTS_BASE_URL}`);
 });
 
 test("carry custom url GET parameter through", () => {
