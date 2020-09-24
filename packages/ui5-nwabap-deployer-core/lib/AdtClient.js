@@ -24,18 +24,13 @@ function AdtClient(oConnection, oAuth, sLanguage, oLogger) {
     this._oOptions = {
         auth: oAuth,
         conn: oConnection,
-        lang: sLanguage,
+        lang: sLanguage
     };
-
-    // utilize node's URL API
-    this._oURL = new URL(this._oOptions.conn.server);
 
     // remove suffix slashes from server URL
     if (this._oOptions.conn && this._oOptions.conn.server) {
-        this._oOptions.conn.server = `${this._oURL.protocol}//${this._oURL.host}`;
+        this._oOptions.conn.server = this._oOptions.conn.server.replace(/\/*$/, "");
     }
-    // remember any custom GET params
-    this._sCustomGetParams = this._oURL.search;
 
     this._oLogger = oLogger;
 }
@@ -45,8 +40,8 @@ function AdtClient(oConnection, oAuth, sLanguage, oLogger) {
  * @private
  * @return {string} base URL
  */
-AdtClient.prototype._constructBaseUrl = function () {
-    return this._oOptions.conn.server + ADT_BASE_URL + this._sCustomGetParams; // includes the "?"
+AdtClient.prototype._constructBaseUrl = function() {
+    return this._oOptions.conn.server + ADT_BASE_URL;
 };
 
 /**
@@ -55,7 +50,7 @@ AdtClient.prototype._constructBaseUrl = function () {
  * @param {function} fnCallback callback function
  * @return {void}
  */
-AdtClient.prototype.determineCSRFToken = function (fnCallback) {
+AdtClient.prototype.determineCSRFToken = function(fnCallback) {
     if (this._sCSRFToken !== undefined) {
         fnCallback();
         return;
@@ -67,48 +62,32 @@ AdtClient.prototype.determineCSRFToken = function (fnCallback) {
         url: sUrl,
         headers: {
             "X-CSRF-Token": "Fetch",
-            accept: "*/*",
-        },
+            "accept": "*/*"
+        }
     };
 
-    this.sendRequest(
-        oRequestOptions,
-        function (oError, oResponse) {
-            if (oError) {
-                fnCallback(oError);
-                return;
-            } else if (oResponse.statusCode !== util.HTTPSTAT.ok) {
-                fnCallback(
-                    new Error(
-                        `Operation CSRF Token Determination: Expected status code ${util.HTTPSTAT.ok}, actual status code ${oResponse.statusCode}, response body '${oResponse.body}'`
-                    )
-                );
-                return;
-            } else {
-                this._sCSRFToken = oResponse.headers["x-csrf-token"];
-                this._sSAPCookie = "";
-                for (let i = 0; i < oResponse.headers["set-cookie"].length; i++) {
-                    this._sSAPCookie += oResponse.headers["set-cookie"][i] + ";";
-                }
-
-                fnCallback(null);
-                return;
+    this.sendRequest(oRequestOptions, function(oError, oResponse) {
+        if (oError) {
+            fnCallback(oError);
+            return;
+        } else if (oResponse.statusCode !== util.HTTPSTAT.ok) {
+            fnCallback(new Error(`Operation CSRF Token Determination: Expected status code ${util.HTTPSTAT.ok}, actual status code ${oResponse.statusCode}, response body '${oResponse.body}'`));
+            return;
+        } else {
+            this._sCSRFToken = oResponse.headers["x-csrf-token"];
+            this._sSAPCookie = "";
+            for (let i = 0; i < oResponse.headers["set-cookie"].length; i++) {
+                this._sSAPCookie += oResponse.headers["set-cookie"][i] + ";";
             }
-        }.bind(this)
-    );
+
+            fnCallback(null);
+            return;
+        }
+    }.bind(this));
 };
 
-AdtClient.prototype.buildUrl = function (sUrl) {
-    let sCustomGetParams;
-    if (sUrl.includes("?")) {
-        // GET params are passed in via sURL including a ?
-        // -> remove "?"" from connection server config
-        // and use "&" instead
-        sCustomGetParams = `&${this._sCustomGetParams.substring(1)}`;
-    } else {
-        sCustomGetParams = this._sCustomGetParams;
-    }
-    return this._oOptions.conn.server + sUrl + sCustomGetParams;
+AdtClient.prototype.buildUrl = function(sUrl) {
+    return this._oOptions.conn.server + sUrl;
 };
 
 /**
@@ -116,7 +95,7 @@ AdtClient.prototype.buildUrl = function (sUrl) {
  * @param {object} oRequestOptions request options object
  * @param {function} fnRequestCallback Callback for request
  */
-AdtClient.prototype.sendRequest = async function (oRequestOptions, fnRequestCallback) {
+AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallback) {
     const that = this;
 
     const oAxiosReqOptions = {};
@@ -126,13 +105,13 @@ AdtClient.prototype.sendRequest = async function (oRequestOptions, fnRequestCall
     oAxiosReqOptions.data = oRequestOptions.body;
 
     oAxiosReqOptions.httpsAgent = new https.Agent({
-        rejectUnauthorized: that._oOptions.useStrictSSL,
+        rejectUnauthorized: that._oOptions.useStrictSSL
     });
 
     if (that._oOptions.auth) {
         oAxiosReqOptions.auth = {
             username: that._oOptions.auth.user,
-            password: that._oOptions.auth.pwd,
+            password: that._oOptions.auth.pwd
         };
     }
 
@@ -142,13 +121,13 @@ AdtClient.prototype.sendRequest = async function (oRequestOptions, fnRequestCall
 
             oAxiosReqOptions.proxy = {
                 host: oProxyUrl.hostname,
-                port: oProxyUrl.port,
+                port: oProxyUrl.port
             };
 
             if (oProxyUrl.username && oProxyUrl.password) {
                 oAxiosReqOptions.proxy.auth = {
                     username: oProxyUrl.username,
-                    password: oProxyUrl.password,
+                    password: oProxyUrl.password
                 };
             }
         } catch (oError) {
@@ -186,17 +165,12 @@ AdtClient.prototype.sendRequest = async function (oRequestOptions, fnRequestCall
 
     rax.attach();
     oAxiosReqOptions.raxConfig = {
-        retry: 5,
-        retryDelay: 500,
-        onRetryAttempt: (oRaxError) => {
+       retry: 5,
+       retryDelay: 500,
+       onRetryAttempt: (oRaxError) => {
             const oCfg = rax.getConfig(oRaxError);
-            that._oLogger.log(
-                "Connection error has occurred, retrying (" +
-                    oCfg.currentRetryAttempt +
-                    "): " +
-                    JSON.stringify(oRaxError)
-            );
-        },
+            that._oLogger.log("Connection error has occurred, retrying (" + oCfg.currentRetryAttempt + "): " + JSON.stringify(oRaxError));
+       }
     };
 
     oAxiosReqOptions.validateStatus = (status) => {

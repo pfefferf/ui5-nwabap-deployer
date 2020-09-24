@@ -6,10 +6,7 @@
     "parserOptions": {
         "ecmaVersion": 2017
     },
-    "plugins": [
-        "jest"
-    ],
-    "extends": ["eslint:recommended", "google", "plugin:jest/recommended"],
+    "extends": ["eslint:recommended", "google"],
     "rules": {
         "quotes": [
             "error",
