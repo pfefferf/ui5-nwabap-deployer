@@ -81,9 +81,8 @@ FileStore.prototype.buildUrl = function (...sUrlParts) {
  * @param {function} fnCallback callback function
  */
 FileStore.prototype.getMetadataBSPContainer = function (fnCallback) {
-    // TODO: buildUrl()
-    const sUrl = this._constructBaseUrl() + "/" + encodeURIComponent(this._oOptions.ui5.bspcontainer);
-    
+    const sUrl = this.buildUrl(encodeURIComponent(this._oOptions.ui5.bspcontainer));
+
     const oRequestOptions = {
         url: sUrl,
     };
@@ -124,21 +123,21 @@ FileStore.prototype.createBSPContainer = function (fnCallback) {
         }
 
         if (aResult[1].statusCode === util.HTTPSTAT.not_found) {
-            // TODO: buildUrl()
             // create BSP Container
-            let sUrl =
-                me._constructBaseUrl() +
-                "/%20/content?type=folder&isBinary=false" +
-                "&name=" +
-                encodeURIComponent(me._oOptions.ui5.bspcontainer) +
-                "&description=" +
-                encodeURIComponent(me._oOptions.ui5.bspcontainer_text) +
-                "&devclass=" +
-                encodeURIComponent(me._oOptions.ui5.package);
+            const aUrlParts = [
+                "/%20/content",
+                "?type=folder",
+                "&isBinary=false",
+                "&name=" + encodeURIComponent(me._oOptions.ui5.bspcontainer),
+                "&description=" + encodeURIComponent(me._oOptions.ui5.bspcontainer_text),
+                "&devclass=" + encodeURIComponent(me._oOptions.ui5.package),
+            ];
 
             if (me._oOptions.ui5.transportno) {
-                sUrl += "&corrNr=" + encodeURIComponent(me._oOptions.ui5.transportno);
+                aUrlParts.push("&corrNr=" + encodeURIComponent(me._oOptions.ui5.transportno));
             }
+
+            const sUrl = me.buildUrl(...aUrlParts);
 
             const oRequestOptions = {
                 method: "POST",
@@ -250,9 +249,7 @@ FileStore.prototype.syncFiles = function (aFiles, fnCallback) {
                                 function (fnCallbackAsyncL3) {
                                     const sFolder = aFolders.shift();
 
-                                    // TODO: buildUrl()
-                                    const sUrl =
-                                        me._constructBaseUrl() + "/" + encodeURIComponent(sFolder) + "/content";
+                                    const sUrl = me.buildUrl(encodeURIComponent(sFolder), "/content");
 
                                     const oRequestOptions = {
                                         url: sUrl,
@@ -520,24 +517,24 @@ FileStore.prototype.syncFolder = function (sFolder, sModif, fnCallback) {
 
     let oRequestOptions = null;
     let sUrl = null;
-
+    let aUrlParts;
     switch (sModif) {
         case util.MODIDF.create:
-            // TODO: buildUrl()
-            sUrl =
-                me._constructBaseUrl() +
-                "/" +
-                encodeURIComponent(me._oOptions.ui5.bspcontainer) +
-                encodeURIComponent(util.splitIntoPathAndObject(sFolder).path) +
-                "/content?type=folder&isBinary=false" +
-                "&name=" +
-                encodeURIComponent(util.splitIntoPathAndObject(sFolder).obj) +
-                "&devclass=" +
-                encodeURIComponent(me._oOptions.ui5.package);
+            aUrlParts = [
+                encodeURIComponent(me._oOptions.ui5.bspcontainer),
+                encodeURIComponent(util.splitIntoPathAndObject(sFolder).path),
+                "/content",
+                "?type=folder",
+                "&isBinary=false",
+                "&name=" + encodeURIComponent(util.splitIntoPathAndObject(sFolder).obj),
+                "&devclass=" + encodeURIComponent(me._oOptions.ui5.package),
+            ];
 
             if (me._oOptions.ui5.transportno) {
-                sUrl += "&corrNr=" + encodeURIComponent(me._oOptions.ui5.transportno);
+                aUrlParts.push("&corrNr=" + encodeURIComponent(me._oOptions.ui5.transportno));
             }
+
+            sUrl = me.buildUrl(...aUrlParts);
 
             oRequestOptions = {
                 method: "POST",
@@ -557,18 +554,18 @@ FileStore.prototype.syncFolder = function (sFolder, sModif, fnCallback) {
             return;
 
         case util.MODIDF.delete:
-            // TODO: buildUrl()
-            sUrl =
-                me._constructBaseUrl() +
-                "/" +
-                encodeURIComponent(me._oOptions.ui5.bspcontainer) +
-                encodeURIComponent(sFolder) +
-                "/content" +
-                "?deleteChildren=true";
+            aUrlParts = [
+                encodeURIComponent(me._oOptions.ui5.bspcontainer),
+                encodeURIComponent(sFolder),
+                "/content",
+                "?deleteChildren=true",
+            ];
 
             if (me._oOptions.ui5.transportno) {
-                sUrl += "&corrNr=" + encodeURIComponent(me._oOptions.ui5.transportno);
+                aUrlParts.push("&corrNr=" + encodeURIComponent(me._oOptions.ui5.transportno));
             }
+
+            sUrl = me.buildUrl(...aUrlParts);
 
             oRequestOptions = {
                 method: "DELETE",
@@ -614,30 +611,28 @@ FileStore.prototype.syncFile = function (oFile, fnCallback) {
 
     let oRequestOptions = null;
     let sUrl = null;
+    let aUrlParts;
     const sFileCharset = "UTF-8";
 
     switch (oFile.modif) {
-            // TODO: buildUrl()
+        // TODO: buildUrl()
 
         case util.MODIDF.create:
-            sUrl =
-                me._constructBaseUrl() +
-                "/" +
-                encodeURIComponent(me._oOptions.ui5.bspcontainer) +
-                encodeURIComponent(util.splitIntoPathAndObject(oFile.id).path) +
-                "/content?type=file" +
-                "&isBinary=" +
-                oFile.isBinary +
-                "&name=" +
-                encodeURIComponent(util.splitIntoPathAndObject(oFile.id).obj) +
-                "&devclass=" +
-                encodeURIComponent(me._oOptions.ui5.package) +
-                "&charset=" +
-                sFileCharset;
+            aUrlParts = [
+                encodeURIComponent(me._oOptions.ui5.bspcontainer),
+                encodeURIComponent(util.splitIntoPathAndObject(oFile.id).path) + "/content",
+                "?type=file",
+                "&isBinary=" + oFile.isBinary,
+                "&name=" + encodeURIComponent(util.splitIntoPathAndObject(oFile.id).obj),
+                "&devclass=" + encodeURIComponent(me._oOptions.ui5.package),
+                "&charset=" + sFileCharset,
+            ];
 
             if (me._oOptions.ui5.transportno) {
-                sUrl += "&corrNr=" + encodeURIComponent(me._oOptions.ui5.transportno);
+                aUrlParts.push("&corrNr=" + encodeURIComponent(me._oOptions.ui5.transportno));
             }
+
+            sUrl = me.buildUrl(...aUrlParts);
 
             oRequestOptions = {
                 method: "POST",
@@ -658,22 +653,19 @@ FileStore.prototype.syncFile = function (oFile, fnCallback) {
             break;
 
         case util.MODIDF.update:
-            // TODO: buildUrl()
-
-            sUrl =
-                me._constructBaseUrl() +
-                "/" +
-                encodeURIComponent(me._oOptions.ui5.bspcontainer) +
-                encodeURIComponent(oFile.id) +
-                "/content" +
-                "?isBinary=" +
-                oFile.isBinary +
-                "&charset=" +
-                sFileCharset;
+            aUrlParts = [
+                encodeURIComponent(me._oOptions.ui5.bspcontainer),
+                encodeURIComponent(oFile.id),
+                "/content",
+                "?isBinary=" + oFile.isBinary,
+                "&charset=" + sFileCharset,
+            ];
 
             if (me._oOptions.ui5.transportno) {
-                sUrl += "&corrNr=" + encodeURIComponent(me._oOptions.ui5.transportno);
+                aUrlParts.push("&corrNr=" + encodeURIComponent(me._oOptions.ui5.transportno));
             }
+
+            sUrl = me.buildUrl(...aUrlParts);
 
             oRequestOptions = {
                 method: "PUT",
@@ -695,18 +687,13 @@ FileStore.prototype.syncFile = function (oFile, fnCallback) {
             break;
 
         case util.MODIDF.delete:
-            // TODO: buildUrl()
-
-            sUrl =
-                me._constructBaseUrl() +
-                "/" +
-                encodeURIComponent(me._oOptions.ui5.bspcontainer) +
-                encodeURIComponent(oFile.id) +
-                "/content";
+            aUrlParts = [encodeURIComponent(me._oOptions.ui5.bspcontainer), encodeURIComponent(oFile.id), "/content"];
 
             if (me._oOptions.ui5.transportno) {
-                sUrl += "?corrNr=" + encodeURIComponent(me._oOptions.ui5.transportno);
+                aUrlParts.push("?corrNr=" + encodeURIComponent(me._oOptions.ui5.transportno));
             }
+
+            sUrl = me.buildUrl(...aUrlParts);
 
             oRequestOptions = {
                 method: "DELETE",
