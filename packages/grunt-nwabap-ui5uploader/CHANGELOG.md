@@ -1,3 +1,8 @@
+## 1.0.07 (2020-09-25)
+
+### Feature
+- Support of `options.conn.customQueryParams` configuration option to be able to transfer custom parameters to the backend (for instance to bypass SAML2 or SPNEGO authentication).
+
 ## 1.0.6 (2020-04-27)
 
 ### General

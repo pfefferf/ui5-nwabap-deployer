@@ -14,12 +14,16 @@ module.exports = function (grunt) {
         nwabap_ui5uploader: {
             options: {
                 conn: {
-                    server: sServer
+                    server: sServer,
+                    customQueryParams: {
+                        spnego: "disabled/test1/test2",
+                        test2: "test2Value"
+                    }  
                 },
                 auth: {
                     user: sUser,
                     pwd: sPwd
-                }
+                }              
             },
             upload_webapp: {
                 options: {

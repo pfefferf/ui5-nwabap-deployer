@@ -74,6 +74,17 @@ Type: `String`
 
 Optional parameter to specify proxy used for communication with SAP NetWeaver ABAP server (for instance 'http://myproxyhost:3128').
 
+#### options.conn.customQueryParams
+Type: `Object`
+
+Optional parameter with key/value pairs of custom parameters which are added to the call to the SAP NetWeaver ABAP server. For instance:
+```js
+customQueryParams: {
+  myCustomParameter1: 'myCustomValue1',
+  myCustomParameter2: 'myCustomValue2'
+}
+```
+
 #### options.auth.user
 Type: `String`
 

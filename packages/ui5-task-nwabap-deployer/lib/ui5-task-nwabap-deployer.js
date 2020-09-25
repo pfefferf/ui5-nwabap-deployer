@@ -85,7 +85,8 @@ module.exports = async function({ workspace, dependencies, options }) {
                 server: sServer,
                 client: sClient,
                 useStrictSSL: options.configuration.connection.useStrictSSL,
-                proxy: options.configuration.connection.proxy
+                proxy: options.configuration.connection.proxy,
+                customQueryParams: options.configuration.connection.customQueryParams ? options.configuration.connection.customQueryParams : {}
             },
             auth: {
                 user: sUser,

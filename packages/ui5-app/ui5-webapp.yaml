@@ -7,6 +7,10 @@ builder:
   - name: ui5-task-nwabap-deployer
     afterTask: generateVersionInfo
     configuration: 
+      connection:
+        customQueryParams:
+          spnego: disabled/sap/bc/adt/cts/transports
+          test2: 2
       resources:
         pattern: "**/*.*"
       ui5:
