@@ -34,9 +34,9 @@
   "scripts": {},
   "dependencies": {
     "async": "^3.2.0",
-    "xmldoc": "^1.1.0",
-    "axios": "^0.19.2",
-    "retry-axios": "^2.1.2",
-    "isbinaryfile": "^4.0.2"
+    "axios": "^0.21.1",
+    "isbinaryfile": "^4.0.2",
+    "retry-axios": "^2.4.0",
+    "xmldoc": "^1.1.0"
   }
 }
