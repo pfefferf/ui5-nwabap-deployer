@@ -1,3 +1,8 @@
+## 1.0.11 (2021-01-25)
+
+### Fixes
+- Option to use a transport in which the object is already locked did not work in case a BSP container was created and then removed, but the transport lock entry still exists.
+
 ## 1.0.10 (2020-09-25)
 
 ### Feature
