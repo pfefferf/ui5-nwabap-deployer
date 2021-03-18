@@ -175,7 +175,7 @@ AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallb
        retryDelay: 500,
        onRetryAttempt: (oRaxError) => {
             const oCfg = rax.getConfig(oRaxError);
-            that._oLogger.log("Connection error has occurred, retrying (" + oCfg.currentRetryAttempt + "): " + JSON.stringify(oRaxError));
+            that._oLogger.log("Connection error has occurred; retry attempt " + oCfg.currentRetryAttempt);
        }
     };
 

@@ -1,3 +1,8 @@
+## 1.0.12 (2021-03-18)
+
+### Fixes
+- Removed logging of `retry-axios` error object due to possible circular dependencies.
+
 ## 1.0.11 (2021-01-25)
 
 ### Fixes
