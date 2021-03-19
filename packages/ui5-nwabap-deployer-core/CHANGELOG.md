@@ -1,3 +1,8 @@
+## 1.0.13 (2021-03-19)
+
+### Fixes
+- Correct Content-Type header setting for creation of a transport request on ABAP system >= 7.5 (thanks to [ffleige](https://github.com/ffleige)). 
+
 ## 1.0.12 (2021-03-18)
 
 ### Fixes
