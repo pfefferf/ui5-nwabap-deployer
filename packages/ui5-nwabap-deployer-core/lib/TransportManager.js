@@ -33,7 +33,8 @@ TransportManager.prototype.createTransport = function(sPackageName, sRequestText
             method: "POST",
             url: sUrl,
             headers: {
-                "accept": "*/*"
+                "accept": "*/*",
+                "content-type": "application/vnd.sap.as+xml; charset=UTF-8; dataname=com.sap.adt.CreateCorrectionRequest"
             },
             body: sPayload
         };
