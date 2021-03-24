@@ -116,22 +116,6 @@ FileStore.prototype.createBSPContainer = function(fnCallback) {
                 if (oErrorSendRequest) {
                     fnCallback(new Error(util.createResponseError(oErrorSendRequest)));
                     return;
-                } else if (oResponse.statusCode === util.HTTPSTAT.int_error) {
-                    if (me._oOptions.ui5.transport_use_locked) {
-                        if (oResponse.body) {
-                            const aMatched = oResponse.body.match(/.{3}K\d{6}/g);
-                            if (aMatched && aMatched.length > 0) {
-                                me._oLogger.log("Warning: the current BSP Application was already locked in " + aMatched[0] + ". Transport " + aMatched[0] + " is used instead of " + me._oOptions.ui5.transportno + ".");
-                                me._oOptions.ui5.transportno = aMatched[0];
-                                me.createBSPContainer(function(a, b) {
-                                    fnCallback(a, b);
-                                });
-                                return;
-                            }
-                        }
-                    }
-                    fnCallback(new Error(`Operation Create BSP Container: Expected status code ${util.HTTPSTAT.created}, actual status code ${oResponse.statusCode}, response body '${oResponse.body}'`));
-                    return;
                 } else if (oResponse.statusCode !== util.HTTPSTAT.created) {
                     fnCallback(new Error(`Operation Create BSP Container: Expected status code ${util.HTTPSTAT.created}, actual status code ${oResponse.statusCode}, response body '${oResponse.body}'`));
                     return;
@@ -651,23 +635,7 @@ FileStore.prototype.syncFile = function(oFile, fnCallback) {
             return;
         }
 
-        if (oResponse.statusCode === util.HTTPSTAT.int_error) {
-            if (me._oOptions.ui5.transport_use_locked) {
-                if (oResponse.body) {
-                    const aMatched = oResponse.body.match(/.{3}K\d{6}/g);
-                    if (aMatched && aMatched.length > 0) {
-                        me._oLogger.log("Warning: the current BSP Application was already locked in " + aMatched[0] + ". Transport " + aMatched[0] + " is used instead of " + me._oOptions.ui5.transportno + ".");
-                        me._oOptions.ui5.transportno = aMatched[0];
-                        me.syncFile(oFile, function(a, b) {
-                            fnCallback(a, b);
-                        });
-                        return;
-                    }
-                }
-            }
-            fnCallback(util.createResponseError(oResponse.body), oResponse);
-            return;
-        } else if (oResponse.statusCode >= 400 && oResponse.statusCode < 500 ) {
+        if (oResponse.statusCode >= util.HTTPSTAT.bad_request && oResponse.statusCode < util.HTTPSTAT.int_error ) {
             fnCallback(util.createResponseError(oResponse.body));
             return;
         } else {

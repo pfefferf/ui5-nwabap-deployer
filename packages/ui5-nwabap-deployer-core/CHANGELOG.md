@@ -1,3 +1,8 @@
+## 1.0.14 (2021-03-24)
+
+### Fixes
+- Do not create an additional unused transport when a transport creation is required, but the usage of an existing transport is required too (and a transport with a lock on the BSP application exists).
+
 ## 1.0.13 (2021-03-19)
 
 ### Fixes

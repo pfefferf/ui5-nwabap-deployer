@@ -31,7 +31,8 @@
     "eslint-config-google": "^0.14.0"
   },
   "scripts": {
-    "lint": "eslint ./"
+    "lint": "eslint ./",
+    "lint:fix": "eslint ./ --fix"
   },
   "workspaces": [
     "./packages/*"

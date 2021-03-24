@@ -31,7 +31,7 @@ npm install ui5-task-nwabap-deployer --save-dev
     - createTransport: optional `true|false` Set this option to true in case a new transport should be created each time the application is deployed.
     - transportText: optional `string` Text for transport to be created.
     - transportUseUserMatch: optional `true|false` It will be tried to find a transport request of the given user. If no transport is found and createTransport is enabled a new one will be created and used for further file deployments.
-    - transportUseLocked: optional `true|false` If a deplyoment failed due to the BSP application is locked in another transport, the old (original one) transport will be used to deploy the files.
+    - transportUseLocked: optional `true|false` If a deployment failed due to the BSP application is locked in another transport, the old (original one) transport will be used to deploy the files.
     - calculateApplicationIndex: optional `true|false` Specify if you require the application index (program /UI5/APP_INDEX_CALCULATE) for the application to be recalculated after the BSP application is deployed. Note: This only works with team repository provider version 1.30.x or higher and User Interface Add-On 2.0 for SAP NetWeaver.
 
 ## Usage

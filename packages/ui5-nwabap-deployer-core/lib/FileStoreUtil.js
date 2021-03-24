@@ -11,11 +11,12 @@ const OBJECT_TYPE = {
 
 /**
  * HTTP status
- * @type {{ok: number, created: number, not_authorized: number, not_found: number, not_allowed: number}}
+ * @type {{ok: number, created: number, bad_request: number, not_authorized: number, not_found: number, not_allowed: number}}
  */
 const HTTPSTAT = {
     ok: 200,
     created: 201,
+    bad_rquest: 400,
     not_authorized: 403,
     not_found: 404,
     not_allowed: 405,

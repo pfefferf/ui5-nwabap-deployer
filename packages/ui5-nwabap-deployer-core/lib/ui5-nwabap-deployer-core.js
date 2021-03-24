@@ -149,8 +149,31 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
         // verbose log files
         oLogger.logVerbose("Files: " + aFilesAdapted);
 
+        // sync files
+        const oTransportManager = new TransportManager(oFileStoreOptions, oLogger);
+        let sExistingTransportNo = null;
+        try {
+            sExistingTransportNo = await oTransportManager.determineExistingTransportForBspContainer(oFileStoreOptions.ui5.package, oFileStoreOptions.ui5.bspcontainer);
+        } catch (oError) {
+            reject(oError);
+            return;
+        }
+
+        if (sExistingTransportNo && oFileStoreOptions.ui5.transport_use_locked) {
+            // existing transport lock
+            oFileStoreOptions.ui5.transportno = sExistingTransportNo;
+            oLogger.log(`BSP Application ${oFileStoreOptions.ui5.bspcontainer} already locked in transport request ${sExistingTransportNo}. This transport request is used for deployment.`);
+            try {
+                await syncFiles(oFileStoreOptions, oLogger, aFilesAdapted);
+                resolve();
+                return;
+            } catch (oError) {
+                reject(oError);
+                return;
+            }
+        }
+
         if (!oFileStoreOptions.ui5.package.startsWith("$") && oFileStoreOptions.ui5.transportno === undefined) {
-            const oTransportManager = new TransportManager(oFileStoreOptions, oLogger);
             if (oFileStoreOptions.ui5.transport_use_user_match) {
                 try {
                     await uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions, oLogger, aFilesAdapted);
@@ -161,6 +184,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
                     return;
                 }
             } else if (oFileStoreOptions.ui5.create_transport === true) {
+                // create new transport
                 oTransportManager.createTransport(oFileStoreOptions.ui5.package, oFileStoreOptions.ui5.transport_text, async function(oError, sTransportNo) {
                     if (oError) {
                         reject(oError);
@@ -179,7 +203,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
                     }
                 });
             } else {
-                const oError = new Error("No transport configured, but create transport and user match option is disabled");
+                const oError = new Error("No transport configured and 'create transport' and 'use user match' options are disabled.");
                 reject(oError);
                 return;
             }

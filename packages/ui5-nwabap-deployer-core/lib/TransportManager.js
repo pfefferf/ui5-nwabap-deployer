@@ -2,7 +2,8 @@
 
 const util = require("util");
 const fsutil = require("./FileStoreUtil");
-const CTS_BASE_URL = "/sap/bc/adt/cts/transports";
+const CTS_BASE_URL_TRANSPORTS = "/sap/bc/adt/cts/transports";
+const CTS_BASE_URL_TRANSPORTCHECKS = "/sap/bc/adt/cts/transportchecks";
 const AdtClient = require("./AdtClient");
 const XMLDocument = require("xmldoc").XmlDocument;
 
@@ -27,7 +28,7 @@ function TransportManager(oOptions, oLogger) {
 TransportManager.prototype.createTransport = function(sPackageName, sRequestText, fnCallback) {
     const sPayload = this.getCreateTransportPayload(sPackageName, sRequestText);
 
-    const sUrl = this._client.buildUrl(CTS_BASE_URL);
+    const sUrl = this._client.buildUrl(CTS_BASE_URL_TRANSPORTS);
     this._client.determineCSRFToken(function() {
         const oRequestOptions = {
             method: "POST",
@@ -62,7 +63,7 @@ TransportManager.prototype.createTransport = function(sPackageName, sRequestText
  * @param {Function} fnCallback
  */
 TransportManager.prototype.determineExistingTransport = function(fnCallback) {
-    const sUrl = this._client.buildUrl(CTS_BASE_URL + "?_action=FIND&trfunction=K");
+    const sUrl = this._client.buildUrl(CTS_BASE_URL_TRANSPORTS + "?_action=FIND&trfunction=K");
 
     const oRequestOptions = {
         url: sUrl,
@@ -103,6 +104,58 @@ TransportManager.prototype.getCreateTransportPayload = function(sPackageName, sR
         "</asx:abap>";
 
     return util.format(sTemplate, sPackageName, sRequestText);
+};
+
+/**
+ * Determine transport number for BSP Container; available in case BSP Container is already locked.
+ * @param {string} sPackageName package name
+ * @param {string} sBspContainer BSP Container
+ * @returns {Promise} Promise resolving to null or found transport number
+ */
+TransportManager.prototype.determineExistingTransportForBspContainer = function(sPackageName, sBspContainer) {
+    return new Promise(function(resolve, reject) {
+        const oRequestOptions = {
+            method: "POST",
+            url: this._client.buildUrl(CTS_BASE_URL_TRANSPORTCHECKS),
+            headers: {
+                "accept": "*/*",
+                "content-type": "application/vnd.sap.as+xml; charset=UTF-8; dataname=com.sap.adt.transport.service.checkData"
+            },
+            body: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                  "<asx:abap xmlns:asx=\"http://www.sap.com/abapxml\" version=\"1.0\">" +
+                  "<asx:values>" +
+                  "<DATA>" +
+                  "<PGMID>R3TR</PGMID>" +
+                  "<OBJECT>WAPA</OBJECT>" +
+                  "<OBJECTNAME>" + sBspContainer + "</OBJECTNAME>" +
+                  "<DEVCLASS>" + sPackageName + "</DEVCLASS>" +
+                  "<SUPER_PACKAGE/>" +
+                  "<OPERATION>I</OPERATION>" +
+                  "<URI></URI>" +
+                  "</DATA>" +
+                  "</asx:values>" +
+                  "</asx:abap>"
+        };
+
+        this._client.determineCSRFToken(function() {
+                this._client.sendRequest(oRequestOptions, function(oError, oResponse) {
+                if (oError) {
+                    reject(new Error(fsutil.createResponseError(oError)));
+                    return;
+                } else if (oResponse.statusCode !== fsutil.HTTPSTAT.ok) {
+                    reject(new Error(`Operation Existing Transport Determination for BSP Container: Expected status code ${fsutil.HTTPSTAT.ok}, actual status code ${oResponse.statusCode}`));
+                    return;
+                } else {
+                    if (!oResponse.body) {
+                        return resolve(null);
+                    }
+                    const oParsed = new XMLDocument(oResponse.body);
+                    const transportNo = oParsed.valueWithPath("asx:values.DATA.LOCKS.CTS_OBJECT_LOCK.LOCK_HOLDER.REQ_HEADER.TRKORR");
+                    return resolve(transportNo);
+                }
+            });
+        }.bind(this));
+    }.bind(this));
 };
 
 module.exports = TransportManager;

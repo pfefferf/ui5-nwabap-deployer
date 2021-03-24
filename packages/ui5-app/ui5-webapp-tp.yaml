@@ -11,7 +11,7 @@ builder:
         pattern: "**/*.*"
       ui5:
         language: EN
-        transportNo: SA8K902816
+        transportNo: A4HK900098
         package: ZZ_FP_UI5_REPOSITORY
         bspContainer: ZZ_GUI5UP_TP
         bspContainerText: Test UI5 Upload
