@@ -1,0 +1,1 @@
+ui5 build --config ./ui5-webapp-create-tp.yaml
