@@ -105,7 +105,7 @@ AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallb
     oAxiosReqOptions.data = oRequestOptions.body;
 
     oAxiosReqOptions.httpsAgent = new https.Agent({
-        rejectUnauthorized: that._oOptions.useStrictSSL
+        rejectUnauthorized: that._oOptions.conn.useStrictSSL
     });
 
     if (that._oOptions.auth) {

@@ -1,3 +1,8 @@
+## 1.0.15 (2021-04-07)
+
+### Fixes
+- `useStrictSSL` option was not considered correctly.
+
 ## 1.0.14 (2021-03-24)
 
 ### Fixes
