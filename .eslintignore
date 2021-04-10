@@ -1,4 +1,5 @@
 # default
+dist/
 node_modules/
 
 # test

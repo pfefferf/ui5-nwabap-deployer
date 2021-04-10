@@ -3,34 +3,49 @@
     "version": "1.0.0",
     "description": "Deploying UI5 sources to a SAP NetWeaver ABAP system using CLI",
     "author": {
-      "name": "Florian Pfeffer",
-      "email": "florian.pfeffer@outlook.com"
+        "name": "Florian Pfeffer",
+        "email": "florian.pfeffer@outlook.com"
     },
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/pfefferf/ui5-nwabap-deployer.git"
+        "type": "git",
+        "url": "git+https://github.com/pfefferf/ui5-nwabap-deployer.git"
     },
     "bugs": {
-      "url": "https://github.com/pfefferf/ui5-nwabap-deployer/issues"
+        "url": "https://github.com/pfefferf/ui5-nwabap-deployer/issues"
     },
     "license": "Apache-2.0",
     "licenses": [
-      {
-        "type": "Apache-2.0",
-        "url": "https://github.com/pfefferf/ui5-nwabap-deployer/blob/master/LICENSE"
-      }
+        {
+            "type": "Apache-2.0",
+            "url": "https://github.com/pfefferf/ui5-nwabap-deployer/blob/master/LICENSE"
+        }
     ],
     "engines": {
-      "node": ">= 12.0",
-      "npm": ">= 6"
+        "node": ">= 12.0",
+        "npm": ">= 6"
     },
-    "main": "lib/ui5-task-nwabap-deployer.js",
+    "bin": {
+        "ui5-deployer": "./bin/index.js"
+    },
     "directories": {
-      "lib": "lib"
+        "bin": "./bin",
+        "lib": "./lib"
     },
-    "scripts": {},
+    "scripts": { },
     "dependencies": {
-      "ui5-nwabap-deployer-core": "^1.0.15"
-    }
-  }
-  
+        "glob": "^7.1.6",
+        "ui5-nwabap-deployer-core": "^1.0.16",
+        "winston": "^3.3.3",
+        "yargs": "^16.2.0"
+    },
+    "keywords": [
+        "UI5",
+        "SAPUI5",
+        "OpenUI5",
+        "CLI",
+        "ui5-deployer",
+        "SAP",
+        "NetWeaver",
+        "ABAP"
+    ]
+}
