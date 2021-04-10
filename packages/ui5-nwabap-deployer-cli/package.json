@@ -1,0 +1,36 @@
+{
+    "name": "ui5-nwabap-deployer-cli",
+    "version": "1.0.0",
+    "description": "Deploying UI5 sources to a SAP NetWeaver ABAP system using CLI",
+    "author": {
+      "name": "Florian Pfeffer",
+      "email": "florian.pfeffer@outlook.com"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/pfefferf/ui5-nwabap-deployer.git"
+    },
+    "bugs": {
+      "url": "https://github.com/pfefferf/ui5-nwabap-deployer/issues"
+    },
+    "license": "Apache-2.0",
+    "licenses": [
+      {
+        "type": "Apache-2.0",
+        "url": "https://github.com/pfefferf/ui5-nwabap-deployer/blob/master/LICENSE"
+      }
+    ],
+    "engines": {
+      "node": ">= 12.0",
+      "npm": ">= 6"
+    },
+    "main": "lib/ui5-task-nwabap-deployer.js",
+    "directories": {
+      "lib": "lib"
+    },
+    "scripts": {},
+    "dependencies": {
+      "ui5-nwabap-deployer-core": "^1.0.15"
+    }
+  }
+  
