@@ -54,11 +54,6 @@ const handler = async (argv) => {
         argCwd = argv.cwd;
     }
 
-    if (!fs.existsSync(argCwd)) {
-        logger.error(`Working directory ${argCwd} does not exists.`);
-        return;
-    }
-
     let argFiles = "**/*.*";
     if (configData && configData.files) {
         argFiles = configData.files;

@@ -25,7 +25,7 @@
         "npm": ">= 6"
     },
     "bin": {
-        "ui5-deployer": "./bin/index.js"
+        "ui5-deployer": "./bin/cli.js"
     },
     "directories": {
         "bin": "./bin",
