@@ -39,10 +39,12 @@ function checkOptions(oOptions, oLogger) {
         bCheckSuccessful = false;
     }
 
-    const bspcontainerExclNamespace = oOptions.ui5.bspcontainer.substring(oOptions.ui5.bspcontainer.lastIndexOf("/") + 1);
-    if (bspcontainerExclNamespace.length > 15) {
-        oLogger.error("BSP Container option must not be longer than 15 characters (exclusive customer specific namespace e.g. /YYY/.");
-        bCheckSuccessful = false;
+    if (oOptions.ui5 && oOptions.ui5.bspcontainer) {
+        const bspcontainerExclNamespace = oOptions.ui5.bspcontainer.substring(oOptions.ui5.bspcontainer.lastIndexOf("/") + 1);
+        if (bspcontainerExclNamespace.length > 15) {
+            oLogger.error("BSP Container option must not be longer than 15 characters (exclusive customer specific namespace e.g. /YYY/.");
+            bCheckSuccessful = false;
+        }
     }
 
     return bCheckSuccessful;
@@ -138,7 +140,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
 
         // checks on options
         if (!checkOptions(oFileStoreOptions, oLogger)) {
-            reject(new Error("Configuration erroneous."));
+            reject(new Error("Configuration incorrect."));
             return;
         }
 
