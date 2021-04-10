@@ -138,7 +138,7 @@ TransportManager.prototype.determineExistingTransportForBspContainer = function(
         };
 
         this._client.determineCSRFToken(function() {
-                this._client.sendRequest(oRequestOptions, function(oError, oResponse) {
+            this._client.sendRequest(oRequestOptions, function(oError, oResponse) {
                 if (oError) {
                     reject(new Error(fsutil.createResponseError(oError)));
                     return;

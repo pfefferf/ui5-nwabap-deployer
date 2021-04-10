@@ -1,3 +1,8 @@
+## 1.0.16 (2021-04-10)
+
+### Fixes
+- Additional check that server and client information is provided.
+
 ## 1.0.15 (2021-04-07)
 
 ### Fixes

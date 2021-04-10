@@ -13,6 +13,11 @@ const isBinaryFile = require("isbinaryfile").isBinaryFileSync;
 function checkOptions(oOptions, oLogger) {
     let bCheckSuccessful = true;
 
+    if (!oOptions.conn || !oOptions.conn.server || !oOptions.conn.client) {
+        oLogger.error("Connection configuration not (fully) specificed (check server and client).");
+        bCheckSuccessful = false;
+    }
+
     if (!oOptions.auth || !oOptions.auth.user || !oOptions.auth.pwd) {
         oLogger.error("Authentication configuration not (fully) specified (check user name and password).");
         bCheckSuccessful = false;
@@ -23,7 +28,7 @@ function checkOptions(oOptions, oLogger) {
         bCheckSuccessful = false;
     }
 
-    if (!oOptions.ui5.package.startsWith("$") && !oOptions.ui5.transportno &&
+    if (oOptions.ui5 && oOptions.ui5.package && !oOptions.ui5.package.startsWith("$") && !oOptions.ui5.transportno &&
         oOptions.ui5.create_transport !== true && oOptions.ui5.transport_use_user_match !== true) {
         oLogger.error("For non-local packages (package name does not start with a \"$\") a transport number is necessary.");
         bCheckSuccessful = false;
