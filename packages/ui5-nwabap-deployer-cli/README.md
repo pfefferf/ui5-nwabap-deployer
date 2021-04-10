@@ -78,7 +78,7 @@ Configuration file example with dummy data. Consider: Do not configure the user 
     "transportNo": "A4HK900000",
     "createTransport": false,
     "transportText": "Test Transport",
-	"transportUseLocked": false,
+    "transportUseLocked": false,
     "transportUseUserMatch": false,
     "calculateApplicationIndex": true
 }
