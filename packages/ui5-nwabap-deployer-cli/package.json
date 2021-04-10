@@ -1,6 +1,6 @@
 {
     "name": "ui5-nwabap-deployer-cli",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Deploying UI5 sources to a SAP NetWeaver ABAP system using CLI",
     "author": {
         "name": "Florian Pfeffer",
