@@ -6,4 +6,4 @@ This monorepo manages following packages which are used for deploying UI5 source
 - [ui5-task-nwabap-deployer](./packages/ui5-task-nwabap-deployer/README.md): UI5 Tooling custom task to deploy UI5 sources.
 - [ui5-nwabap-deployer-cli](./packages/ui5-nwabap-deployer-cli/README.md): CLI to deploy UI5 sources.
 
-Both tools use as base the [ui5-nwabap-deployer-core](./packages/ui5-nwabap-deployer-core/README.md) package which provides the core functionality for the UI5 source deployment.
+All tools use as base the [ui5-nwabap-deployer-core](./packages/ui5-nwabap-deployer-core/README.md) package which provides the core functionality for the UI5 source deployment.
