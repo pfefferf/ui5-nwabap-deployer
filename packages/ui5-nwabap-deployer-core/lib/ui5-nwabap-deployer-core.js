@@ -13,8 +13,8 @@ const isBinaryFile = require("isbinaryfile").isBinaryFileSync;
 function checkOptions(oOptions, oLogger) {
     let bCheckSuccessful = true;
 
-    if (!oOptions.conn || !oOptions.conn.server || !oOptions.conn.client) {
-        oLogger.error("Connection configuration not (fully) specificed (check server and client).");
+    if (!oOptions.conn || !oOptions.conn.server) {
+        oLogger.error("Connection configuration not (fully) specificed (check server).");
         bCheckSuccessful = false;
     }
 

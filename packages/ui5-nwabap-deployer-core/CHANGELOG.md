@@ -1,3 +1,8 @@
+## 1.0.17 (20201-04-13)
+
+### Fixes
+- Removed mandatory check on client, because if no client is provided in configuration the default client will be used.
+
 ## 1.0.16 (2021-04-10)
 
 ### Fixes
