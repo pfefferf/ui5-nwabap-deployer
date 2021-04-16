@@ -172,7 +172,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
             oLogger.log(`BSP Application ${oFileStoreOptions.ui5.bspcontainer} already locked in transport request ${sExistingTransportNo}. This transport request is used for deployment.`);
             try {
                 await syncFiles(oFileStoreOptions, oLogger, aFilesAdapted);
-                resolve();
+                resolve(oFileStoreOptions);
                 return;
             } catch (oError) {
                 reject(oError);
@@ -184,7 +184,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
             if (oFileStoreOptions.ui5.transport_use_user_match) {
                 try {
                     await uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions, oLogger, aFilesAdapted);
-                    resolve();
+                    resolve(oFileStoreOptions);
                     return;
                 } catch (oError) {
                     reject(oError);
@@ -202,7 +202,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
 
                     try {
                         await syncFiles(oFileStoreOptions, oLogger, aFilesAdapted);
-                        resolve();
+                        resolve(oFileStoreOptions);
                         return;
                     } catch (oError) {
                         reject(oError);
@@ -217,7 +217,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
         } else {
             try {
                 await syncFiles(oFileStoreOptions, oLogger, aFilesAdapted);
-                resolve();
+                resolve(oFileStoreOptions);
                 return;
             } catch (oError) {
                 reject(oError);
