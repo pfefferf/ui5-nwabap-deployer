@@ -1,3 +1,8 @@
+## 1.0.18 (2021-04-16)
+
+### Features
+- Deployment module returns information like used deployment options.
+
 ## 1.0.17 (2021-04-13)
 
 ### Fixes
@@ -35,7 +40,7 @@
 
 ## 1.0.10 (2020-09-25)
 
-### Feature
+### Features
 - Support of `connection.customQueryParams` configuration option to be able to transfer custom parameters to the backend (for instance to bypass SAML2 or SPNEGO authentication).
 
 ## 1.0.9 (2020-09-17)
