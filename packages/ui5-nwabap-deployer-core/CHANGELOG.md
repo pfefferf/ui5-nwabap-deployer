@@ -1,3 +1,8 @@
+## 1.0.20 (2021-04-30)
+
+### Fixes
+- Fix bearer token handling.
+
 ## 1.0.19 (2021-04-30)
 
 ### Features

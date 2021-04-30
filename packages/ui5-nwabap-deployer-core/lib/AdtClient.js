@@ -132,7 +132,7 @@ AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallb
 
     if (that._oOptions.auth) {
         if (that._oOptions.auth.bearer_token) {
-            fnAddHeader(oAxiosReqOptions, "authorization", that._oOptions.auth.bearer_token);
+            fnAddHeader(oAxiosReqOptions, "authorization", "Bearer " + that._oOptions.auth.bearer_token);
         } else {
             oAxiosReqOptions.auth = {
                 username: that._oOptions.auth.user,
