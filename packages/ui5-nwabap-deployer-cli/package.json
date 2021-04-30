@@ -34,7 +34,7 @@
     "scripts": { },
     "dependencies": {
         "glob": "^7.1.6",
-        "ui5-nwabap-deployer-core": "^1.0.16",
+        "ui5-nwabap-deployer-core": "^1.0.19",
         "winston": "^3.3.3",
         "yargs": "^16.2.0"
     },
