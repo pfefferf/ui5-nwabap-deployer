@@ -1,3 +1,8 @@
+## 1.0.19 (2021-04-30)
+
+### Features
+- Support for bearer token authorization.
+
 ## 1.0.18 (2021-04-16)
 
 ### Features

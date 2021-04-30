@@ -16,6 +16,7 @@ const builder = (yargs) => {
         .option("customQueryParams", { description: "Custom Query Parameters", array: true })
         .option("user", { description: "ABAP User", string: true })
         .option("pwd", { description: "ABAP User Password", string: true })
+        .option("bearerToken", { description: "Bearer token for authorization", string: true })
         .option("language", { description: "Language for deployment, default: EN", string: true })
         .option("package", { description: "ABAP Package", string: true })
         .option("bspContainer", { description: "BSP container", string: true })
@@ -98,7 +99,8 @@ const initDeployOptions = () => {
         },
         auth: {
             user: undefined,
-            pwd: undefined
+            pwd: undefined,
+            bearerToken: undefined
         },
         ui5: {
             language: "EN",
@@ -152,6 +154,9 @@ const mapConfigToDeployOptions = (configData, deployOptions) => {
     }
     if (configData.pwd) {
         result.auth.pwd = configData.pwd;
+    }
+    if (configData.bearerToken) {
+        result.auth.bearer_token = configData.bearerToken;
     }
 
     if (configData.language) {
@@ -217,6 +222,9 @@ const mapArgumentsToDeployOptions = (argv, deployOptions) => {
     }
     if (argv.pwd) {
         result.auth.pwd = argv.pwd;
+    }
+    if (argv.bearerToken) {
+        result.auth.bearer_token = argv.bearerToken;
     }
 
     if (argv.language) {

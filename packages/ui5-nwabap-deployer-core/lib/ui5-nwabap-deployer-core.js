@@ -18,8 +18,8 @@ function checkOptions(oOptions, oLogger) {
         bCheckSuccessful = false;
     }
 
-    if (!oOptions.auth || !oOptions.auth.user || !oOptions.auth.pwd) {
-        oLogger.error("Authentication configuration not (fully) specified (check user name and password).");
+    if (!oOptions.auth || (!oOptions.auth.bearer_token && (!oOptions.auth.user || !oOptions.auth.pwd)) ) {
+        oLogger.error("Authentication configuration not correct (check user/password or bearer token).");
         bCheckSuccessful = false;
     }
 

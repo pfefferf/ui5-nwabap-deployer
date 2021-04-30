@@ -38,8 +38,9 @@ The `deploy` command deploys UI5 sources to an ABAP system. It provides followin
 |files |Glob pattern to match files for deployment.|X|**/\*.\*|
 |server |SAP NetWeaver ABAP application server information in form protocol://host:port|X|-|
 |client |Client of SAP NetWeaver ABAP application server; if not set default client of server is used.|-|-|
-|user |User used for logon to SAP NetWeaver ABAP application server.|X|-|
-|pwd |Password used for logon to SAP NetWeaver ABAP application server|X|-|
+|user |User used for logon to SAP NetWeaver ABAP application server.|X (in case no bearer token is used)|-|
+|pwd |Password used for logon to SAP NetWeaver ABAP application server.|X (in case no bearer token is used)|-|
+|bearerToken |Bearer token used for authorization.|X (in user/pwd is not used)|-|
 |useStrictSSL |SSL mode handling. In case of self signed certificates the useStrictSSL mode option can be set to false to allow a deployment of files.|-|true|
 |proxy |Proxy to be used for communication to SAP NetWeaver ABAP application server, form protocol://host:port|-|-|
 |customQueryParams |Additional query parameters to be appended to the server calls. To be provied in form `parameterName=parameterValue`|-|-|
@@ -56,7 +57,7 @@ The `deploy` command deploys UI5 sources to an ABAP system. It provides followin
 
 Providing the options for the `deploy` command can be done by a configuration file. By default the command searches for a file `./ui5deployrc`. Using the option `--config` an alternative file name can be provided. In the configuration file all options can be provided which are available as command line arguments. The configuration must be provided as JSON object.
 
-Configuration file example with dummy data. Consider: Do not configure the user and password in the file is shared, provide them as command line arguments.
+Configuration file example with dummy data. Consider: Do not configure the user/password and bearer token in the file if shared; provide them as command line arguments.
 ```json
 {
     "cwd": "./dist",
@@ -64,7 +65,8 @@ Configuration file example with dummy data. Consider: Do not configure the user 
     "server": "http://localhost:8000",
     "client": "100",
     "user": "testuser",
-    "pwd": "abcd1234",    
+    "pwd": "abcd1234",   
+    "bearerToken": "eadfadfdsf...", 
 	"useStrictSSL": false,
     "proxy": "http://proxy:3000",
     "customQueryParams": {
