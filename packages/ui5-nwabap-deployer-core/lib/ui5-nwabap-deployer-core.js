@@ -18,8 +18,8 @@ function checkOptions(oOptions, oLogger) {
         bCheckSuccessful = false;
     }
 
-    if (!oOptions.auth || !oOptions.auth.user || !oOptions.auth.pwd) {
-        oLogger.error("Authentication configuration not (fully) specified (check user name and password).");
+    if (!oOptions.auth || (!oOptions.auth.bearer_token && (!oOptions.auth.user || !oOptions.auth.pwd)) ) {
+        oLogger.error("Authentication configuration not correct (check user/password or bearer token).");
         bCheckSuccessful = false;
     }
 
@@ -60,7 +60,7 @@ function syncFiles(oFileStoreOptions, oLogger, aFiles) {
     return new Promise((resolve, reject) => {
         const oFileStore = new FileStore(oFileStoreOptions, oLogger);
 
-        oFileStore.syncFiles(aFiles, function (oError) {
+        oFileStore.syncFiles(aFiles, function(oError) {
             if (oError) {
                 oLogger.error(oError);
                 reject(oError);
@@ -80,7 +80,7 @@ function syncFiles(oFileStoreOptions, oLogger, aFiles) {
  */
 async function uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions, oLogger, aFiles) {
     return new Promise((resolve, reject) => {
-        oTransportManager.determineExistingTransport(async function (oError, sTransportNo) {
+        oTransportManager.determineExistingTransport(async function(oError, sTransportNo) {
             if (oError) {
                 reject(oError);
                 return;
@@ -95,7 +95,7 @@ async function uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions
                     return;
                 }
             } else if (oFileStoreOptions.ui5.create_transport === true) {
-                oTransportManager.createTransport(oFileStoreOptions.ui5.package, oFileStoreOptions.ui5.transport_text, async function (oError, sTransportNo) {
+                oTransportManager.createTransport(oFileStoreOptions.ui5.package, oFileStoreOptions.ui5.transport_text, async function(oError, sTransportNo) {
                     if (oError) {
                         reject(oError);
                         return;
@@ -124,8 +124,8 @@ async function uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions
  * @param {Array} aFiles Files to deploy
  * @param {Object} oLogger Logger
  */
-exports.deployUI5toNWABAP = async function (oOptions, aFiles, oLogger) {
-    return new Promise(async function (resolve, reject) {
+exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
+    return new Promise(async function(resolve, reject) {
         let oFileStoreOptions = {};
 
         oFileStoreOptions = Object.assign(oFileStoreOptions, oOptions);
@@ -192,7 +192,7 @@ exports.deployUI5toNWABAP = async function (oOptions, aFiles, oLogger) {
                 }
             } else if (oFileStoreOptions.ui5.create_transport === true) {
                 // create new transport
-                oTransportManager.createTransport(oFileStoreOptions.ui5.package, oFileStoreOptions.ui5.transport_text, async function (oError, sTransportNo) {
+                oTransportManager.createTransport(oFileStoreOptions.ui5.package, oFileStoreOptions.ui5.transport_text, async function(oError, sTransportNo) {
                     if (oError) {
                         reject(oError);
                         return;

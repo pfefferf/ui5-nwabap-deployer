@@ -98,6 +98,28 @@ AdtClient.prototype.buildUrl = function(sUrl) {
 AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallback) {
     const that = this;
 
+    const fnAddQueryParam = (oOptions, sParamName, sParamValue) => {
+        if (!sParamValue) {
+            return;
+        }
+
+        if (!oOptions.hasOwnProperty("params")) {
+            oOptions.params = {};
+        }
+        oOptions.params[sParamName] = sParamValue;
+    };
+
+    const fnAddHeader = (oOptions, sHeaderKey, sHeaderValue) => {
+        if (!sHeaderValue) {
+            return;
+        }
+
+        if (!oOptions.hasOwnProperty("headers")) {
+            oOptions.headers = {};
+        }
+        oOptions.headers[sHeaderKey] = sHeaderValue;
+    };
+
     const oAxiosReqOptions = {};
     oAxiosReqOptions.url = oRequestOptions.url || "";
     oAxiosReqOptions.method = oRequestOptions.method || "GET";
@@ -109,10 +131,14 @@ AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallb
     });
 
     if (that._oOptions.auth) {
-        oAxiosReqOptions.auth = {
-            username: that._oOptions.auth.user,
-            password: that._oOptions.auth.pwd
-        };
+        if (that._oOptions.auth.bearer_token) {
+            fnAddHeader(oAxiosReqOptions, "authorization", that._oOptions.auth.bearer_token);
+        } else {
+            oAxiosReqOptions.auth = {
+                username: that._oOptions.auth.user,
+                password: that._oOptions.auth.pwd
+            };
+        }
     }
 
     if (that._oOptions.conn.proxy) {
@@ -135,17 +161,6 @@ AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallb
         }
     }
 
-    const fnAddQueryParam = (oOptions, sParamName, sParamValue) => {
-        if (!sParamValue) {
-            return;
-        }
-
-        if (!oOptions.hasOwnProperty("params")) {
-            oOptions.params = {};
-        }
-        oOptions.params[sParamName] = sParamValue;
-    };
-
     fnAddQueryParam(oAxiosReqOptions, "sap-language", that._oOptions.lang);
     fnAddQueryParam(oAxiosReqOptions, "sap-client", that._oOptions.conn.client);
 
@@ -154,17 +169,6 @@ AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallb
             fnAddQueryParam(oAxiosReqOptions, sKey, encodeURIComponent(that._oOptions.conn.customQueryParams[sKey]));
         });
     }
-
-    const fnAddHeader = (oOptions, sHeaderKey, sHeaderValue) => {
-        if (!sHeaderValue) {
-            return;
-        }
-
-        if (!oOptions.hasOwnProperty("headers")) {
-            oOptions.headers = {};
-        }
-        oOptions.headers[sHeaderKey] = sHeaderValue;
-    };
 
     fnAddHeader(oAxiosReqOptions, "x-csrf-token", this._sCSRFToken);
     fnAddHeader(oAxiosReqOptions, "cookie", this._sSAPCookie);
