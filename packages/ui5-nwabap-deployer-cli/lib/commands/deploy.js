@@ -84,7 +84,10 @@ const handler = async (argv) => {
     try {
         await ui5DeployerCore.deployUI5toNWABAP(deployOptions, fileContents, logger);
     } catch (error) {
-        if (error) logger.error(error.message);
+        if (error) {
+            logger.error(error.message);
+            process.exitCode = 1;
+        }
     }
 };
 
