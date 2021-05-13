@@ -1,3 +1,8 @@
+## 1.0.21 (2021-05-13)
+
+### Features
+- Deploy a file only if the content is changed.
+
 ## 1.0.20 (2021-04-30)
 
 ### Fixes

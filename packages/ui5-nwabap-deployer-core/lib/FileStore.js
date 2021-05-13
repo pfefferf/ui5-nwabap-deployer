@@ -517,7 +517,7 @@ FileStore.prototype.syncFolder = function(sFolder, sModif, fnCallback) {
             return;
         }
 
-        me._oLogger.log("folder " + sFolder + " " + sModif + "d.");
+        me._oLogger.log("folder " + sFolder + ": " + sModif + "d.");
         fnCallback(null, oResponse);
     });
 };
@@ -532,12 +532,13 @@ FileStore.prototype.syncFolder = function(sFolder, sModif, fnCallback) {
  * @param {string} oFile.isBinary Is file content binary?
  * @param {function} fnCallback callback function
  */
-FileStore.prototype.syncFile = function(oFile, fnCallback) {
+FileStore.prototype.syncFile = async function(oFile, fnCallback) {
     const me = this;
 
     let oRequestOptions = null;
     let sUrl = null;
     const sFileCharset = "UTF-8";
+    let fileChanged = false;
 
     switch (oFile.modif) {
         case util.MODIDF.create:
@@ -573,6 +574,32 @@ FileStore.prototype.syncFile = function(oFile, fnCallback) {
             break;
 
         case util.MODIDF.update:
+            try {
+                const readFileResponse = await me._client.sendRequestPromise({
+                    method: "GET",
+                    url: `${me._constructBaseUrl()}/${encodeURIComponent(me._oOptions.ui5.bspcontainer)}${encodeURIComponent(oFile.id)}/content`
+                });
+
+                let respBody = readFileResponse.body;
+                let fileContent = oFile.content.toString();
+                if (typeof(respBody) === "object") {
+                    respBody = JSON.stringify(respBody);
+                    fileContent = JSON.stringify(JSON.parse(fileContent));
+                }
+
+                const fileComparisonResult = Buffer.compare(Buffer.from(fileContent), Buffer.from(respBody));
+
+                me._oLogger.logVerbose(`FILE ${oFile.id} comparison result: ${ fileComparisonResult }`);
+
+                if (fileComparisonResult !== 0) {
+                    fileChanged = true;
+                }
+            } catch (error) {
+                // in case of any comparison error go ahead like the file was changed
+                fileChanged = true;
+            }
+
+
             sUrl = me._constructBaseUrl() +
                 "/" + encodeURIComponent(me._oOptions.ui5.bspcontainer) + encodeURIComponent(oFile.id) +
                 "/content" +
@@ -629,6 +656,12 @@ FileStore.prototype.syncFile = function(oFile, fnCallback) {
             return;
     }
 
+    if (oFile.modif === util.MODIDF.update && fileChanged === false ) {
+        me._oLogger.log("file " + oFile.id + ": no change detected");
+        fnCallback(null, null);
+        return;
+    }
+
     me._client.sendRequest(oRequestOptions, function(oError, oResponse) {
         if (oError) {
             fnCallback(util.createResponseError(oError));
@@ -639,7 +672,7 @@ FileStore.prototype.syncFile = function(oFile, fnCallback) {
             fnCallback(util.createResponseError(oResponse.body));
             return;
         } else {
-            me._oLogger.log("file " + oFile.id + " " + oFile.modif + "d.");
+            me._oLogger.log("file " + oFile.id + ": " + oFile.modif + "d.");
             fnCallback(null, oResponse);
             return;
         }

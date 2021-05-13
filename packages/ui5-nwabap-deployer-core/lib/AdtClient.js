@@ -204,4 +204,21 @@ AdtClient.prototype.sendRequest = async function(oRequestOptions, fnRequestCallb
     }
 };
 
+/**
+ * Send a request to the server - promisified
+ * @param {object} oRequestOptions request options object
+ */
+AdtClient.prototype.sendRequestPromise = function(oRequestOptions) {
+    const that = this;
+    return new Promise((resolve, reject) => {
+        that.sendRequest(oRequestOptions, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};
+
 module.exports = AdtClient;

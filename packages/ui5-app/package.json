@@ -38,6 +38,7 @@
   },
   "scripts": {
     "deploy": "ui5 build --config ui5-webapp.yaml",
-    "deploy:only": "ui5 build --config ui5-webapp.yaml --exclude-task * --include-task ui5-task-nwabap-deployer"
+    "deploy:only": "ui5 build --config ui5-webapp.yaml --exclude-task * --include-task ui5-task-nwabap-deployer",
+    "deploy:cli:conf": "ui5-deployer deploy --config .ui5deployrc-tmp"
   }
 }
