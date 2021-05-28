@@ -1,3 +1,8 @@
+## 1.0.22 (2021-05-28)
+
+### Fixes
+- Improve change detection mode for files with carriage return and line feed characters.
+
 ## 1.0.21 (2021-05-13)
 
 ### Features

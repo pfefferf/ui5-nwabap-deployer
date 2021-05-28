@@ -582,10 +582,14 @@ FileStore.prototype.syncFile = async function(oFile, fnCallback) {
 
                 let respBody = readFileResponse.body;
                 let fileContent = oFile.content.toString();
+
                 if (typeof(respBody) === "object") {
                     respBody = JSON.stringify(respBody);
                     fileContent = JSON.stringify(JSON.parse(fileContent));
                 }
+
+                respBody = respBody.replace(/(\r\n|\n|\r)/gm, "");
+                fileContent = fileContent.replace(/(\r\n|\n|\r)/gm, "");
 
                 const fileComparisonResult = Buffer.compare(Buffer.from(fileContent), Buffer.from(respBody));
 
