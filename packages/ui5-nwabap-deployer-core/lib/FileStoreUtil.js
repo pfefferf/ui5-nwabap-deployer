@@ -16,7 +16,7 @@ const OBJECT_TYPE = {
 const HTTPSTAT = {
     ok: 200,
     created: 201,
-    bad_rquest: 400,
+    bad_request: 400,
     not_authorized: 403,
     not_found: 404,
     not_allowed: 405,
