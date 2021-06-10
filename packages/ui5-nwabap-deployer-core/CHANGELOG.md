@@ -1,3 +1,8 @@
+## 1.0.23 (2021-06-10)
+
+### Fixes
+- Fix of issue in response code handling, which avoided proper error handling (thanks to [Fjaoos](https://github.com/Fjaoos) for analyzing and fixing). 
+
 ## 1.0.22 (2021-05-28)
 
 ### Fixes
