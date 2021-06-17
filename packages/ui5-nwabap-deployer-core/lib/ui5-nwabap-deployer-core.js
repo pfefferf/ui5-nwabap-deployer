@@ -1,8 +1,7 @@
 "use strict";
 
-const FileStore = require("./FileStore");
+const UI5ABAPRepoClient = require("./UI5ABAPRepoClient");
 const TransportManager = require("./TransportManager");
-const isBinaryFile = require("isbinaryfile").isBinaryFileSync;
 
 /**
  * Checks on Options
@@ -52,57 +51,57 @@ function checkOptions(oOptions, oLogger) {
 
 /**
  * Synchronize Files
- * @param {object} oFileStoreOptions
+ * @param {object} oOptions
  * @param {object} oLogger
  * @param {array} aFiles
  */
-function syncFiles(oFileStoreOptions, oLogger, aFiles) {
-    return new Promise((resolve, reject) => {
-        const oFileStore = new FileStore(oFileStoreOptions, oLogger);
+function syncFiles(oOptions, oLogger, aFiles) {
+    return new Promise(async (resolve, reject) => {
+        const oRepoClient = new UI5ABAPRepoClient(oOptions, oLogger);
 
-        oFileStore.syncFiles(aFiles, function(oError) {
-            if (oError) {
-                oLogger.error(oError);
-                reject(oError);
-                return;
-            }
+        try {
+            await oRepoClient.deployRepo(aFiles);
             resolve();
-        });
+            return;
+        } catch (oError) {
+            reject(oError);
+            return;
+        }
     });
 }
 
 /**
  * Upload the files with an transport which does the user own.
  * @param {Object} oTransportManager Transport manager
- * @param {Object} oFileStoreOptions File Store Options
+ * @param {Object} oOptions File Store Options
  * @param {Object} oLogger Logger
  * @Param {Array} aFiles Files
  */
-async function uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions, oLogger, aFiles) {
+async function uploadWithTransportUserMatch(oTransportManager, oOptions, oLogger, aFiles) {
     return new Promise((resolve, reject) => {
         oTransportManager.determineExistingTransport(async function(oError, sTransportNo) {
             if (oError) {
                 reject(oError);
                 return;
             } else if (sTransportNo) {
-                oFileStoreOptions.ui5.transportno = sTransportNo;
+                oOptions.ui5.transportno = sTransportNo;
                 try {
-                    await syncFiles(oFileStoreOptions, oLogger, aFiles);
+                    await syncFiles(oOptions, oLogger, aFiles);
                     resolve();
                     return;
                 } catch (oError) {
                     reject(oError);
                     return;
                 }
-            } else if (oFileStoreOptions.ui5.create_transport === true) {
-                oTransportManager.createTransport(oFileStoreOptions.ui5.package, oFileStoreOptions.ui5.transport_text, async function(oError, sTransportNo) {
+            } else if (oOptions.ui5.create_transport === true) {
+                oTransportManager.createTransport(oOptions.ui5.package, oOptions.ui5.transport_text, async function(oError, sTransportNo) {
                     if (oError) {
                         reject(oError);
                         return;
                     }
-                    oFileStoreOptions.ui5.transportno = sTransportNo;
+                    oOptions.ui5.transportno = sTransportNo;
                     try {
-                        await syncFiles(oFileStoreOptions, oLogger, aFiles);
+                        await syncFiles(oOptions, oLogger, aFiles);
                         resolve();
                         return;
                     } catch (oError) {
@@ -126,30 +125,29 @@ async function uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions
  */
 exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
     return new Promise(async function(resolve, reject) {
-        let oFileStoreOptions = {};
+        let oOptionsAdapted = {};
 
-        oFileStoreOptions = Object.assign(oFileStoreOptions, oOptions);
+        oOptionsAdapted = Object.assign(oOptionsAdapted, oOptions);
 
-        if (!oFileStoreOptions.ui5.language) {
-            oFileStoreOptions.ui5.language = "EN";
+        if (!oOptionsAdapted.ui5.language) {
+            oOptionsAdapted.ui5.language = "EN";
         }
 
-        if (!oFileStoreOptions.conn.hasOwnProperty("useStrictSSL")) {
-            oFileStoreOptions.conn.useStrictSSL = true;
+        if (!oOptionsAdapted.conn.hasOwnProperty("useStrictSSL")) {
+            oOptionsAdapted.conn.useStrictSSL = true;
         }
 
         // checks on options
-        if (!checkOptions(oFileStoreOptions, oLogger)) {
+        if (!checkOptions(oOptionsAdapted, oLogger)) {
             reject(new Error("Configuration incorrect."));
             return;
         }
 
         // verbose log options
-        oLogger.logVerbose("Options: " + JSON.stringify(oFileStoreOptions));
+        oLogger.logVerbose("Options: " + JSON.stringify(oOptionsAdapted));
 
         // binary determination
         const aFilesAdapted = aFiles.map((oFile) => {
-            oFile.isBinary = isBinaryFile(oFile.content);
             return oFile;
         });
 
@@ -157,22 +155,22 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
         oLogger.logVerbose("Files: " + aFilesAdapted);
 
         // sync files
-        const oTransportManager = new TransportManager(oFileStoreOptions, oLogger);
+        const oTransportManager = new TransportManager(oOptionsAdapted, oLogger);
         let sExistingTransportNo = null;
         try {
-            sExistingTransportNo = await oTransportManager.determineExistingTransportForBspContainer(oFileStoreOptions.ui5.package, oFileStoreOptions.ui5.bspcontainer);
+            sExistingTransportNo = await oTransportManager.determineExistingTransportForBspContainer(oOptionsAdapted.ui5.package, oOptionsAdapted.ui5.bspcontainer);
         } catch (oError) {
             reject(oError);
             return;
         }
 
-        if (sExistingTransportNo && oFileStoreOptions.ui5.transport_use_locked) {
+        if (sExistingTransportNo && oOptionsAdapted.ui5.transport_use_locked) {
             // existing transport lock
-            oFileStoreOptions.ui5.transportno = sExistingTransportNo;
-            oLogger.log(`BSP Application ${oFileStoreOptions.ui5.bspcontainer} already locked in transport request ${sExistingTransportNo}. This transport request is used for deployment.`);
+            oOptionsAdapted.ui5.transportno = sExistingTransportNo;
+            oLogger.log(`BSP Application ${oOptionsAdapted.ui5.bspcontainer} already locked in transport request ${sExistingTransportNo}. This transport request is used for deployment.`);
             try {
-                await syncFiles(oFileStoreOptions, oLogger, aFilesAdapted);
-                resolve({ fileStoreOptions: oFileStoreOptions });
+                await syncFiles(oOptionsAdapted, oLogger, aFilesAdapted);
+                resolve({ oOptions: oOptionsAdapted });
                 return;
             } catch (oError) {
                 reject(oError);
@@ -180,29 +178,29 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
             }
         }
 
-        if (!oFileStoreOptions.ui5.package.startsWith("$") && oFileStoreOptions.ui5.transportno === undefined) {
-            if (oFileStoreOptions.ui5.transport_use_user_match) {
+        if (!oOptionsAdapted.ui5.package.startsWith("$") && oOptionsAdapted.ui5.transportno === undefined) {
+            if (oOptionsAdapted.ui5.transport_use_user_match) {
                 try {
-                    await uploadWithTransportUserMatch(oTransportManager, oFileStoreOptions, oLogger, aFilesAdapted);
-                    resolve({ fileStoreOptions: oFileStoreOptions });
+                    await uploadWithTransportUserMatch(oTransportManager, oOptionsAdapted, oLogger, aFilesAdapted);
+                    resolve({ oOptions: oOptionsAdapted });
                     return;
                 } catch (oError) {
                     reject(oError);
                     return;
                 }
-            } else if (oFileStoreOptions.ui5.create_transport === true) {
+            } else if (oOptionsAdapted.ui5.create_transport === true) {
                 // create new transport
-                oTransportManager.createTransport(oFileStoreOptions.ui5.package, oFileStoreOptions.ui5.transport_text, async function(oError, sTransportNo) {
+                oTransportManager.createTransport(oOptionsAdapted.ui5.package, oOptionsAdapted.ui5.transport_text, async function(oError, sTransportNo) {
                     if (oError) {
                         reject(oError);
                         return;
                     }
 
-                    oFileStoreOptions.ui5.transportno = sTransportNo;
+                    oOptionsAdapted.ui5.transportno = sTransportNo;
 
                     try {
-                        await syncFiles(oFileStoreOptions, oLogger, aFilesAdapted);
-                        resolve({ fileStoreOptions: oFileStoreOptions });
+                        await syncFiles(oOptionsAdapted, oLogger, aFilesAdapted);
+                        resolve({ oOptions: oOptionsAdapted });
                         return;
                     } catch (oError) {
                         reject(oError);
@@ -216,8 +214,8 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
             }
         } else {
             try {
-                await syncFiles(oFileStoreOptions, oLogger, aFilesAdapted);
-                resolve({ fileStoreOptions: oFileStoreOptions });
+                await syncFiles(oOptionsAdapted, oLogger, aFilesAdapted);
+                resolve({ oOptions: oOptionsAdapted });
                 return;
             } catch (oError) {
                 reject(oError);

@@ -7,6 +7,5 @@
     "language": "EN",
     "package": "$TMP",
     "bspContainer": "ZZ_GUI5UP_TMP01",
-    "bspContainerText": "Test UI5 Upload",
-    "calculateApplicationIndex": false
+    "bspContainerText": "Test UI5 Upload"
 }

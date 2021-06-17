@@ -1,5 +1,6 @@
 {
     "sap.app": {
-        "id": "de.fpf.test.Sample1"
+        "id": "de.fpf.test.Sample1",
+        "type": "application"
     }
 }

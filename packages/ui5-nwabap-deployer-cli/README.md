@@ -4,6 +4,9 @@
 
 `ui5-nwabap-deployer-cli` is a CLI tooling which allows to deploy UI5 sources to a SAP NetWeaver ABAP application server.
 
+Starting from version 2.0.0 this deployer uses the OData Service [/UI5/ABAP_RESPOSITORY_SRV](https://ui5.sap.com/#/topic/a883327a82ef4cc792f3c1e7b7a48de8) for deploying UI5 sources. Please make sure that the service is activated on your system (for details you can check SAP note [2999557](https://launchpad.support.sap.com/#/notes/2999557)). The new service does some sanity checks like e.g. virus scans. If you have not configured virus scan profiles or want to disable virus scanning please have a look to SAP note [2437892](https://launchpad.support.sap.com/#/notes/2437892).
+</br>Current deployer versions starting from version 2.0.0 can be used with SAP systems on which component SAP_UI 753 is installed. On systems with a lower version of component SAP_UI, you have to use version 1.x.x of this deployer.
+
 ## Install
 
 ### Global Installation
@@ -53,7 +56,6 @@ The `deploy` command deploys UI5 sources to an ABAP system. It provides followin
 |transportText |Text for transport to be created.|X (in case a transport has to be created)|-|
 |transportUseLocked |If a deplyoment failed due to the BSP application is locked in another transport, the old (original one) transport will be used to deploy the files.|-|false|
 |transportUseUserMatch |It will be tried to find a transport request of the given user. If no transport is found and createTransport is enabled a new one will be created and used for further file deployments.|-|false|
-|calculateApplicationIndex |Specify if you require the application index (program /UI5/APP_INDEX_CALCULATE) for the application to be recalculated after the BSP application is deployed. Note: This only works with team repository provider version 1.30.x or higher and User Interface Add-On 2.0 for SAP NetWeaver.|-|false|
 
 Providing the options for the `deploy` command can be done by a configuration file. By default the command searches for a file `./ui5deployrc`. Using the option `--config` an alternative file name can be provided. In the configuration file all options can be provided which are available as command line arguments. The configuration must be provided as JSON object.
 
@@ -81,8 +83,7 @@ Configuration file example with dummy data. Consider: Do not configure the user/
     "createTransport": false,
     "transportText": "Test Transport",
     "transportUseLocked": false,
-    "transportUseUserMatch": false,
-    "calculateApplicationIndex": true
+    "transportUseUserMatch": false
 }
 ```
 In a configuration file not all options must be maintained. It is possible to maintain standard options in the configuration file and provide other ones as command line arguments (like the user and password or the transport number). If an option is defined in the configuration file and provided as command line argument, always the value from the command line argument is taken.

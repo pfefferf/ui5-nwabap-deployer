@@ -1,1 +1,1 @@
-ui5-deployer deploy --config ./.ui5deployrc-tmp --user developer --pwd notMyRealPwd
+../../node_modules/.bin/ui5-deployer deploy --config ./.ui5deployrc-tmp --user developer --pwd notMyRealPwd

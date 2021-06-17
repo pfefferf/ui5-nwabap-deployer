@@ -25,14 +25,13 @@ const builder = (yargs) => {
         .option("createTransport", { description: "Create a new transport, default: false", boolean: true })
         .option("transportText", { description: "Text for new created transport", string: true })
         .option("transportUseUserMatch", { description: "Try to find an existing transport for the user, default: false", boolean: true })
-        .option("transportUseLocked", { description: "Use an existing transport in which the BSP container is locked, default: false", boolean: true })
-        .option("calculateApplicationIndex", { description: "Recalculated UI5 Application Index, default: false", boolean: true });
+        .option("transportUseLocked", { description: "Use an existing transport in which the BSP container is locked, default: false", boolean: true });
 };
 
 const handler = async (argv) => {
     const logger = new Logger();
 
-    logger.log("UI5 Deployer: Start deploying UI5 sources");
+    logger.log("UI5 Deployer: Start deploying UI5 sources.");
 
     let configData = undefined;
     try {
@@ -83,6 +82,7 @@ const handler = async (argv) => {
 
     try {
         await ui5DeployerCore.deployUI5toNWABAP(deployOptions, fileContents, logger);
+        logger.log("UI5 Deployer: UI5 sources successfully deployed.");
     } catch (error) {
         if (error) {
             logger.error(error.message);
@@ -114,8 +114,7 @@ const initDeployOptions = () => {
             create_transport: false,
             transport_text: undefined,
             transport_use_user_match: false,
-            transport_use_locked: false,
-            calc_appindex: false,
+            transport_use_locked: false
         }
     };
 };
@@ -189,9 +188,6 @@ const mapConfigToDeployOptions = (configData, deployOptions) => {
     if (configData.transportUseLocked !== undefined) {
         result.ui5.transport_use_locked = !!configData.transportUseLocked;
     }
-    if (configData.calculateApplicationIndex !== undefined) {
-        result.ui5.calc_appindex = !!configData.calculateApplicationIndex;
-    }
 
     return result;
 };
@@ -256,9 +252,6 @@ const mapArgumentsToDeployOptions = (argv, deployOptions) => {
     }
     if (argv.transportUseLocked !== undefined) {
         result.ui5.transport_use_locked = !!argv.transportUseLocked;
-    }
-    if (argv.calculateApplicationIndex !== undefined) {
-        result.ui5.calc_appindex = !!argv.calculateApplicationIndex;
     }
 
     return result;
