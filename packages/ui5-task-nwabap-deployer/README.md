@@ -4,6 +4,9 @@
 
 `ui5-task-nwabap-deployer` is a custom UI5 Tooling task which allows to directly deploy the builded sources to a SAP NetWeaver ABAP application server. 
 
+Starting from version 2.0.0 this deployer uses the OData Service [/UI5/ABAP_RESPOSITORY_SRV](https://ui5.sap.com/#/topic/a883327a82ef4cc792f3c1e7b7a48de8) for deploying UI5 sources. Please make sure that the service is activated on your system (for details you can check SAP note [2999557](https://launchpad.support.sap.com/#/notes/2999557)). The new service does some sanity checks like e.g. virus scans. If you have not configured virus scan profiles or want to disable virus scanning please have a look to SAP note [2437892](https://launchpad.support.sap.com/#/notes/2437892).
+</br>Current deployer versions starting from version 2.0.0 can be used with SAP systems on which component SAP_UI 753 is installed. On systems with a lower version of component SAP_UI, you have to use version 1.x.x of this deployer.
+
 ## Install
 ```bash
 npm install ui5-task-nwabap-deployer --save-dev
@@ -32,7 +35,6 @@ npm install ui5-task-nwabap-deployer --save-dev
     - transportText: optional `string` Text for transport to be created.
     - transportUseUserMatch: optional `true|false` It will be tried to find a transport request of the given user. If no transport is found and createTransport is enabled a new one will be created and used for further file deployments.
     - transportUseLocked: optional `true|false` If a deployment failed due to the BSP application is locked in another transport, the old (original one) transport will be used to deploy the files.
-    - calculateApplicationIndex: optional `true|false` Specify if you require the application index (program /UI5/APP_INDEX_CALCULATE) for the application to be recalculated after the BSP application is deployed. Note: This only works with team repository provider version 1.30.x or higher and User Interface Add-On 2.0 for SAP NetWeaver.
 
 ## Usage
 
@@ -76,8 +78,7 @@ builder:
         package: ZZ_UI5_REPO
         bspContainer: ZZ_UI5_TRACKED
         bspContainerText: UI5 Upload
-        transportNo: DEVK900000
-        calculateApplicationIndex: true      
+        transportNo: DEVK900000    
 ```
 
 ## Further Information

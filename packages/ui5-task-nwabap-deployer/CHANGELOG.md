@@ -1,3 +1,10 @@
+## 2.0.0 (2021-06-18)
+
+### Features
+- Usage of /UI5/ABAP_REPOSITORY_SRV service for deployment instead of Team Provider API. 
+  </br>Team Provider API was set to deprecated. As a consequence starting from version 2.0.0 this deployer supports only systems with at least SAP_UI 753 component installed.
+  </br>For all previous versions, version 1.x.x of this deployer needs to be used.
+
 ## 1.0.15 (2020-09-25)
 
 ### Feature

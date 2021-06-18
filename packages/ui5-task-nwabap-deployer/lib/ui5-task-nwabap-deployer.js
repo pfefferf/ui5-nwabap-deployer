@@ -18,6 +18,8 @@ require("dotenv").config();
 module.exports = async function({ workspace, dependencies, options }) {
     const oLogger = new Logger();
 
+    oLogger.log("Start deploying UI5 sources.");
+
     if ((options.configuration && !options.configuration.connection) && !process.env.UI5_TASK_NWABAP_DEPLOYER__SERVER) {
         return Promise.reject(new Error("Please provide a connection configuration."));
     }
@@ -74,8 +76,12 @@ module.exports = async function({ workspace, dependencies, options }) {
                 resource.setPath(resource.getPath().replace(
                     new RegExp(`^/resources/${options.projectNamespace}`), ""));
             }
+            let sPath = resource.getPath();
+            if (sPath.startsWith("/")) {
+                sPath = sPath.substring(1);
+            }
             return {
-              path: resource.getPath(),
+              path: sPath,
               content: await resource.getBuffer()
             };
         }));
@@ -101,13 +107,13 @@ module.exports = async function({ workspace, dependencies, options }) {
                 create_transport: !!options.configuration.ui5.createTransport,
                 transport_text: options.configuration.ui5.transportText,
                 transport_use_user_match: !!options.configuration.ui5.transportUseUserMatch,
-                transport_use_locked: !!options.configuration.ui5.transportUseLocked,
-                calc_appindex: !!options.configuration.ui5.calculateApplicationIndex
+                transport_use_locked: !!options.configuration.ui5.transportUseLocked
             }
         };
 
         try {
             await ui5DeployerCore.deployUI5toNWABAP(oDeployOptions, aFiles, oLogger);
+            oLogger.log("UI5 sources successfully deployed.");
         } catch (oError) {
             oLogger.error(oError);
             throw new Error(oError);

@@ -10,6 +10,8 @@ module.exports = function(grunt) {
         // eslint-disable-next-line no-invalid-this
         const done = this.async();
 
+        oLogger.log("Start deploying UI5 sources.");
+
         // options
         // eslint-disable-next-line no-invalid-this
         const oOptions = this.options({
@@ -63,7 +65,6 @@ module.exports = function(grunt) {
         };
 
         try {
-            oLogger.log("Start deploying UI5 sources.");
             await ui5Deployercore.deployUI5toNWABAP(oDeployOptions, aFiles, oLogger);
             oLogger.log("UI5 sources successfully deployed.");
         } catch (oError) {
