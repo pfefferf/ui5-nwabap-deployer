@@ -164,6 +164,11 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
             return;
         }
 
+        if (sExistingTransportNo && !oOptionsAdapted.ui5.transport_use_locked) {
+            reject(new Error(`BSP container already locked in transport ${sExistingTransportNo}. But it was not configured to reuse a transport with an existing lock.`));
+            return;
+        }
+
         if (sExistingTransportNo && oOptionsAdapted.ui5.transport_use_locked) {
             // existing transport lock
             oOptionsAdapted.ui5.transportno = sExistingTransportNo;

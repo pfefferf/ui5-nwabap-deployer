@@ -2,8 +2,10 @@
 
 # grunt-nwabap-ui5uploader
 
-'grunt-nwabap-ui5uploader' is a Grunt plugin which allows a developer to upload SAPUI5/OpenUI5 sources into a SAP NetWeaver ABAP system as part of the Grunt task chain. The behavior is (or should be) the same than it is known from the SAP Web IDE app deployment option "Deploy to SAPUI5 ABAP Repository" or from the "SAPUI5 ABAP Repository Team Provider" available for Eclipse via the "UI Development Toolkit for HTML5".
-The plugin allows a developer to deploy the sources to a SAP NetWeaver ABAP system by a Grunt task using a different IDE than Eclipse or SAP Web IDE (for instance WebStorm). The main benefit is to integrate the deployment process into a Continuous Integration environment, in which for instance a Jenkins server executes several build steps and finally deploys the sources to a SAP NetWeaver ABAP system if all previous build steps are ok.  
+'grunt-nwabap-ui5uploader' is a Grunt Plugin which allows a developer to deploy SAPUI5/OpenUI5 sources to a SAP NetWeaver ABAP system as part of the Grunt task chain. 
+
+Starting from version 2.0.0 this deployer uses the OData Service [/UI5/ABAP_RESPOSITORY_SRV](https://ui5.sap.com/#/topic/a883327a82ef4cc792f3c1e7b7a48de8) for deploying UI5 sources. Please make sure that the service is activated on your system (for details you can check SAP note [2999557](https://launchpad.support.sap.com/#/notes/2999557)). The new service does some sanity checks like e.g. virus scans. If you have not configured virus scan profiles or want to disable virus scanning please have a look to SAP note [2437892](https://launchpad.support.sap.com/#/notes/2437892).
+</br>Current deployer versions starting from version 2.0.0 can be used with SAP systems on which component SAP_UI 753 is installed. On systems with a lower version of component SAP_UI, you have to use version 1.x.x of this deployer.
 
 Some further information can be found in the [SAP Community](https://blogs.sap.com/2016/03/25/grunt-plugin-to-upload-ui5-sources-to-netweaver-abap/).
 
@@ -121,13 +123,6 @@ Type: `String`
 Optional in case options.ui5.package is set to '$TMP'.
 
 Defines the transport number which logs the changes. For the transport number it would also make sense to pass it via an argument.
-
-#### options.ui5.calc_appindex
-Type: `Boolean`
-Default: `false`
-
-Specify if you require the application index (program /UI5/APP_INDEX_CALCULATE) for the application to be recalculated after the BSP application is uploaded.
-Note: This only works with team repository provider version 1.30.x or higher and User Interface Add-On 2.0 for SAP NetWeaver.
 
 #### options.ui5.create_transport
 Type: `Boolean`

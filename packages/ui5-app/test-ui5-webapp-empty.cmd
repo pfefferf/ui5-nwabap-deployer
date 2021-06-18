@@ -1,1 +1,0 @@
-ui5 build --config ./ui5-webapp-empty.yaml

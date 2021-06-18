@@ -1,4 +1,4 @@
-## 2.0.0 (2021-06-17)
+## 2.0.0 (2021-06-18)
 
 ### Features
 - Usage of /UI5/ABAP_REPOSITORY_SRV service for deployment instead of Team Provider API. 
