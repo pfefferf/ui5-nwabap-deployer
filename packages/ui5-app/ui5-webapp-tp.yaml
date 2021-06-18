@@ -2,6 +2,10 @@ specVersion: "2.0"
 type: application
 metadata:
   name: ui5-app-webapp
+resources:
+  configuration:
+    paths:
+      webapp: webapp_tp  
 builder:
   customTasks:
   - name: ui5-task-nwabap-deployer
@@ -13,6 +17,5 @@ builder:
         language: EN
         transportNo: A4HK900098
         package: ZZ_FP_UI5_REPOSITORY
-        bspContainer: ZZ_GUI5UP_TP
+        bspContainer: ZZ_GUI5UP_TMP02
         bspContainerText: Test UI5 Upload
-        calculateApplicationIndex: true  

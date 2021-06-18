@@ -1,6 +1,6 @@
 {
   "name": "grunt-nwabap-ui5uploader",
-  "version": "1.0.7",
+  "version": "2.0.0",
   "description": "UI5 source upload to SAP NetWeaver ABAP",
   "author": {
     "name": "Florian Pfeffer",
@@ -21,8 +21,8 @@
     }
   ],     
   "engines": {
-    "node": ">= 8.5",
-    "npm": ">= 5"
+    "node": ">= 12",
+    "npm": ">= 6"
   },
   "keywords": [
     "gruntplugin",
@@ -35,6 +35,6 @@
     "grunt": "^1.0.1"
   },  
   "dependencies": {
-    "ui5-nwabap-deployer-core": "^1.0.10"
+    "ui5-nwabap-deployer-core": "^2.0.0"
   }   
 }

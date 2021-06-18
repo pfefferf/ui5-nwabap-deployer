@@ -3,7 +3,7 @@
 const axios = require("axios");
 const rax = require("retry-axios");
 const https = require("https");
-const util = require("./FileStoreUtil");
+const util = require("./Util");
 const ADT_BASE_URL = "/sap/bc/adt/";
 
 /**
@@ -84,6 +84,24 @@ AdtClient.prototype.determineCSRFToken = function(fnCallback) {
             return;
         }
     }.bind(this));
+};
+
+/**
+ * Determine a CSRF Token which is necessary for POST/PUT/DELETE operations; also the sapCookie is determined; promisified version
+ * @private
+ * @returns {Promise}
+ */
+AdtClient.prototype.determineCSRFTokenPromise = function() {
+    const that = this;
+    return new Promise((resolve, reject) => {
+        that.determineCSRFToken((error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
+    });
 };
 
 AdtClient.prototype.buildUrl = function(sUrl) {

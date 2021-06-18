@@ -1,0 +1,16 @@
+<mvc:View controllerName="de.fpf.test.controller.MainView" xmlns:html="http://www.w3.org/1999/xhtml"
+          xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+    <App>
+        <pages>
+            <Page title="{i18n>title}">
+                <content>
+                    <VBox>
+                        <Button text="{i18n>btnTxt}" press="onPress"></Button>
+                        <Image src="img/ui5logo.jpg"></Image>
+                        <Text text="{i18n>txtValue}"></Text>
+                    </VBox>
+                </content>
+            </Page>
+        </pages>
+    </App>
+</mvc:View>

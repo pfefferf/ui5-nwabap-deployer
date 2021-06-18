@@ -12,7 +12,7 @@ class Logger {
     }
 
     error(message) {
-        this._oGrunt.fail.warn(PREFIX + message);
+        this._oGrunt.log.writeln(PREFIX + message);
     }
 
     logVerbose(message) {

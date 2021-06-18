@@ -10,6 +10,8 @@ module.exports = function(grunt) {
         // eslint-disable-next-line no-invalid-this
         const done = this.async();
 
+        oLogger.log("Start deploying UI5 sources.");
+
         // options
         // eslint-disable-next-line no-invalid-this
         const oOptions = this.options({
@@ -58,13 +60,13 @@ module.exports = function(grunt) {
                 create_transport: !!oOptions.ui5.create_transport,
                 transport_text: oOptions.ui5.transport_text,
                 transport_use_user_match: !!oOptions.ui5.transport_use_user_match,
-                transport_use_locked: !!oOptions.ui5.transport_use_locked,
-                calc_appindex: !!oOptions.ui5.calc_appindex
+                transport_use_locked: !!oOptions.ui5.transport_use_locked
             }
         };
 
         try {
             await ui5Deployercore.deployUI5toNWABAP(oDeployOptions, aFiles, oLogger);
+            oLogger.log("UI5 sources successfully deployed.");
         } catch (oError) {
             oLogger.error(oError);
         }

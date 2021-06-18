@@ -1,7 +1,7 @@
 {
     "_version": "1.12.0",
     "sap.app": {
-      "id": "de.fpf.test.UploadTest01",
+      "id": "de.fpf.test.UploadTest02_TP",
       "type": "application",
       "i18n": "i18n/i18n.properties",
       "applicationVersion": {
