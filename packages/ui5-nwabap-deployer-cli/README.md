@@ -93,7 +93,7 @@ In a configuration file not all options must be maintained. It is possible to ma
 ### Deploy an UI5 app with creation/reusage of transport - command line arguments only
 
 ```bash
-ui5-deployer deploy --server http://localhost:8000 --client "001" --user DEVELOPER --pwd myDeveloperPwd --package ZZ_UI5_REPOSITORY --bspContainer ZZ_UI5_TEST --bspContainerText "Crazy UI5 App" --createTransport true --transportText "UI5 App Development" --transportUseLocked true --calculateApplicationIndex true
+ui5-deployer deploy --server http://localhost:8000 --client "001" --user DEVELOPER --pwd myDeveloperPwd --package ZZ_UI5_REPOSITORY --bspContainer ZZ_UI5_TEST --bspContainerText "Crazy UI5 App" --createTransport true --transportText "UI5 App Development" --transportUseLocked true
 ```
 
 ### Deploy an UI5 app - specific configuration file + user/password as command line arguments
