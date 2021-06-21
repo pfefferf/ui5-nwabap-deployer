@@ -36,7 +36,7 @@ The `deploy` command deploys UI5 sources to an ABAP system. It provides followin
 
 |Option|Description|Mandatory|Default Value|
 |:-|:-|:-|:-|
-|config |Configuration file containing options for. By default for a file './.ui5deployrc' is searched. If not file is found, it is ignored. Options defined in the configuration file are always overwritten in case they are applied on the command line. Consider to never store the user and password in the config file if the file is shared, provide them as command line arguments.|-|-|
+|config |Configuration file containing options for. By default for a file './.ui5deployrc' is searched. If no file is found, it is ignored. Options defined in the configuration file are always overwritten in case they are applied on the command line. Consider to never store the user and password in the config file if the file is shared, provide them as command line arguments.|-|-|
 |cwd |Directory in which files for deployment are available.|X|./dist|
 |files |Glob pattern to match files for deployment.|X|**/\*.\*|
 |server |SAP NetWeaver ABAP application server information in form protocol://host:port|X|-|
@@ -46,7 +46,7 @@ The `deploy` command deploys UI5 sources to an ABAP system. It provides followin
 |bearerToken |Bearer token used for authorization.|X (in user/pwd is not used)|-|
 |useStrictSSL |SSL mode handling. In case of self signed certificates the useStrictSSL mode option can be set to false to allow a deployment of files.|-|true|
 |proxy |Proxy to be used for communication to SAP NetWeaver ABAP application server, form protocol://host:port|-|-|
-|customQueryParams |Additional query parameters to be appended to the server calls. To be provied in form `parameterName=parameterValue`|-|-|
+|customQueryParams |Additional query parameters to be appended to the server calls. To be provided in form `parameterName=parameterValue`|-|-|
 |language |Language for deployment.|-|EN|
 |package |Defines the development package in which the BSP container for the UI5 sources is available or should be created.|X|-|
 |bspContainer |Defines the name of the BSP container used for the storage of the UI5 sources. Length is restricted to 15 characters (exclusive customer specific namespaces, e.g. /YYY/).|X|-|
@@ -54,7 +54,7 @@ The `deploy` command deploys UI5 sources to an ABAP system. It provides followin
 |transportNo |Defines the transport number which logs the changes|X (in case sources are not deployed as local objects)|-|
 |createTransport |Set this option to true in case a new transport should be created each time the application is deployed.|-|false|
 |transportText |Text for transport to be created.|X (in case a transport has to be created)|-|
-|transportUseLocked |If a deplyoment failed due to the BSP application is locked in another transport, the old (original one) transport will be used to deploy the files.|-|false|
+|transportUseLocked |If a deployment failed due to the BSP application is locked in another transport, the old (original one) transport will be used to deploy the files.|-|false|
 |transportUseUserMatch |It will be tried to find a transport request of the given user. If no transport is found and createTransport is enabled a new one will be created and used for further file deployments.|-|false|
 
 Providing the options for the `deploy` command can be done by a configuration file. By default the command searches for a file `./ui5deployrc`. Using the option `--config` an alternative file name can be provided. In the configuration file all options can be provided which are available as command line arguments. The configuration must be provided as JSON object.
@@ -88,6 +88,31 @@ Configuration file example with dummy data. Consider: Do not configure the user/
 ```
 In a configuration file not all options must be maintained. It is possible to maintain standard options in the configuration file and provide other ones as command line arguments (like the user and password or the transport number). If an option is defined in the configuration file and provided as command line argument, always the value from the command line argument is taken.
 
+### undeploy
+
+The `undeploy` command undeploys UI5 sources from an ABAP system. It provides following arguments.
+
+|Option|Description|Mandatory|Default Value|
+|:-|:-|:-|:-|
+|config |Configuration file containing options for. By default for a file './.ui5deployrc' is searched. If no file is found, it is ignored. Options defined in the configuration file are always overwritten in case they are applied on the command line. Consider to never store the user and password in the config file if the file is shared, provide them as command line arguments.|-|-|
+|server |SAP NetWeaver ABAP application server information in form protocol://host:port|X|-|
+|client |Client of SAP NetWeaver ABAP application server; if not set default client of server is used.|-|-|
+|user |User used for logon to SAP NetWeaver ABAP application server.|X (in case no bearer token is used)|-|
+|pwd |Password used for logon to SAP NetWeaver ABAP application server.|X (in case no bearer token is used)|-|
+|bearerToken |Bearer token used for authorization.|X (in user/pwd is not used)|-|
+|useStrictSSL |SSL mode handling. In case of self signed certificates the useStrictSSL mode option can be set to false to allow a deployment of files.|-|true|
+|proxy |Proxy to be used for communication to SAP NetWeaver ABAP application server, form protocol://host:port|-|-|
+|customQueryParams |Additional query parameters to be appended to the server calls. To be provided in form `parameterName=parameterValue`|-|-|
+|language |Language for deployment.|-|EN|
+|package |Defines the development package in which the BSP container for the UI5 sources is available.|X|-|
+|bspContainer |Defines the name of the BSP container used for the storage of the UI5 sources. Length is restricted to 15 characters (exclusive customer specific namespaces, e.g. /YYY/).|X|-|
+|transportNo |Defines the transport number which logs the changes|X (in case sources are not deployed as local objects)|-|
+|createTransport |Set this option to true in case a new transport should be created each time the application is undeployed.|-|false|
+|transportText |Text for transport to be created.|X (in case a transport has to be created)|-|
+|transportUseLocked |If an undeployment failed due to the BSP application is locked in another transport, the old (original one) transport will be used to undeploy the files.|-|false|
+
+Providing the options for the `undeploy` command can be done by a configuration file. By default the command searches for a file `./ui5deployrc`. Using the option `--config` an alternative file name can be provided. In the configuration file all options can be provided which are available as command line arguments. The configuration must be provided as JSON object. The same configuration file as for the `deploy` command can be used. Not relevant settings are ignored.
+
 ## Examples for `deploy` command
 
 ### Deploy an UI5 app with creation/reusage of transport - command line arguments only
@@ -100,6 +125,19 @@ ui5-deployer deploy --server http://localhost:8000 --client "001" --user DEVELOP
 ```bash
 ui5-deployer deploy --config ./.myspecificui5deployconfig --user DEVELOPER --pwd myDeveloperPwd 
 ```
+
+## Examples for `undeploy` command
+
+### Undeploy an UI5 app with creation/reusage of transport -- command line arguments only
+
+```bash
+ui5-deployer undeploy --server http://localhost:8000 --client "001" --user DEVELOPER --pwd myDeveloperPwd --package ZZ_UI5_REPOSITORY --bspContainer ZZ_UI5_TEST --createTransport true --transportText "UI5 App Development" --transportUseLocked true
+```
+
+### Undeploy an UI5 app - specific configuration file + user/password as command line arguments
+```bash
+ui5-deployer undeploy --config ./.myspecificui5deployconfig --user DEVELOPER --pwd myDeveloperPwd 
+``` 
 
 ## Release History
 

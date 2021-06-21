@@ -1,0 +1,12 @@
+{
+    "cwd": "./webapp_tp",
+    "files": "**/*.*",
+    "server": "http://vhcala4hci:50000",
+    "client": "001",
+    "useStrictSSL": false,
+    "language": "EN",
+    "package": "ZZ_UI5_REPOSITORY",
+    "bspContainer": "ZZ_GUI5UP_TMP02",
+    "bspContainerText": "Test UI5 Upload",
+    "transportNo": "A4HK900098"
+}
