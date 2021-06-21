@@ -1,7 +1,7 @@
-## 2.1.0 (20201-06-21)
+## 2.1.0 (2021-06-21)
 
 ### Features
-- Support for undeployment.
+- Support for undeploying a UI5 application.
 
 ## 2.0.0 (2021-06-18)
 
