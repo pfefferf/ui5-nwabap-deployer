@@ -1,3 +1,8 @@
+## 2.1.0 (2021-06-21)
+
+### Features
+- `undeploy` command supports undeploying a UI5 application.
+
 ## 2.0.0 (2021-06-18)
 
 ### Features

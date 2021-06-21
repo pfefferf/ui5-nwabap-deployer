@@ -4,21 +4,86 @@ const UI5ABAPRepoClient = require("./UI5ABAPRepoClient");
 const TransportManager = require("./TransportManager");
 
 /**
- * Checks on Options
+ * Set default for language option
+ * @param {Object} oOptions Options
+ * @returns {object} Options
+ */
+ function setDefaultLanguage(oOptions) {
+    if (!oOptions.ui5.language) {
+        oOptions.ui5.language = "EN";
+    }
+    return oOptions;
+}
+
+/**
+ * Set default for use strict ssl option
+ * @param {Object} oOptions Options
+ * @returns {object} Options
+ */
+ function setDefaultUseStrictSSL(oOptions) {
+    if (!oOptions.conn.hasOwnProperty("useStrictSSL")) {
+        oOptions.conn.useStrictSSL = true;
+    }
+    return oOptions;
+}
+
+
+/**
+ * Checks on Connection Options
  * @param {Object} oOptions Options
  * @param {Object} oLogger Logger
  * @returns {Boolean} checks successful?
  */
-function checkOptions(oOptions, oLogger) {
-    let bCheckSuccessful = true;
-
+function checkConnectionOptions(oOptions, oLogger) {
     if (!oOptions.conn || !oOptions.conn.server) {
         oLogger.error("Connection configuration not (fully) specificed (check server).");
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Checks on Authentication Options
+ * @param {Object} oOptions Options
+ * @param {Object} oLogger Logger
+ * @returns {Boolean} checks successful?
+ */
+ function checkAuthenticationOptions(oOptions, oLogger) {
+    if (!oOptions.auth || (!oOptions.auth.bearer_token && (!oOptions.auth.user || !oOptions.auth.pwd)) ) {
+        oLogger.error("Authentication configuration not correct (check user/password or bearer token).");
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Checks on Create Transport Options
+ * @param {Object} oOptions Options
+ * @param {Object} oLogger Logger
+ * @returns {Boolean} checks successful?
+ */
+ function checkCreateTransport(oOptions, oLogger) {
+    if (oOptions.ui5.create_transport === true && typeof oOptions.ui5.transport_text !== "string") {
+        oLogger.error("Please specify a description to be used for the transport to be created.");
+        return false;
+    }
+    return true;
+ }
+
+/**
+ * Checks on Deploy Options
+ * @param {Object} oOptions Options
+ * @param {Object} oLogger Logger
+ * @returns {Boolean} checks successful?
+ */
+function checkDeployOptions(oOptions, oLogger) {
+    let bCheckSuccessful = true;
+
+    if (!checkConnectionOptions(oOptions, oLogger)) {
         bCheckSuccessful = false;
     }
 
-    if (!oOptions.auth || (!oOptions.auth.bearer_token && (!oOptions.auth.user || !oOptions.auth.pwd)) ) {
-        oLogger.error("Authentication configuration not correct (check user/password or bearer token).");
+    if (!checkAuthenticationOptions(oOptions, oLogger)) {
         bCheckSuccessful = false;
     }
 
@@ -33,17 +98,51 @@ function checkOptions(oOptions, oLogger) {
         bCheckSuccessful = false;
     }
 
-    if (oOptions.ui5.create_transport === true && typeof oOptions.ui5.transport_text !== "string") {
-        oLogger.error("Please specify a description to be used for the created transport.");
+    if (!checkCreateTransport(oOptions, oLogger)) {
         bCheckSuccessful = false;
     }
 
     if (oOptions.ui5 && oOptions.ui5.bspcontainer) {
         const bspcontainerExclNamespace = oOptions.ui5.bspcontainer.substring(oOptions.ui5.bspcontainer.lastIndexOf("/") + 1);
         if (bspcontainerExclNamespace.length > 15) {
-            oLogger.error("BSP Container option must not be longer than 15 characters (exclusive customer specific namespace e.g. /YYY/.");
+            oLogger.error("BSP Container name must not be longer than 15 characters (exclusive customer specific namespace e.g. /YYY/.");
             bCheckSuccessful = false;
         }
+    }
+
+    return bCheckSuccessful;
+}
+
+/**
+ * Checks on Uneploy Options
+ * @param {Object} oOptions Options
+ * @param {Object} oLogger Logger
+ * @returns {Boolean} checks successful?
+ */
+function checkUndeployOptions(oOptions, oLogger) {
+    let bCheckSuccessful = true;
+
+    if (!checkConnectionOptions(oOptions, oLogger)) {
+        bCheckSuccessful = false;
+    }
+
+    if (!checkAuthenticationOptions(oOptions, oLogger)) {
+        bCheckSuccessful = false;
+    }
+
+    if (!oOptions.ui5 || !oOptions.ui5.package || !oOptions.ui5.bspcontainer ) {
+        oLogger.error("Please specify a Package and a BSP container.");
+        bCheckSuccessful = false;
+    }
+
+    if (oOptions.ui5 && oOptions.ui5.package && !oOptions.ui5.package.startsWith("$") && !oOptions.ui5.transportno &&
+        oOptions.ui5.create_transport !== true) {
+        oLogger.error("For non-local packages (package name does not start with a \"$\") a transport number is necessary.");
+        bCheckSuccessful = false;
+    }
+
+    if (!checkCreateTransport(oOptions, oLogger)) {
+        bCheckSuccessful = false;
     }
 
     return bCheckSuccessful;
@@ -57,9 +156,8 @@ function checkOptions(oOptions, oLogger) {
  */
 function syncFiles(oOptions, oLogger, aFiles) {
     return new Promise(async (resolve, reject) => {
-        const oRepoClient = new UI5ABAPRepoClient(oOptions, oLogger);
-
         try {
+            const oRepoClient = new UI5ABAPRepoClient(oOptions, oLogger);
             await oRepoClient.deployRepo(aFiles);
             resolve();
             return;
@@ -129,22 +227,17 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
 
         oOptionsAdapted = Object.assign(oOptionsAdapted, oOptions);
 
-        if (!oOptionsAdapted.ui5.language) {
-            oOptionsAdapted.ui5.language = "EN";
-        }
-
-        if (!oOptionsAdapted.conn.hasOwnProperty("useStrictSSL")) {
-            oOptionsAdapted.conn.useStrictSSL = true;
-        }
+        oOptionsAdapted = setDefaultLanguage(oOptionsAdapted);
+        oOptionsAdapted = setDefaultUseStrictSSL(oOptionsAdapted);
 
         // checks on options
-        if (!checkOptions(oOptionsAdapted, oLogger)) {
+        if (!checkDeployOptions(oOptionsAdapted, oLogger)) {
             reject(new Error("Configuration incorrect."));
             return;
         }
 
         // verbose log options
-        oLogger.logVerbose("Options: " + JSON.stringify(oOptionsAdapted));
+        oLogger.logVerbose(`Options: ${JSON.stringify(oOptionsAdapted)}`);
 
         // binary determination
         const aFilesAdapted = aFiles.map((oFile) => {
@@ -164,7 +257,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
             return;
         }
 
-        if (sExistingTransportNo && !oOptionsAdapted.ui5.transport_use_locked) {
+        if (sExistingTransportNo && !oOptionsAdapted.ui5.transport_use_locked && ((!oOptionsAdapted.ui5 || !oOptionsAdapted.ui5.transportno) || (oOptionsAdapted.ui5 && oOptionsAdapted.ui5.transportno !== sExistingTransportNo))) {
             reject(new Error(`BSP container already locked in transport ${sExistingTransportNo}. But it was not configured to reuse a transport with an existing lock.`));
             return;
         }
@@ -229,3 +322,79 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
         }
     });
 };
+
+/**
+ * Central function to undeploy UI5 sources from a SAP NetWeaver ABAP system.
+ * @param {Object} oOptions Options
+ * @param {Object} oLogger Logger
+ */
+ exports.undeployUI5fromNWABAP = async function(oOptions, oLogger) {
+    return new Promise(async function(resolve, reject) {
+        let oOptionsAdapted = {};
+
+        oOptionsAdapted = Object.assign(oOptionsAdapted, oOptions);
+
+        oOptionsAdapted = setDefaultLanguage(oOptionsAdapted);
+        oOptionsAdapted = setDefaultUseStrictSSL(oOptionsAdapted);
+
+        // checks on options
+        if (!checkUndeployOptions(oOptionsAdapted, oLogger)) {
+            reject(new Error("Configuration incorrect."));
+            return;
+        }
+
+        // verbose log options
+        oLogger.logVerbose(`Options: ${JSON.stringify(oOptionsAdapted)}`);
+
+        // determine existing transport
+        const oTransportManager = new TransportManager(oOptionsAdapted, oLogger);
+        let sExistingTransportNo = null;
+        try {
+            sExistingTransportNo = await oTransportManager.determineExistingTransportForBspContainer(oOptionsAdapted.ui5.package, oOptionsAdapted.ui5.bspcontainer);
+        } catch (oError) {
+            reject(oError);
+            return;
+        }
+
+        if (sExistingTransportNo && !oOptionsAdapted.ui5.transport_use_locked && ((!oOptionsAdapted.ui5 || !oOptionsAdapted.ui5.transportno) || (oOptionsAdapted.ui5 && oOptionsAdapted.ui5.transportno !== sExistingTransportNo))) {
+            reject(new Error(`BSP container already locked in transport ${sExistingTransportNo}. But it was not configured to reuse a transport with an existing lock.`));
+            return;
+        }
+
+        // use existing transport if required
+        if (sExistingTransportNo && oOptionsAdapted.ui5.transport_use_locked) {
+            oOptionsAdapted.ui5.transportno = sExistingTransportNo;
+            oLogger.log(`BSP Application ${oOptionsAdapted.ui5.bspcontainer} already locked in transport request ${sExistingTransportNo}. This transport request is used for undeploy.`);
+        }
+
+        // create new transport if necessary
+        let oRepoClient = new UI5ABAPRepoClient(oOptionsAdapted, oLogger);
+        let isRepoExisting = false;
+        try {
+            isRepoExisting = await oRepoClient.isRepoExisting();
+        } catch (oError) {
+            reject(oError);
+        }
+
+        if (oOptionsAdapted.ui5.create_transport && !sExistingTransportNo && isRepoExisting) {
+            try {
+                const sTransportNo = await oTransportManager.createTransportPromise(oOptionsAdapted.ui5.package, oOptionsAdapted.ui5.transport_text);
+                oOptionsAdapted.ui5.transportno = sTransportNo;
+            } catch (oError) {
+                reject(oError);
+                return;
+            }
+        }
+
+        // undeploy
+        try {
+            oRepoClient = new UI5ABAPRepoClient(oOptionsAdapted, oLogger);
+            await oRepoClient.undeployRepo();
+            resolve({ oOptions: oOptionsAdapted });
+            return;
+        } catch (oError) {
+            reject(oError);
+            return;
+        }
+    });
+ };

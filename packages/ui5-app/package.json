@@ -1,6 +1,6 @@
 {
   "name": "ui5-app",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Test",
   "author": {
     "name": "Florian Pfeffer",
@@ -29,7 +29,7 @@
     "grunt": "^1.0.1",
     "grunt-nwabap-ui5uploader": "2.0.0",
     "ui5-task-nwabap-deployer": "2.0.0",
-    "ui5-nwabap-deployer-cli": "2.0.0"
+    "ui5-nwabap-deployer-cli": "2.1.0"
   },
   "ui5": {
     "dependencies": [
@@ -41,6 +41,13 @@
     "deploy:only": "ui5 build --config ui5-webapp.yaml --exclude-task * --include-task ui5-task-nwabap-deployer",
     "deploy:tp": "ui5 build --config ui5-webapp-tp.yaml",
     "deploy:create-tp": "ui5 build --config ui5-webapp-create-tp.yaml",
-    "deploy:cli:conf": "ui5-deployer deploy --config .ui5deployrc-tmp"
+    "deploy:cli": "ui5-deployer deploy",
+    "deploy:cli:conf": "ui5-deployer deploy --config .ui5deployrc-tmp",
+    "deploy:cli:conf:tp": "ui5-deployer deploy --config .ui5deployrc-tmp-tp",
+    "deploy:cli:conf:create-tp": "ui5-deployer deploy --config .ui5deployrc-tmp-create-tp",
+    "undeploy:cli": "ui5-deployer undeploy",
+    "undeploy:cli:conf": "ui5-deployer undeploy --config .ui5deployrc-tmp",
+    "undeploy:cli:conf:tp": "ui5-deployer undeploy --config .ui5deployrc-tmp-tp",
+    "undeploy:cli:conf:create-tp": "ui5-deployer undeploy --config .ui5deployrc-tmp-create-tp"
   }
 }

@@ -39,6 +39,8 @@ module.exports = class UI5ABAPRepoClient {
      * @returns (boolean) repository existing
      */
     async isRepoExisting() {
+        await this._client.determineCSRFTokenPromise();
+
         const sUrl = `${this.getServiceUrl()}('${encodeURIComponent(this._oOptions.ui5.bspcontainer)}')`;
 
         const oRequestOptions = {
@@ -59,9 +61,8 @@ module.exports = class UI5ABAPRepoClient {
      * @param {Array} aFiles Files to be deployed
      */
     async deployRepo(aFiles) {
-        await this._client.determineCSRFTokenPromise();
-
         const isRepoExisting = await this.isRepoExisting();
+        await this._client.determineCSRFTokenPromise();
 
         function stream2buffer(readableStream) {
             return new Promise((resolve, reject) => {
@@ -94,7 +95,7 @@ module.exports = class UI5ABAPRepoClient {
         sUrl = sUrl + "?CodePage='UTF8'";
 
         if (this._oOptions.ui5.transportno) {
-            sUrl += sUrl + "&TransportRequest=" + this._oOptions.ui5.transportno;
+            sUrl = sUrl + "&TransportRequest=" + this._oOptions.ui5.transportno;
         }
 
         const oRequestOptions = {
@@ -115,6 +116,36 @@ module.exports = class UI5ABAPRepoClient {
         const oResponse = await this._client.sendRequestPromise(oRequestOptions);
 
         if (oResponse.statusCode !== util.HTTPSTAT.created && oResponse.statusCode !== util.HTTPSTAT.no_content ) {
+            throw new Error(util.createResponseError(typeof oResponse.body === "object" ? JSON.stringify(oResponse.body, null, 4) : oResponse.body));
+        }
+    }
+
+    /**
+     * UI5 repo undeployment
+     */
+    async undeployRepo() {
+        const isRepoExisting = await this.isRepoExisting();
+        await this._client.determineCSRFTokenPromise();
+
+        if (!isRepoExisting) {
+            throw new Error(util.createResponseError(`BSP Container ${this._oOptions.ui5.bspcontainer} does not exist. Undeploy cancelled.`));
+        }
+
+        let sUrl = `${this.getServiceUrl()}`;
+        sUrl = sUrl + `('${encodeURIComponent(this._oOptions.ui5.bspcontainer)}')`;
+
+        if (this._oOptions.ui5.transportno) {
+            sUrl = sUrl + "?TransportRequest=" + this._oOptions.ui5.transportno;
+        }
+
+        const oRequestOptions = {
+            method: "DELETE",
+            url: sUrl
+        };
+
+        const oResponse = await this._client.sendRequestPromise(oRequestOptions);
+
+        if (oResponse.statusCode !== util.HTTPSTAT.ok && oResponse.statusCode !== util.HTTPSTAT.no_content) {
             throw new Error(util.createResponseError(typeof oResponse.body === "object" ? JSON.stringify(oResponse.body, null, 4) : oResponse.body));
         }
     }

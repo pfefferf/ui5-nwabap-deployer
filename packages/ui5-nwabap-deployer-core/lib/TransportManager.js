@@ -57,6 +57,19 @@ TransportManager.prototype.createTransport = function(sPackageName, sRequestText
     }.bind(this));
 };
 
+TransportManager.prototype.createTransportPromise = function(sPackageName, sRequestText) {
+    const that = this;
+    return new Promise((resolve, reject) => {
+        that.createTransport(sPackageName, sRequestText, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};
+
 /**
  * Determines if a transport with the given text already exists. If true the callback returns the transport no
  * otherwise the cb returns null.
