@@ -20,14 +20,17 @@ module.exports = async function({ workspace, dependencies, options }) {
 
     oLogger.log("Start deploying UI5 sources.");
 
-    let bTestMode = !!process.env.UI5_TASK_NWABAP_DEPLOYER__TESTMODE;
-
     if ((options.configuration && !options.configuration.connection) && !process.env.UI5_TASK_NWABAP_DEPLOYER__SERVER) {
         return Promise.reject(new Error("Please provide a connection configuration."));
     }
 
     if (options.configuration && !options.configuration.connection) {
         options.configuration.connection = {};
+    }
+
+    let bTestMode = !!process.env.UI5_TASK_NWABAP_DEPLOYER__TESTMODE;
+    if (options.configuration && options.configuration.connection.testMode) {
+        bTestMode = options.configuration.connection.testMode;
     }
 
     let sServer = process.env.UI5_TASK_NWABAP_DEPLOYER__SERVER;
