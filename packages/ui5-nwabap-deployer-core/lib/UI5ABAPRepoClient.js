@@ -98,6 +98,10 @@ module.exports = class UI5ABAPRepoClient {
             sUrl = sUrl + "&TransportRequest=" + this._oOptions.ui5.transportno;
         }
 
+        if (this._oOptions.conn.testMode) {
+            sUrl + "$TestMode=TRUE"
+        }
+
         const oRequestOptions = {
             method: isRepoExisting ? "PUT" : "POST",
             url: sUrl,

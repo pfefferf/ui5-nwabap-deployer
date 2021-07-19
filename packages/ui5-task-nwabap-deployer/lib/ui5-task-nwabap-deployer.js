@@ -20,6 +20,8 @@ module.exports = async function({ workspace, dependencies, options }) {
 
     oLogger.log("Start deploying UI5 sources.");
 
+    let bTestMode = !!process.env.UI5_TASK_NWABAP_DEPLOYER__TESTMODE;
+
     if ((options.configuration && !options.configuration.connection) && !process.env.UI5_TASK_NWABAP_DEPLOYER__SERVER) {
         return Promise.reject(new Error("Please provide a connection configuration."));
     }
@@ -92,7 +94,8 @@ module.exports = async function({ workspace, dependencies, options }) {
                 client: sClient,
                 useStrictSSL: options.configuration.connection.useStrictSSL,
                 proxy: options.configuration.connection.proxy,
-                customQueryParams: options.configuration.connection.customQueryParams ? options.configuration.connection.customQueryParams : {}
+                customQueryParams: options.configuration.connection.customQueryParams ? options.configuration.connection.customQueryParams : {},
+                testMode: bTestMode
             },
             auth: {
                 user: sUser,
