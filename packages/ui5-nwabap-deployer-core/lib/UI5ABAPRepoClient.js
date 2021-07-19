@@ -99,7 +99,7 @@ module.exports = class UI5ABAPRepoClient {
         }
 
         if (this._oOptions.conn.testMode) {
-            sUrl + "$TestMode=TRUE";
+            sUrl + "&TestMode=TRUE";
         }
 
         const oRequestOptions = {
