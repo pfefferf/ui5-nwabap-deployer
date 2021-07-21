@@ -28,6 +28,11 @@ module.exports = async function({ workspace, dependencies, options }) {
         options.configuration.connection = {};
     }
 
+    let bTestMode = !!process.env.UI5_TASK_NWABAP_DEPLOYER__TESTMODE;
+    if (options.configuration && options.configuration.connection.testMode) {
+        bTestMode = options.configuration.connection.testMode;
+    }
+
     let sServer = process.env.UI5_TASK_NWABAP_DEPLOYER__SERVER;
 
     if (options.configuration && options.configuration.connection && options.configuration.connection.server) {
@@ -92,7 +97,8 @@ module.exports = async function({ workspace, dependencies, options }) {
                 client: sClient,
                 useStrictSSL: options.configuration.connection.useStrictSSL,
                 proxy: options.configuration.connection.proxy,
-                customQueryParams: options.configuration.connection.customQueryParams ? options.configuration.connection.customQueryParams : {}
+                customQueryParams: options.configuration.connection.customQueryParams ? options.configuration.connection.customQueryParams : {},
+                testMode: bTestMode
             },
             auth: {
                 user: sUser,
