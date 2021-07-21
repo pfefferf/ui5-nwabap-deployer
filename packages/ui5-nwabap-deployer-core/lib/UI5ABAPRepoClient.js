@@ -119,7 +119,7 @@ module.exports = class UI5ABAPRepoClient {
 
         const oResponse = await this._client.sendRequestPromise(oRequestOptions);
 
-        if (this.doesResponseContainAnError(oResponse)) {
+        if (this.doesResponseContainAnError(oResponse, this._oOptions.conn.testMode)) {
             throw new Error(util.createResponseError(typeof oResponse.body === "object" ? JSON.stringify(oResponse.body, null, 4) : oResponse.body));
         }
     }
@@ -155,7 +155,7 @@ module.exports = class UI5ABAPRepoClient {
 
         const oResponse = await this._client.sendRequestPromise(oRequestOptions);
 
-        if (this.doesResponseContainAnError(oResponse)) {
+        if (this.doesResponseContainAnError(oResponse, this._oOptions.conn.testMode)) {
             throw new Error(util.createResponseError(typeof oResponse.body === "object" ? JSON.stringify(oResponse.body, null, 4) : oResponse.body));
         }
     }
@@ -163,9 +163,10 @@ module.exports = class UI5ABAPRepoClient {
     /**
      * Check if response contains an error.
      * @param {Object} oResponse Request response
+     * @param {boolean} bTestMode Flag indicating use of TestMode
      * @returns {boolean} Info if response contains an error
      */
-    doesResponseContainAnError(oResponse) {
+    doesResponseContainAnError(oResponse, bTestMode) {
         let bErrorOccurred = false;
 
         if (oResponse.body.errordetails) {
@@ -175,7 +176,9 @@ module.exports = class UI5ABAPRepoClient {
 
             bErrorOccurred = idx !== -1;
         } else if (oResponse.statusCode !== util.HTTPSTAT.ok && oResponse.statusCode !== util.HTTPSTAT.created && oResponse.statusCode !== util.HTTPSTAT.no_content) {
-            bErrorOccurred = true;
+            if(bTestMode && oResponse.statusCode === util.HTTPSTAT.not_authorized && oResponse.body.error.code !== "/UI5/UI5_REP_LOAD/004") {
+                bErrorOccurred = true;
+            }
         }
 
         return bErrorOccurred;
