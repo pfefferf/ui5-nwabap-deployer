@@ -176,7 +176,7 @@ module.exports = class UI5ABAPRepoClient {
 
             bErrorOccurred = idx !== -1;
         } else if (oResponse.statusCode !== util.HTTPSTAT.ok && oResponse.statusCode !== util.HTTPSTAT.created && oResponse.statusCode !== util.HTTPSTAT.no_content) {
-            if(bTestMode && oResponse.statusCode === util.HTTPSTAT.not_authorized && oResponse.body.error.code !== "/UI5/UI5_REP_LOAD/004") {
+            if (bTestMode && oResponse.statusCode === util.HTTPSTAT.not_authorized && oResponse.body.error.code !== "/UI5/UI5_REP_LOAD/004") {
                 bErrorOccurred = true;
             }
         }
