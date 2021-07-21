@@ -76,6 +76,12 @@ Type: `String`
 
 Optional parameter to specify proxy used for communication with SAP NetWeaver ABAP server (for instance 'http://myproxyhost:3128').
 
+#### options.conn.testMode
+Type: `Boolean`
+Default: `false`
+
+Optional parameter to define if upload is done in test mode or not.
+
 #### options.conn.customQueryParams
 Type: `Object`
 

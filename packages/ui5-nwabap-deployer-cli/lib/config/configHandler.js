@@ -26,6 +26,9 @@ const mapConfigToOptions = (configData, options) => {
     if (configData.proxy) {
         result.conn.proxy = configData.proxy;
     }
+    if (configData.testMode !== undefined) {
+        result.conn.testMode = !!configData.testMode;
+    }
     if (configData.customQueryParams) {
         Object.keys(configData.customQueryParams).forEach((key) => {
             result.conn.customQueryParams[key] = configData.customQueryParams[key];
@@ -87,6 +90,9 @@ const mapArgumentsToOptions = (argv, options) => {
     }
     if (argv.proxy) {
         result.conn.proxy = argv.proxy;
+    }
+    if (argv.testMode !== undefined) {
+        result.conn.testMode = !!argv.testMode;
     }
     if (argv.customQueryParams) {
         argv.customQueryParams.forEach((queryParam) => {

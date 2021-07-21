@@ -1,6 +1,6 @@
 {
   "name": "ui5-app",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Test",
   "author": {
     "name": "Florian Pfeffer",
@@ -22,14 +22,14 @@
   ],
   "engines": {
     "node": ">= 12",
-    "npm": ">= 6"
+    "npm": ">= 7"
   },
   "devDependencies": {
     "@ui5/cli": "^2.4.4",
     "grunt": "^1.0.1",
-    "grunt-nwabap-ui5uploader": "2.0.0",
-    "ui5-task-nwabap-deployer": "2.0.0",
-    "ui5-nwabap-deployer-cli": "2.1.0"
+    "grunt-nwabap-ui5uploader": "2.1.0",
+    "ui5-task-nwabap-deployer": "2.1.0",
+    "ui5-nwabap-deployer-cli": "2.2.0"
   },
   "ui5": {
     "dependencies": [
@@ -48,6 +48,7 @@
     "undeploy:cli": "ui5-deployer undeploy",
     "undeploy:cli:conf": "ui5-deployer undeploy --config .ui5deployrc-tmp",
     "undeploy:cli:conf:tp": "ui5-deployer undeploy --config .ui5deployrc-tmp-tp",
-    "undeploy:cli:conf:create-tp": "ui5-deployer undeploy --config .ui5deployrc-tmp-create-tp"
+    "undeploy:cli:conf:create-tp": "ui5-deployer undeploy --config .ui5deployrc-tmp-create-tp",
+    "deploy:grunt:testmode": "grunt nwabap_ui5uploader:upload_webapp --testMode=true"
   }
 }

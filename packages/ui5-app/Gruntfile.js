@@ -7,6 +7,7 @@ module.exports = function (grunt) {
     const sUser = grunt.option("user");
     const sPwd = grunt.option("pwd");
     const sServer = grunt.option("server");
+    const bTestMode = !!grunt.option("testMode");
 
     grunt.initConfig({
 
@@ -18,7 +19,8 @@ module.exports = function (grunt) {
                     customQueryParams: {
                         spnego: "disabled/test1/test2",
                         test2: "test2Value"
-                    }  
+                    },
+                    testMode: bTestMode
                 },
                 auth: {
                     user: sUser,
@@ -37,7 +39,7 @@ module.exports = function (grunt) {
                         src: "**/*.*"
                     }
                 }
-            },
+            },           
             upload_webapp_with_transport: {
                 options: {
                     ui5: {

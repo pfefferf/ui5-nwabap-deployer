@@ -18,7 +18,7 @@ const TransportManager = require("./TransportManager");
 /**
  * Set default for use strict ssl option
  * @param {Object} oOptions Options
- * @returns {object} Options
+ * @returns {Object} Options
  */
  function setDefaultUseStrictSSL(oOptions) {
     if (!oOptions.conn.hasOwnProperty("useStrictSSL")) {
@@ -27,6 +27,20 @@ const TransportManager = require("./TransportManager");
     return oOptions;
 }
 
+/**
+ * Set default test mode to false
+ * @param {Object} oOptions Options
+ * @returns {Object} Options
+ */
+function setDefaultTestMode(oOptions) {
+    if (!oOptions.conn.hasOwnProperty("testMode")) {
+        oOptions.conn.testMode = false;
+    } else if (oOptions.conn.testMode === true) {
+        // set all transport related options in a way that it is not tried to to create a transport
+        oOptions.ui5.create_transport = false;
+    }
+    return oOptions;
+}
 
 /**
  * Checks on Connection Options
@@ -36,7 +50,7 @@ const TransportManager = require("./TransportManager");
  */
 function checkConnectionOptions(oOptions, oLogger) {
     if (!oOptions.conn || !oOptions.conn.server) {
-        oLogger.error("Connection configuration not (fully) specificed (check server).");
+        oLogger.error("Connection configuration not (fully) specified (check server).");
         return false;
     }
     return true;
@@ -93,7 +107,7 @@ function checkDeployOptions(oOptions, oLogger) {
     }
 
     if (oOptions.ui5 && oOptions.ui5.package && !oOptions.ui5.package.startsWith("$") && !oOptions.ui5.transportno &&
-        oOptions.ui5.create_transport !== true && oOptions.ui5.transport_use_user_match !== true) {
+        oOptions.ui5.create_transport !== true && oOptions.ui5.transport_use_user_match !== true && oOptions.conn.testMode !== true) {
         oLogger.error("For non-local packages (package name does not start with a \"$\") a transport number is necessary.");
         bCheckSuccessful = false;
     }
@@ -114,7 +128,7 @@ function checkDeployOptions(oOptions, oLogger) {
 }
 
 /**
- * Checks on Uneploy Options
+ * Checks on Undeploy Options
  * @param {Object} oOptions Options
  * @param {Object} oLogger Logger
  * @returns {Boolean} checks successful?
@@ -136,7 +150,7 @@ function checkUndeployOptions(oOptions, oLogger) {
     }
 
     if (oOptions.ui5 && oOptions.ui5.package && !oOptions.ui5.package.startsWith("$") && !oOptions.ui5.transportno &&
-        oOptions.ui5.create_transport !== true) {
+        oOptions.ui5.create_transport !== true && oOptions.conn.testMode !== true) {
         oLogger.error("For non-local packages (package name does not start with a \"$\") a transport number is necessary.");
         bCheckSuccessful = false;
     }
@@ -229,6 +243,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
 
         oOptionsAdapted = setDefaultLanguage(oOptionsAdapted);
         oOptionsAdapted = setDefaultUseStrictSSL(oOptionsAdapted);
+        oOptionsAdapted = setDefaultTestMode(oOptionsAdapted);
 
         // checks on options
         if (!checkDeployOptions(oOptionsAdapted, oLogger)) {
@@ -238,6 +253,11 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
 
         // verbose log options
         oLogger.logVerbose(`Options: ${JSON.stringify(oOptionsAdapted)}`);
+
+        // info about test mode
+        if (oOptions.conn.testMode) {
+            oLogger.log("Running in Test Mode - no changes are done.");
+        }
 
         // binary determination
         const aFilesAdapted = aFiles.map((oFile) => {
@@ -276,7 +296,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
             }
         }
 
-        if (!oOptionsAdapted.ui5.package.startsWith("$") && oOptionsAdapted.ui5.transportno === undefined) {
+        if (!oOptionsAdapted.ui5.package.startsWith("$") && oOptionsAdapted.ui5.transportno === undefined && oOptionsAdapted.conn.testMode !== true) {
             if (oOptionsAdapted.ui5.transport_use_user_match) {
                 try {
                     await uploadWithTransportUserMatch(oTransportManager, oOptionsAdapted, oLogger, aFilesAdapted);
@@ -336,6 +356,12 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
 
         oOptionsAdapted = setDefaultLanguage(oOptionsAdapted);
         oOptionsAdapted = setDefaultUseStrictSSL(oOptionsAdapted);
+        oOptionsAdapted = setDefaultTestMode(oOptionsAdapted);
+
+        // info about test mode
+        if (oOptions.conn.testMode) {
+            oLogger.log("Running in Test Mode - no changes are done.");
+        }
 
         // checks on options
         if (!checkUndeployOptions(oOptionsAdapted, oLogger)) {

@@ -1,3 +1,8 @@
+## 2.2.0 (2021-07-21)
+
+### Features
+- New option `testMode` for deployment execution in test mode.
+
 ## 2.1.0 (2021-06-21)
 
 ### Features

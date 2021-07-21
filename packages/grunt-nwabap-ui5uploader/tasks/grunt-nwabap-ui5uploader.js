@@ -45,6 +45,7 @@ module.exports = function(grunt) {
                 client: oOptions.conn.client,
                 useStrictSSL: oOptions.conn.useStrictSSL,
                 proxy: oOptions.conn.proxy,
+                testMode: !!oOptions.conn.testMode,
                 customQueryParams: oOptions.conn.customQueryParams ? oOptions.conn.customQueryParams : {}
             },
             auth: {

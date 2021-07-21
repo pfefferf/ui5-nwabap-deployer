@@ -99,7 +99,7 @@ module.exports = class UI5ABAPRepoClient {
         }
 
         if (this._oOptions.conn.testMode) {
-            sUrl + "&TestMode=TRUE";
+            sUrl = sUrl + "&TestMode=TRUE";
         }
 
         const oRequestOptions = {
@@ -119,7 +119,7 @@ module.exports = class UI5ABAPRepoClient {
 
         const oResponse = await this._client.sendRequestPromise(oRequestOptions);
 
-        if (oResponse.statusCode !== util.HTTPSTAT.created && oResponse.statusCode !== util.HTTPSTAT.no_content ) {
+        if (this.doesResponseContainAnError(oResponse)) {
             throw new Error(util.createResponseError(typeof oResponse.body === "object" ? JSON.stringify(oResponse.body, null, 4) : oResponse.body));
         }
     }
@@ -138,8 +138,14 @@ module.exports = class UI5ABAPRepoClient {
         let sUrl = `${this.getServiceUrl()}`;
         sUrl = sUrl + `('${encodeURIComponent(this._oOptions.ui5.bspcontainer)}')`;
 
+        sUrl = sUrl + "?CodePage='UTF8'";
+
         if (this._oOptions.ui5.transportno) {
-            sUrl = sUrl + "?TransportRequest=" + this._oOptions.ui5.transportno;
+            sUrl = sUrl + "&TransportRequest=" + this._oOptions.ui5.transportno;
+        }
+
+        if (this._oOptions.conn.testMode) {
+            sUrl = sUrl + "&TestMode=TRUE";
         }
 
         const oRequestOptions = {
@@ -149,8 +155,29 @@ module.exports = class UI5ABAPRepoClient {
 
         const oResponse = await this._client.sendRequestPromise(oRequestOptions);
 
-        if (oResponse.statusCode !== util.HTTPSTAT.ok && oResponse.statusCode !== util.HTTPSTAT.no_content) {
+        if (this.doesResponseContainAnError(oResponse)) {
             throw new Error(util.createResponseError(typeof oResponse.body === "object" ? JSON.stringify(oResponse.body, null, 4) : oResponse.body));
         }
+    }
+
+    /**
+     * Check if response contains an error.
+     * @param {Object} oResponse Request response
+     * @returns {boolean} Info if response contains an error
+     */
+    doesResponseContainAnError(oResponse) {
+        let bErrorOccurred = false;
+
+        if (oResponse.body.errordetails) {
+            const idx = oResponse.body.errordetails.findIndex((errordetail) => {
+                return errordetail.severity === "error";
+            });
+
+            bErrorOccurred = idx !== -1;
+        } else if (oResponse.statusCode !== util.HTTPSTAT.ok && oResponse.statusCode !== util.HTTPSTAT.created && oResponse.statusCode !== util.HTTPSTAT.no_content) {
+            bErrorOccurred = true;
+        }
+
+        return bErrorOccurred;
     }
 };

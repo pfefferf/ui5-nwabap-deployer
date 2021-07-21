@@ -1,3 +1,8 @@
+## 2.1.0 (2021-07-21)
+
+### Features
+- New option `testMode` for deployment execution in test mode.
+
 ## 2.0.0 (2021-06-18)
 
 ### Features
@@ -5,7 +10,7 @@
   </br>Team Provider API was set to deprecated. As a consequence starting from version 2.0.0 this deployer supports only systems with at least SAP_UI 753 component installed.
   </br>For all previous versions, version 1.x.x of this deployer needs to be used.
 
-## 1.0.07 (2020-09-25)
+## 1.0.7 (2020-09-25)
 
 ### Feature
 - Support of `options.conn.customQueryParams` configuration option to be able to transfer custom parameters to the backend (for instance to bypass SAML2 or SPNEGO authentication).

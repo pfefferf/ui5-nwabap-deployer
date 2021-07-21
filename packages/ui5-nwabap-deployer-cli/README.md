@@ -41,6 +41,7 @@ The `deploy` command deploys UI5 sources to an ABAP system. It provides followin
 |files |Glob pattern to match files for deployment.|X|**/\*.\*|
 |server |SAP NetWeaver ABAP application server information in form protocol://host:port|X|-|
 |client |Client of SAP NetWeaver ABAP application server; if not set default client of server is used.|-|-|
+|testMode |Deployment to be done in test mode.|-|false|
 |user |User used for logon to SAP NetWeaver ABAP application server.|X (in case no bearer token is used)|-|
 |pwd |Password used for logon to SAP NetWeaver ABAP application server.|X (in case no bearer token is used)|-|
 |bearerToken |Bearer token used for authorization.|X (in user/pwd is not used)|-|
@@ -66,10 +67,11 @@ Configuration file example with dummy data. Consider: Do not configure the user/
     "files": "**/*.*",
     "server": "http://localhost:8000",
     "client": "100",
+    "testMode": false,
     "user": "testuser",
     "pwd": "abcd1234",   
     "bearerToken": "eadfadfdsf...", 
-	"useStrictSSL": false,
+    "useStrictSSL": false,
     "proxy": "http://proxy:3000",
     "customQueryParams": {
         "parameter1": "Test",
@@ -86,6 +88,7 @@ Configuration file example with dummy data. Consider: Do not configure the user/
     "transportUseUserMatch": false
 }
 ```
+
 In a configuration file not all options must be maintained. It is possible to maintain standard options in the configuration file and provide other ones as command line arguments (like the user and password or the transport number). If an option is defined in the configuration file and provided as command line argument, always the value from the command line argument is taken.
 
 ### undeploy

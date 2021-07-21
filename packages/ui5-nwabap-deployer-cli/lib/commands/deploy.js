@@ -14,6 +14,7 @@ const builder = (yargs) => {
         .option("client", { description: "ABAP Client", string: true })
         .option("useStrictSSL", { description: "Use Strict SSL, default: true", boolean: true })
         .option("proxy", { description: "Proxy (form: protocol://host:port)", string: true })
+        .option("testMode", { description: "Test Mode deployment, default: false", boolean: true })
         .option("customQueryParams", { description: "Custom Query Parameters", array: true })
         .option("user", { description: "ABAP User", string: true })
         .option("pwd", { description: "ABAP User Password", string: true })
@@ -99,6 +100,7 @@ const initDeployOptions = () => {
             client: undefined,
             useStrictSSL: true,
             proxy: undefined,
+            testMode: false,
             customQueryParams: {}
         },
         auth: {

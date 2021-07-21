@@ -21,8 +21,8 @@ npm install ui5-task-nwabap-deployer --save-dev
     - client: optional `string` Client of SAP NetWeaver ABAP application server; if not set default client of server is used (alternative: set environment variable `UI5_TASK_NWABAP_DEPLOYER__CLIENT`)
     - useStrictSSL: optional `true|false` SSL mode handling. In case of self signed certificates the useStrictSSL mode option can be set to false to allow a deployment of files; default value: `true`
     - proxy: optional `string` Proxy to be used for communication to SAP NetWeaver ABAP application server (e.g. `http://myproxyhost:3128`).
+    - testMode: optional `boolean` Do deployment in test mode (alternative: set environment variable UI5_TASK_NWABAP_DEPLOYER__TESTMODE).
     - customQueryParams: option key/value query parameter values added to the call to the SAP NetWeaver ABAP application server
-    - testMode: optional boolean for running /UI5/ABAP_RESPOSITORY_SRV in TestMode (alternative: set environment variable UI5_TASK_NWABAP_DEPLOYER__TESTMODE)
 - authentication
     - user: `string`User used for logon to SAP NetWeaver ABAP application server (alternative: set environment variable `UI5_TASK_NWABAP_DEPLOYER__USER`)
     - password: `string` Password used for logon to SAP NetWeaver ABAP application server (alternative: set environment variable `UI5_TASK_NWABAP_DEPLOYER__PASSWORD`)

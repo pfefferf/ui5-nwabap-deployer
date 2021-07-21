@@ -28,9 +28,10 @@ module.exports = async function({ workspace, dependencies, options }) {
         options.configuration.connection = {};
     }
 
-    let bTestMode = !!process.env.UI5_TASK_NWABAP_DEPLOYER__TESTMODE;
+    let bTestMode = process.env.UI5_TASK_NWABAP_DEPLOYER__TESTMODE === "true";
+
     if (options.configuration && options.configuration.connection.testMode) {
-        bTestMode = options.configuration.connection.testMode;
+        bTestMode = !!options.configuration.connection.testMode;
     }
 
     let sServer = process.env.UI5_TASK_NWABAP_DEPLOYER__SERVER;
