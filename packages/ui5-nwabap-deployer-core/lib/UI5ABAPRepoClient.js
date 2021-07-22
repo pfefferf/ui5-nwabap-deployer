@@ -168,8 +168,18 @@ module.exports = class UI5ABAPRepoClient {
     doesResponseContainAnError(oResponse) {
         let bErrorOccurred = false;
 
-        if (oResponse.body.errordetails) {
-            const idx = oResponse.body.errordetails.findIndex((errordetail) => {
+        let errorDetails = null;
+
+        if (oResponse.body && oResponse.body.errordetails) {
+            errorDetails = oResponse.body.errordetails;
+        }
+
+        if (oResponse.body && oResponse.body.error && oResponse.body.error.innererror && oResponse.body.error.innererror.errordetails) {
+            errorDetails = oResponse.body.error.innererror.errordetails;
+        }
+
+        if (errorDetails) {
+            const idx = errorDetails.findIndex((errordetail) => {
                 return errordetail.severity === "error";
             });
 

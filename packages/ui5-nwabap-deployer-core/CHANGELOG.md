@@ -1,3 +1,8 @@
+## 2.2.1 (2021-07-22)
+
+### Fixes
+- Enhance backend response message handling for test mode to support different SAP_UI component versions.
+
 ## 2.2.0 (2021-07-21)
 
 ### Features
