@@ -35,9 +35,6 @@ const TransportManager = require("./TransportManager");
 function setDefaultTestMode(oOptions) {
     if (!oOptions.conn.hasOwnProperty("testMode")) {
         oOptions.conn.testMode = false;
-    } else if (oOptions.conn.testMode === true) {
-        // set all transport related options in a way that it is not tried to to create a transport
-        oOptions.ui5.create_transport = false;
     }
     return oOptions;
 }
@@ -296,7 +293,7 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
             }
         }
 
-        if (!oOptionsAdapted.ui5.package.startsWith("$") && oOptionsAdapted.ui5.transportno === undefined && oOptionsAdapted.conn.testMode !== true) {
+        if (!oOptionsAdapted.ui5.package.startsWith("$") && oOptionsAdapted.ui5.transportno === undefined) {
             if (oOptionsAdapted.ui5.transport_use_user_match) {
                 try {
                     await uploadWithTransportUserMatch(oTransportManager, oOptionsAdapted, oLogger, aFilesAdapted);
@@ -307,24 +304,25 @@ exports.deployUI5toNWABAP = async function(oOptions, aFiles, oLogger) {
                     return;
                 }
             } else if (oOptionsAdapted.ui5.create_transport === true) {
-                // create new transport
-                oTransportManager.createTransport(oOptionsAdapted.ui5.package, oOptionsAdapted.ui5.transport_text, async function(oError, sTransportNo) {
-                    if (oError) {
-                        reject(oError);
-                        return;
+                try {
+                    let sTransportNo = "A4HK900000"; // dummy transport for test mode
+                    if (!oOptionsAdapted.conn.testMode) {
+                        sTransportNo = await oTransportManager.createTransportPromise(oOptionsAdapted.ui5.package, oOptionsAdapted.ui5.transport_text);
                     }
-
                     oOptionsAdapted.ui5.transportno = sTransportNo;
+                } catch (oError) {
+                    reject(oError);
+                    return;
+                }
 
-                    try {
-                        await syncFiles(oOptionsAdapted, oLogger, aFilesAdapted);
-                        resolve({ oOptions: oOptionsAdapted });
-                        return;
-                    } catch (oError) {
-                        reject(oError);
-                        return;
-                    }
-                });
+                try {
+                    await syncFiles(oOptionsAdapted, oLogger, aFilesAdapted);
+                    resolve({ oOptions: oOptionsAdapted });
+                    return;
+                } catch (oError) {
+                    reject(oError);
+                    return;
+                }
             } else {
                 const oError = new Error("No transport configured and 'create transport' and 'use user match' options are disabled.");
                 reject(oError);

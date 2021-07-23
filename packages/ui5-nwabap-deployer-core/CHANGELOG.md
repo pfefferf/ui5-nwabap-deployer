@@ -1,3 +1,8 @@
+## 2.2.2 (2021-07-23)
+
+### Fixes
+- Execute transport related checks for test mode too.
+
 ## 2.2.1 (2021-07-22)
 
 ### Fixes
