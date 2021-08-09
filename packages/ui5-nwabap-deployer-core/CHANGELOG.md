@@ -1,3 +1,8 @@
+## 2.2.3 (2021-08-09)
+
+## Fixes
+- Deployment was not cancelled in case an error appeared which was not returned in the errordetails array response.
+
 ## 2.2.2 (2021-07-23)
 
 ### Fixes
