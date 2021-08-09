@@ -174,7 +174,7 @@ module.exports = class UI5ABAPRepoClient {
             errorDetails = oResponse.body.errordetails;
         }
 
-        if (oResponse.body && oResponse.body.error && oResponse.body.error.innererror && oResponse.body.error.innererror.errordetails) {
+        if (oResponse.body && oResponse.body.error && oResponse.body.error.innererror && oResponse.body.error.innererror.errordetails && !!oResponse.body.error.innererror.errordetails.length) {
             errorDetails = oResponse.body.error.innererror.errordetails;
         }
 
