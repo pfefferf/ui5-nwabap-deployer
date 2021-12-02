@@ -68,10 +68,10 @@ module.exports = function(grunt) {
         try {
             await ui5Deployercore.deployUI5toNWABAP(oDeployOptions, aFiles, oLogger);
             oLogger.log("UI5 sources successfully deployed.");
+            done();
         } catch (oError) {
             oLogger.error(oError);
+            process.exitCode = 1;
         }
-
-        done();
     });
 };
