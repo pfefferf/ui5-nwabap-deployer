@@ -1,3 +1,8 @@
+## 2.1.1 (2023-02-15)
+
+### Fixes
+- Support UI5 Tooling 3.0 in respect to reduce build time by defining that no dependencies are required.
+
 ## 2.1.0 (2021-07-21)
 
 ### Features

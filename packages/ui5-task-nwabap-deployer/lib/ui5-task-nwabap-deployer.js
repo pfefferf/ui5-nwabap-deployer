@@ -15,7 +15,7 @@ require("dotenv").config();
  * @param {string} [parameters.options.configuration] Task configuration if given in ui5.yaml
  * @returns {Promise<undefined>} Promise resolving with <code>undefined</code> once data has been written
  */
-module.exports = async function({ workspace, dependencies, options }) {
+module.exports = async function({ workspace, options }) {
     const oLogger = new Logger();
 
     oLogger.log("Start deploying UI5 sources.");
@@ -130,4 +130,12 @@ module.exports = async function({ workspace, dependencies, options }) {
     }).catch((oError) => {
         return Promise.reject(oError);
     });
+};
+
+/**
+ * Callback function to define the list of required dependencies. No dependencies required for this custom task.
+ *
+ */
+module.exports.determineRequiredDependencies = async function({availableDependencies, getDependencies, getProject, options}) {
+    return new Set();
 };

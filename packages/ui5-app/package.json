@@ -25,11 +25,11 @@
     "npm": ">= 7"
   },
   "devDependencies": {
-    "@ui5/cli": "^2.4.4",
+    "@ui5/cli": "^3.0.0",
     "grunt": "^1.0.1",
     "grunt-nwabap-ui5uploader": "2.1.0",
-    "ui5-task-nwabap-deployer": "2.1.0",
-    "ui5-nwabap-deployer-cli": "2.2.0"
+    "ui5-nwabap-deployer-cli": "2.2.0",
+    "ui5-task-nwabap-deployer": "2.1.0"
   },
   "ui5": {
     "dependencies": [
