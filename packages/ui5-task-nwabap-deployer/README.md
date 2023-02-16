@@ -39,7 +39,7 @@ npm install ui5-task-nwabap-deployer --save-dev
 
 ## Usage
 
-1. Define the dependency in `$yourapp/package.json`
+1. Define the dependency in `$yourapp/package.json`. Since UI5 tooling version 3.0 the `ui5.dependencies` setting is not required anymore.
 ```json
 ...
 "devDependencies": {
