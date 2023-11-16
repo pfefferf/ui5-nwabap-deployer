@@ -70,6 +70,7 @@ module.exports = function(grunt) {
             oLogger.log("UI5 sources successfully deployed.");
         } catch (oError) {
             oLogger.error(oError);
+            grunt.fail.warn("Error occurred while deploying UI5 sources.");
         }
 
         done();
