@@ -1,3 +1,8 @@
+## 2.2.0 (2023-11-16)
+
+### Fixes
+- Do grunt.fail.warn to raise exit code.
+
 ## 2.1.0 (2021-07-21)
 
 ### Features
