@@ -1,3 +1,8 @@
+## 2.2.4 (2024-09-26)
+
+## Fixes
+- Update axios to fix vulnerabilities.
+
 ## 2.2.3 (2021-08-09)
 
 ## Fixes
