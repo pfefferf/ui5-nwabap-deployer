@@ -33,10 +33,10 @@
     },
     "scripts": { },
     "dependencies": {
-        "glob": "^7.1.6",
+        "glob": "^11.0.3",
         "ui5-nwabap-deployer-core": "^2.2.0",
         "winston": "^3.3.3",
-        "yargs": "^16.2.0"
+        "yargs": "^18.0.0"
     },
     "keywords": [
         "UI5",
